@@ -7,7 +7,7 @@ namespace data.ORM;
 /// All other things in the system roll up to this. This doesn't however
 /// insinuate that it *must* have things that roll up to it.
 /// </summary>
-public class ThingDto
+public class ThingDto : BaseDto
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
