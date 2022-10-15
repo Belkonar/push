@@ -3,17 +3,14 @@ using data.Models;
 
 namespace data.View;
 
-public class ThingView : BaseView
+public class DeployableView
 {
     [JsonPropertyName("id")]
-    public Guid? Id { get; set; }
+    public Guid Id { get; set; }
     
     [JsonPropertyName("name")]
     public string Name { get; set; }
-
-    [JsonPropertyName("organization_id")]
-    public Guid OrganizationId { get; set; }
     
     [JsonPropertyName("contents")]
-    public Thing Contents { get; set; }
+    public Deployable Contents { get; set; }
 }

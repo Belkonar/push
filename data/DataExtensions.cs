@@ -1,5 +1,7 @@
 using AutoMapper;
 using data.ORM;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace data;
 
@@ -23,5 +25,17 @@ public static class DataExtensions
         {
             expression.ReverseMap();
         }
+    }
+
+    /// <summary>
+    /// Mark an object with a specific state
+    /// </summary>
+    /// <param name="mainContext"></param>
+    /// <param name="obj"></param>
+    /// <param name="state"></param>
+    /// <typeparam name="T"></typeparam>
+    public static void Mark<T>(this MainContext mainContext, T obj, EntityState state = EntityState.Modified) where T : class
+    {
+        mainContext.Entry(obj).State = state;
     }
 }

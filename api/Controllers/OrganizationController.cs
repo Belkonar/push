@@ -1,5 +1,7 @@
+using api.Logic;
 using AutoMapper;
 using data.ORM;
+using data.UpdateModels;
 using data.View;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,27 +12,48 @@ namespace api.Controllers;
 public class OrganizationController : ControllerBase
 {
     private readonly IMapper _mapper;
+    private readonly OrganizationLogic _organizationLogic;
 
-    public OrganizationController(IMapper mapper)
+    public OrganizationController(IMapper mapper, OrganizationLogic organizationLogic)
     {
         _mapper = mapper;
+        _organizationLogic = organizationLogic;
     }
     
     // get orgs
     [HttpGet()]
-    public List<OrganizationView> GetOrgs()
+    public async Task<List<OrganizationView>> GetOrgs()
     {
-        var dto = new OrganizationDto()
-        {
-            Id = Guid.NewGuid(),
-            Name = "test",
-            Created = DateTime.Now,
-            Updated = DateTime.Today
-        };
+        return await _organizationLogic.GetAll();
+    }
 
-        return new List<OrganizationView>()
-        {
-            _mapper.Map<OrganizationView>(dto)
-        };
+    [HttpPost]
+    public async Task<OrganizationView> Create([FromBody] UpdateOrganization body)
+    {
+        return await _organizationLogic.Create(body);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<OrganizationView> Update([FromRoute] Guid id, [FromBody] UpdateOrganization body)
+    {
+        return await _organizationLogic.Update(id, body);
+    }
+
+    [HttpPut("{id}/metadata")]
+    public async Task<OrganizationView> UpdateMetadata([FromRoute] Guid id, [FromBody] Dictionary<string,string> body)
+    {
+        return await _organizationLogic.UpdateMetadata(id, body);
+    }
+    
+    [HttpPut("{id}/private_metadata")]
+    public async Task<OrganizationView> UpdatePrivateMetadata([FromRoute] Guid id, [FromBody] Dictionary<string,string> body)
+    {
+        return await _organizationLogic.UpdatePrivateMetadata(id, body);
+    }
+    
+    [HttpPut("{id}/policy")]
+    public async Task<OrganizationView> UpdatePolicy([FromRoute] Guid id, [FromBody] string body)
+    {
+        return await _organizationLogic.UpdatePolicy(id, body);
     }
 }

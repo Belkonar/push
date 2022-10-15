@@ -1,5 +1,6 @@
 using AutoMapper;
 using data.ORM;
+using data.UpdateModels;
 using data.View;
 
 namespace data;
@@ -13,6 +14,9 @@ public class DataProfile : Profile
 
         CreateMap<ThingView, ThingDto>()
             .Setup();
+        
+        // For updates with smaller surfaces
+        CreateMap<UpdateOrganization, OrganizationDto>();
     }
     
 }

@@ -11,5 +11,6 @@ public class ThingDto : BaseDto
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
+    public Guid OrganizationId { get; set; }
     public Thing Contents { get; set; }
 }

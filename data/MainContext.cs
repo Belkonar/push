@@ -28,7 +28,7 @@ public class MainContext : DbContext
 
         foreach (var entityEntry in entries)
         {
-            BaseDto dto = (BaseDto)entityEntry.Entity;
+            var dto = (BaseDto)entityEntry.Entity;
             
             dto.Updated = DateTime.Now;
 
