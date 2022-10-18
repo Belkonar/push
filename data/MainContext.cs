@@ -5,18 +5,33 @@ namespace data;
 
 public class MainContext : DbContext
 {
+    // KVs
     public DbSet<ConfigDto> Configs { get; set; }
+    public DbSet<PolicyDto> Policies { get; set; }
+
+    // Org Structure
     public DbSet<OrganizationDto> Organizations { get; set; }
     public DbSet<ThingDto> Things { get; set; }
+    
+    // Resource types
+    public DbSet<DeployableDto> Deployables { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseNpgsql("");
+        optionsBuilder.UseNpgsql("Host=localhost:5432;Database=devops;Username=postgres;Password=testpwd");
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // TODO: Actually this lol
+        modelBuilder.Entity<OrganizationDto>()
+            .HasMany<ThingDto>()
+            .WithOne()
+            .HasForeignKey(x => x.OrganizationId);
+
+        modelBuilder.Entity<ThingDto>()
+            .HasOne<DeployableDto>()
+            .WithOne()
+            .HasForeignKey<DeployableDto>(x => x.ThingId);
     }
 
     // The purpose of this is to ensure dates are tracked correctly

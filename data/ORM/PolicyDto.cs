@@ -4,15 +4,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace data.ORM;
 
 /// <summary>
-/// Basic k/v config structure.
+/// Global policies for enterprise and reuse 
 /// </summary>
 /// <remarks>No view model for KV based tables</remarks>
-[Table("config")]
-public class ConfigDto : BaseDto
+[Table("policy")]
+public class PolicyDto : BaseDto
 {
     [Key, Column("key")]
     public string Key { get; set; }
     
-    [Column("value")]
-    public string Value { get; set; }
+    [Column("policy")]
+    public string Policy { get; set; }
 }
