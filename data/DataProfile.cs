@@ -17,6 +17,7 @@ public class DataProfile : Profile
         
         // For updates with smaller surfaces
         CreateMap<UpdateOrganization, OrganizationDto>();
+        CreateMap<UpdatePolicy, PolicyDto>();
     }
     
 }

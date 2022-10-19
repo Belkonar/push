@@ -16,8 +16,8 @@ namespace data.Migrations
                 {
                     key = table.Column<string>(type: "text", nullable: false),
                     value = table.Column<string>(type: "text", nullable: false),
-                    created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    created = table.Column<DateTime>(type: "timestamp", nullable: false),
+                    updated = table.Column<DateTime>(type: "timestamp", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -31,8 +31,8 @@ namespace data.Migrations
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     name = table.Column<string>(type: "text", nullable: false),
                     contents = table.Column<Organization>(type: "jsonb", nullable: false),
-                    created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    created = table.Column<DateTime>(type: "timestamp", nullable: false),
+                    updated = table.Column<DateTime>(type: "timestamp", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -45,8 +45,8 @@ namespace data.Migrations
                 {
                     key = table.Column<string>(type: "text", nullable: false),
                     policy = table.Column<string>(type: "text", nullable: false),
-                    created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    created = table.Column<DateTime>(type: "timestamp", nullable: false),
+                    updated = table.Column<DateTime>(type: "timestamp", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -61,8 +61,8 @@ namespace data.Migrations
                     name = table.Column<string>(type: "text", nullable: false),
                     organization = table.Column<Guid>(type: "uuid", nullable: false),
                     contents = table.Column<Thing>(type: "jsonb", nullable: false),
-                    created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    created = table.Column<DateTime>(type: "timestamp", nullable: false),
+                    updated = table.Column<DateTime>(type: "timestamp", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -83,8 +83,8 @@ namespace data.Migrations
                     name = table.Column<string>(type: "text", nullable: false),
                     thing = table.Column<Guid>(type: "uuid", nullable: false),
                     contents = table.Column<Deployable>(type: "jsonb", nullable: false),
-                    created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    created = table.Column<DateTime>(type: "timestamp", nullable: false),
+                    updated = table.Column<DateTime>(type: "timestamp", nullable: false)
                 },
                 constraints: table =>
                 {

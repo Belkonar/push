@@ -5,9 +5,9 @@ namespace data.ORM;
 
 public class BaseDto
 {
-    [Column("created")]
+    [Column("created", TypeName = "timestamp")]
     public DateTime Created { get; set; }
     
-    [Column("updated")]
+    [Column("updated", TypeName = "timestamp")]
     public DateTime Updated { get; set; }
 }

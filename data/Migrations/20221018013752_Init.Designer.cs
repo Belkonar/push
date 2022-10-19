@@ -13,14 +13,14 @@ using data.Models;
 namespace data.Migrations
 {
     [DbContext(typeof(MainContext))]
-    [Migration("20221018004338_Init")]
+    [Migration("20221018013752_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.10")
+                .HasAnnotation("ProductVersion", "6.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -32,11 +32,11 @@ namespace data.Migrations
                         .HasColumnName("key");
 
                     b.Property<DateTime>("Created")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp")
                         .HasColumnName("created");
 
                     b.Property<DateTime>("Updated")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp")
                         .HasColumnName("updated");
 
                     b.Property<string>("Value")
@@ -62,7 +62,7 @@ namespace data.Migrations
                         .HasColumnName("contents");
 
                     b.Property<DateTime>("Created")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp")
                         .HasColumnName("created");
 
                     b.Property<string>("Name")
@@ -75,7 +75,7 @@ namespace data.Migrations
                         .HasColumnName("thing");
 
                     b.Property<DateTime>("Updated")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp")
                         .HasColumnName("updated");
 
                     b.HasKey("Id");
@@ -99,7 +99,7 @@ namespace data.Migrations
                         .HasColumnName("contents");
 
                     b.Property<DateTime>("Created")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp")
                         .HasColumnName("created");
 
                     b.Property<string>("Name")
@@ -108,7 +108,7 @@ namespace data.Migrations
                         .HasColumnName("name");
 
                     b.Property<DateTime>("Updated")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp")
                         .HasColumnName("updated");
 
                     b.HasKey("Id");
@@ -123,7 +123,7 @@ namespace data.Migrations
                         .HasColumnName("key");
 
                     b.Property<DateTime>("Created")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp")
                         .HasColumnName("created");
 
                     b.Property<string>("Policy")
@@ -132,7 +132,7 @@ namespace data.Migrations
                         .HasColumnName("policy");
 
                     b.Property<DateTime>("Updated")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp")
                         .HasColumnName("updated");
 
                     b.HasKey("Key");
@@ -153,7 +153,7 @@ namespace data.Migrations
                         .HasColumnName("contents");
 
                     b.Property<DateTime>("Created")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp")
                         .HasColumnName("created");
 
                     b.Property<string>("Name")
@@ -166,7 +166,7 @@ namespace data.Migrations
                         .HasColumnName("organization");
 
                     b.Property<DateTime>("Updated")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp")
                         .HasColumnName("updated");
 
                     b.HasKey("Id");
