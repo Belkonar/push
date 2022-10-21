@@ -3,11 +3,11 @@ import { INavData } from '@coreui/angular';
 export const navItems: INavData[] = [
   {
     title: true,
-    name: 'Applications'
+    name: 'Global'
   },
   {
-    name: 'Search',
-    url: '/app-search',
+    name: 'Policies',
+    url: '/policy/list',
     iconComponent: { name: 'cil-magnifying-glass' }
   },
   {

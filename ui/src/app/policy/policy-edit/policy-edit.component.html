@@ -1,6 +1,15 @@
 <div class="card">
   <div class="card-header">Editing Policy - {{key}}</div>
   <div class="card-body">
-    <app-monaco [lang]="'rego'" [(value)]="editorValue"></app-monaco>
+    <div *ngIf="key === 'global'">
+      <span class="text-danger">WARNING</span>:
+      You are currently editing the global ACL.
+    </div>
+    <app-editor [lang]="'rego'" [(value)]="editorValue"></app-editor>
+  </div>
+  <div class="card-footer">
+    <button (click)="save()" class="btn btn-primary">
+      Save
+    </button>
   </div>
 </div>

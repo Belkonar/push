@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { PolicyService } from '../../services/policy.service';
 
 @Component({
   selector: 'app-policy-edit',
@@ -10,14 +11,22 @@ export class PolicyEditComponent implements OnInit {
   editorValue = ''
   key: string = '';
 
-  constructor(private activatedRoute: ActivatedRoute) { }
+  constructor(private activatedRoute: ActivatedRoute, private policyService: PolicyService) { }
 
   ngOnInit(): void {
     this.key = this.activatedRoute.snapshot.params['key'];
+    this.policyService.getPolicies()
+      .subscribe(p => {
+        let policy = p.filter(x => x.key === this.key)[0];
+        this.editorValue = policy.policy;
+      })
   }
 
-  clicker() {
-    alert(this.editorValue)
+  save() {
+    this.policyService.updatePolicy(this.key, this.editorValue)
+      .subscribe(() => {
+        alert('saved')
+      })
   }
 
 }

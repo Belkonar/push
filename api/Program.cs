@@ -1,4 +1,5 @@
 using api.Logic;
+using api.Services;
 using data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // deps lol
 builder.Services.AddTransient<PolicyLogic>();
+
+builder.Services.AddTransient<OpaService>();
 
 builder.Services.AddAutoMapper(x => x.AddProfile<DataProfile>());
 

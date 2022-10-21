@@ -1,3 +1,6 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using api.Services;
 using data;
 using data.ORM;
 using Microsoft.AspNetCore.Mvc;
@@ -9,10 +12,12 @@ namespace api.Controllers;
 public class UtilController : ControllerBase
 {
     private readonly MainContext _context;
+    private readonly OpaService _opaService;
 
-    public UtilController(MainContext context)
+    public UtilController(MainContext context, OpaService opaService)
     {
         _context = context;
+        _opaService = opaService;
     }
     
     [HttpGet("fill")]
@@ -33,4 +38,14 @@ public class UtilController : ControllerBase
 
         return Ok();
     }
+
+    [HttpGet()]
+    public async Task<IActionResult> Test()
+    {
+        return Ok();
+    }
+
+    
 }
+
+// TODO: Move this lol

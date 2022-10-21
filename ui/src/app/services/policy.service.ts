@@ -14,8 +14,15 @@ export class PolicyService {
     return this.httpClient.get<any[]>(ConfigService.getConfig().apiRoot + `/policy`)
   }
 
-  updatePolicy(key: string, policy: string): Observable<void> {
-    throw("not implemented")
+  /***
+   *
+   * @param key
+   * @param policy
+   */
+  updatePolicy(key: string, policy: string): Observable<any> {
+    return this.httpClient.put<any[]>(ConfigService.getConfig().apiRoot + `/policy/${key}`, {
+      policy
+    })
   }
 
 }
