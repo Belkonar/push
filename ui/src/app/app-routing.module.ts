@@ -9,6 +9,9 @@ import { RegisterComponent } from './views/pages/register/register.component';
 import {IconsModule} from "./views/icons/icons.module";
 import { PolicyEditComponent } from './policy/policy-edit/policy-edit.component';
 import { PolicyListComponent } from './policy/policy-list/policy-list.component';
+import { AuthGuard } from './auth.guard';
+import { CallbackComponent } from './callback/callback.component';
+import { CallbackGuard } from './callback.guard';
 
 const routes: Routes = [
   {
@@ -19,6 +22,7 @@ const routes: Routes = [
   {
     path: '',
     component: DefaultLayoutComponent,
+    canActivate: [AuthGuard],
     data: {
       title: 'Home'
     },
@@ -110,6 +114,11 @@ const routes: Routes = [
     data: {
       title: 'Register Page'
     }
+  },
+  {
+    path: 'callback',
+    component: CallbackComponent,
+    canActivate: [ CallbackGuard ]
   },
   {path: '**', redirectTo: 'dashboard'}
 ];

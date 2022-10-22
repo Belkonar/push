@@ -16,15 +16,35 @@ public class PermissionService
     }
     
     // Go through each policy in the list and add all the permissions to the collection
-    public async Task<List<string>> GetPermissions(OpaInputDocument inputDoc, PermissionQuery permissionQuery)
+    public async Task<Permissions> GetPermissions(OpaInputDocument inputDoc, PermissionQuery permissionQuery)
     {
         var globalPolicy = await _permissionData.GetGlobalPolicy("global");
 
         var globalPolicyResponse = await _opaService.Query(globalPolicy, inputDoc);
         inputDoc.Permissions.AddRange(globalPolicyResponse.Keys());
         
-        // TODO: Add org and resource level permissions stuff here
+        // TODO: Add org and resource level permissions stuff here)
 
-        return inputDoc.Permissions;
+        if (permissionQuery.Organization.HasValue)
+        {
+            var policy = await _permissionData.GetOrgPolicy(permissionQuery.Organization.Value);
+            var policyResponse = await _opaService.Query(policy, inputDoc);
+
+            // If there's a parent policy, ignore the results and use the parent
+            if (policyResponse.ParentPolicy != null)
+            {
+                policy = await _permissionData.GetGlobalPolicy(policyResponse.ParentPolicy);
+                policyResponse = await _opaService.Query(policy, inputDoc);
+            }
+            
+            inputDoc.Permissions.AddRange(policyResponse.Keys());
+        }
+
+        if (permissionQuery.Resource.HasValue)
+        {
+            
+        }
+
+        return (Permissions)inputDoc.Permissions;
     }
 }

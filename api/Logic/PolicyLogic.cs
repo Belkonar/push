@@ -39,7 +39,7 @@ public class PolicyLogic
             new OpaInputDocument(),
             new PermissionQuery());
 
-        if (!permissions.Contains("global_admin"))
+        if (permissions.HasPermission("global_policy_manage"))
         {
             throw new UnauthorizedAccessException("Fam what are you doing");
         }

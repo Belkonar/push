@@ -18,4 +18,9 @@ public class PermissionData
     {
         return (await _mainContext.Policies.FindAsync(key)).Policy;
     }
+
+    public async Task<string> GetOrgPolicy(Guid id)
+    {
+        return (await _mainContext.Organizations.FindAsync(id)).Contents.Policy;
+    }
 }

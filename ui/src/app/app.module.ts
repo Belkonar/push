@@ -49,6 +49,7 @@ import {HttpClientModule} from "@angular/common/http";
 import { PolicyListComponent } from './policy/policy-list/policy-list.component';
 import { MonacoComponent } from './monaco/monaco.component';
 import { PolicyEditComponent } from './policy/policy-edit/policy-edit.component';
+import { CallbackComponent } from './callback/callback.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -61,7 +62,7 @@ const APP_CONTAINERS = [
 ];
 
 @NgModule({
-  declarations: [AppComponent, ...APP_CONTAINERS, PolicyListComponent, MonacoComponent, PolicyEditComponent],
+  declarations: [AppComponent, ...APP_CONTAINERS, PolicyListComponent, MonacoComponent, PolicyEditComponent, CallbackComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,

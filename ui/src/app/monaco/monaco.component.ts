@@ -32,7 +32,7 @@ export class MonacoComponent implements OnInit, OnChanges {
   @Input() value: string = '';
   @Output() valueChange = new EventEmitter<string>();
 
-  @Input() lang: 'javascript' | 'rego' = 'javascript'
+  @Input() lang: 'yaml' | 'rego' = 'rego'
 
   @ViewChild("editor") editorRef!: ElementRef; // gets #target1
 
@@ -64,8 +64,8 @@ export class MonacoComponent implements OnInit, OnChanges {
   setupEditor() {
     let langMe: Extension[] = [];
 
-    if (this.lang === 'javascript') {
-      langMe = [javascript()]
+    if (this.lang === 'yaml') {
+      // langMe = [javascript()]
     }
 
     if (this.lang === 'rego') {
