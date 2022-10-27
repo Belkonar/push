@@ -8,43 +8,54 @@ public class PermissionService
 {
     private readonly OpaService _opaService;
     private readonly PermissionData _permissionData;
+    private readonly UserService _userService;
 
-    public PermissionService(OpaService opaService, PermissionData permissionData)
+    public PermissionService(OpaService opaService, PermissionData permissionData, UserService userService)
     {
         _opaService = opaService;
         _permissionData = permissionData;
+        _userService = userService;
     }
     
     // Go through each policy in the list and add all the permissions to the collection
-    public async Task<Permissions> GetPermissions(OpaInputDocument inputDoc, PermissionQuery permissionQuery)
+    public async Task<Permissions> GetPermissions(PermissionQuery permissionQuery)
     {
+        var inputDoc = new OpaInputDocument()
+        {
+            Permissions = new List<string>(),
+            Profile = _userService.Profile
+        };
+        
         var globalPolicy = await _permissionData.GetGlobalPolicy("global");
 
-        var globalPolicyResponse = await _opaService.Query(globalPolicy, inputDoc);
-        inputDoc.Permissions.AddRange(globalPolicyResponse.Keys());
-        
-        // TODO: Add org and resource level permissions stuff here)
+        inputDoc.Permissions.AddRange(await RunPolicy(globalPolicy, inputDoc, false));
 
         if (permissionQuery.Organization.HasValue)
         {
             var policy = await _permissionData.GetOrgPolicy(permissionQuery.Organization.Value);
-            var policyResponse = await _opaService.Query(policy, inputDoc);
-
-            // If there's a parent policy, ignore the results and use the parent
-            if (policyResponse.ParentPolicy != null)
-            {
-                policy = await _permissionData.GetGlobalPolicy(policyResponse.ParentPolicy);
-                policyResponse = await _opaService.Query(policy, inputDoc);
-            }
             
-            inputDoc.Permissions.AddRange(policyResponse.Keys());
+            inputDoc.Permissions.AddRange(await RunPolicy(policy, inputDoc));
         }
 
         if (permissionQuery.Resource.HasValue)
         {
-            
+            throw new NotImplementedException("resource level policies");
         }
 
-        return (Permissions)inputDoc.Permissions;
+        return new Permissions(inputDoc.Permissions);
+    }
+
+    // TODO: Think about just adding to the permissions list directly in here
+    private async Task<List<string>> RunPolicy(string policy, OpaInputDocument inputDoc, bool followParent = true)
+    {
+        var response = await _opaService.Query(policy, inputDoc);
+        
+        if (followParent && response.ParentPolicy != null)
+        {
+            policy = await _permissionData.GetGlobalPolicy(response.ParentPolicy);
+            response = await _opaService.Query(policy, inputDoc);
+        }
+
+        return response.Keys();
     }
 }

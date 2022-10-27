@@ -21,6 +21,13 @@ public class PolicyController : ControllerBase
         return await _policyLogic.GetAll();
     }
 
+    /// <summary>
+    /// Bob
+    /// </summary>
+    /// <param name="key"></param>
+    /// <param name="policy"></param>
+    /// <remarks>Requires (G O R).bob</remarks>
+    /// <returns></returns>
     [HttpPut("{key}")]
     public async Task<PolicyDto> Update([FromRoute] string key, [FromBody] UpdatePolicy policy)
     {

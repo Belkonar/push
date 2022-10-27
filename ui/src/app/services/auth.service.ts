@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
 import createAuth0Client, { Auth0Client } from '@auth0/auth0-spa-js';
+import { map, Observable, of } from 'rxjs';
+import { fromPromise } from 'rxjs/internal/observable/innerFrom';
+import { HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -30,5 +33,21 @@ export class AuthService {
     let client = await this.authClient;
 
     await client.loginWithRedirect();
+  }
+
+  async getTokenAsync(): Promise<string> {
+    let client = await this.authClient;
+
+    return await client.getTokenSilently();
+  }
+
+  // I absolutely hate rxjs
+  getConfig(): Observable<{headers: HttpHeaders}> {
+    return fromPromise(this.getTokenAsync())
+      .pipe(map((token) => ({
+        headers: new HttpHeaders({
+          "Authorization": `Bearer ${token}`
+        })
+      })));
   }
 }

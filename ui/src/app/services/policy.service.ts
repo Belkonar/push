@@ -2,16 +2,17 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ConfigService } from '../config.service';
 import { Observable } from 'rxjs';
+import { HttpService } from './http.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PolicyService {
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpService) { }
 
   getPolicies(): Observable<any[]> {
-    return this.httpClient.get<any[]>(ConfigService.getConfig().apiRoot + `/policy`)
+    return this.httpClient.get<any[]>(`/policy`)
   }
 
   /***
@@ -20,7 +21,7 @@ export class PolicyService {
    * @param policy
    */
   updatePolicy(key: string, policy: string): Observable<any> {
-    return this.httpClient.put<any[]>(ConfigService.getConfig().apiRoot + `/policy/${key}`, {
+    return this.httpClient.put<any[]>(`/policy/${key}`, {
       policy
     })
   }

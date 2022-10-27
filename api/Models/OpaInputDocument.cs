@@ -9,13 +9,19 @@ public class OpaInputDocument
     /// List of permissions that builds over sources
     /// </summary>
     [JsonPropertyName("permissions")]
-    public List<string> Permissions { get; set; } = new List<string>();
+    public List<string> Permissions { get; set; } = new();
 
     /// <summary>
     /// Local groups (only filled out for org level or below)
     /// </summary>
     [JsonPropertyName("groups")]
-    public List<string> Groups { get; set; } = new List<string>();
+    public List<string> Groups { get; set; } = new();
+
+    /// <summary>
+    /// Groups to be set at the enterprise level
+    /// </summary>
+    [JsonPropertyName("globalGroups")]
+    public List<string> GlobalGroups { get; set; } = new();
     
     /// <summary>
     /// The users actual user profile

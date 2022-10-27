@@ -26,13 +26,23 @@ public class OpaService
             
         process.Start();
 
-        await process.StandardInput.WriteLineAsync(JsonSerializer.Serialize(input));
+        var inputJson = JsonSerializer.Serialize(input);
+        
+        Console.WriteLine(inputJson);
+
+        await process.StandardInput.WriteLineAsync(inputJson);
         process.StandardInput.Close();
         
         await process.WaitForExitAsync();
 
         var response = await process.StandardOutput.ReadToEndAsync();
-        Console.WriteLine(response.Trim());
+
+        if (process.ExitCode != 0)
+        {
+            // TODO: Error handling
+            Console.WriteLine(response);
+            return new OpaResponseMain();
+        }
 
         var r = JsonSerializer.Deserialize<OpaResponse>(response.Trim());
         
