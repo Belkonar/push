@@ -3,7 +3,6 @@ using api.Logic;
 using api.Middleware;
 using api.Services;
 using data;
-using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
