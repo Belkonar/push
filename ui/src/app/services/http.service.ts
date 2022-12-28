@@ -24,4 +24,11 @@ export class HttpService {
         return this.httpClient.put<TVal>(ConfigService.getConfig().apiRoot + path, body,config);
       }));
   }
+
+  post<TVal>(path: string, body: unknown = null): Observable<TVal> {
+    return this.authService.getConfig()
+      .pipe(switchMap(config => {
+        return this.httpClient.post<TVal>(ConfigService.getConfig().apiRoot + path, body, config);
+      }));
+  }
 }

@@ -17,4 +17,14 @@ export class PolicyListComponent implements OnInit {
       .subscribe(x => this.data = x);
   }
 
+  add() {
+    let policyName = prompt("Policy Name", "") || "";
+
+    if (policyName.trim() !== "") {
+      this.policyService.createPolicy(policyName.trim())
+        .subscribe(() => {
+          this.ngOnInit();
+        })
+    }
+  }
 }

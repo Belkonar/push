@@ -18,7 +18,7 @@ public class MainContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseNpgsql("Host=localhost:5432;Database=devops;Username=postgres;Password=testpwd");
+        optionsBuilder.UseNpgsql("Host=localhost:5430;Database=devops;Username=postgres;Password=testpwd");
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

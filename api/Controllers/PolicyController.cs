@@ -22,15 +22,27 @@ public class PolicyController : ControllerBase
     }
 
     /// <summary>
-    /// Bob
+    /// Update an existing policy
     /// </summary>
+    /// <requires>(G).global_policy_manage</requires>
     /// <param name="key"></param>
     /// <param name="policy"></param>
-    /// <remarks>Requires (G O R).bob</remarks>
     /// <returns></returns>
     [HttpPut("{key}")]
     public async Task<PolicyDto> Update([FromRoute] string key, [FromBody] UpdatePolicy policy)
     {
         return await _policyLogic.Update(key, policy);
+    }
+    
+    /// <summary>
+    /// Create a new empty policy
+    /// </summary>
+    /// <requires>(G).global_policy_manage</requires>
+    /// <param name="key"></param>
+    /// <returns></returns>
+    [HttpPost("{key}")]
+    public async Task<PolicyDto> Create([FromRoute] string key)
+    {
+        return await _policyLogic.Create(key);
     }
 }

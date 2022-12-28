@@ -30,7 +30,9 @@ public class UtilController : ControllerBase
             await _context.AddAsync(new PolicyDto()
             {
                 Key = "global",
-                Policy = ""
+                Policy = @"package main
+
+global_admin { true }"
             });
         }
 

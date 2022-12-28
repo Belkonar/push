@@ -26,4 +26,8 @@ export class PolicyService {
     })
   }
 
+  createPolicy(key: string): Observable<any> {
+    return this.httpClient.post<any[]>(`/policy/${key}`)
+  }
+
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import createAuth0Client, { Auth0Client } from '@auth0/auth0-spa-js';
+import createAuth0Client, {Auth0Client, RedirectLoginResult} from '@auth0/auth0-spa-js';
 import { map, Observable, of } from 'rxjs';
 import { fromPromise } from 'rxjs/internal/observable/innerFrom';
 import { HttpHeaders } from '@angular/common/http';
@@ -23,16 +23,20 @@ export class AuthService {
     return await client.isAuthenticated();
   }
 
-  async HandleCallback(): Promise<void> {
+  async HandleCallback(): Promise<RedirectLoginResult<any>> {
     let client = await this.authClient;
 
-    await client.handleRedirectCallback();
+    return await client.handleRedirectCallback();
   }
 
   async doRedirect(): Promise<void> {
     let client = await this.authClient;
 
-    await client.loginWithRedirect();
+    await client.loginWithRedirect({
+      appState: {
+        path: window.location.pathname
+      }
+    });
   }
 
   async getTokenAsync(): Promise<string> {

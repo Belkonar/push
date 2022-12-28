@@ -17,7 +17,7 @@ export class CallbackGuard implements CanActivate {
   }
 
   async handleCallback(): Promise<UrlTree> {
-    await this.authService.HandleCallback();
-    return this.router.parseUrl('/');
+    let cb = await this.authService.HandleCallback();
+    return this.router.parseUrl(cb.appState.path || '/');
   }
 }

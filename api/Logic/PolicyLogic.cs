@@ -53,4 +53,28 @@ public class PolicyLogic
 
         return dto!;
     }
+    
+    public async Task<PolicyDto> Create(string key)
+    {
+        var permissions =  await _permissionService.GetPermissions(new PermissionQuery());
+
+        if (permissions.IsMissing("global_policy_manage"))
+        {
+            throw new UnauthorizedAccessException("Fam what are you doing");
+        }
+        
+        var dto = new PolicyDto()
+        {
+            Key = key,
+            Policy = ""
+        };
+
+        await _mainContext.AddAsync(dto);
+        
+        await _mainContext.SaveChangesAsync();
+
+        return dto;
+    }
+    
+    // TODO: Add DELETE
 }
