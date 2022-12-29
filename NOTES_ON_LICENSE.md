@@ -1,7 +1,7 @@
 A large portion of folks using AGPL use it as a way to strong-arm folks into expensive commercial licenses. I have no such license available.
 If you are concerned about whether or not your integrations would be under the scope of the copyleft license here are a few notes.
 
-The viral nature of AGPL (and GPL) do not apply when you are integrating with other systems. Meaning that any systems you create and integrate
+The viral nature of AGPL (and GPL) does not apply when you are integrating with other systems. Meaning that any systems you create and integrate
 from push are not in scope.
 
 If you create a system that interfaces with push direcly, that would be in scope. This is only an issue if your users are external to the company.
