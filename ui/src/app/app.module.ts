@@ -50,6 +50,8 @@ import { PolicyListComponent } from './policy/policy-list/policy-list.component'
 import { MonacoComponent } from './monaco/monaco.component';
 import { PolicyEditComponent } from './policy/policy-edit/policy-edit.component';
 import { CallbackComponent } from './callback/callback.component';
+import { OrgListComponent } from './org/org-list/org-list.component';
+import { OrgEditComponent } from './org/org-edit/org-edit.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -62,7 +64,7 @@ const APP_CONTAINERS = [
 ];
 
 @NgModule({
-  declarations: [AppComponent, ...APP_CONTAINERS, PolicyListComponent, MonacoComponent, PolicyEditComponent, CallbackComponent],
+  declarations: [AppComponent, ...APP_CONTAINERS, PolicyListComponent, MonacoComponent, PolicyEditComponent, CallbackComponent, OrgListComponent, OrgEditComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,

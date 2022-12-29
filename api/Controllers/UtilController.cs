@@ -40,6 +40,30 @@ global_admin { true }"
 
         return Ok();
     }
+    
+    /// <summary>
+    /// Reset the global policy to one that works.
+    /// TODO: Delete before live use
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet("reset")]
+    public async Task<IActionResult> Reset()
+    {
+        var global = await _context.Policies.FindAsync("global");
+
+        if (global == null)
+        {
+            return NotFound();
+        }
+
+        global.Policy = @"package main
+
+global_admin { true }";
+
+        await _context.SaveChangesAsync();
+
+        return Ok();
+    }
 
     [HttpGet()]
     public async Task<IActionResult> Test()
