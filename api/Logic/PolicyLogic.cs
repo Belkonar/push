@@ -1,11 +1,9 @@
-using api.Models;
 using api.Services;
 using AutoMapper;
 using data;
-using data.Models;
+using data.View;
 using data.ORM;
 using data.UpdateModels;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Logic;

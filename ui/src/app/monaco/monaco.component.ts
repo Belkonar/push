@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   Component,
   ElementRef,
   EventEmitter,
@@ -24,7 +25,7 @@ declare var monaco: any;
   templateUrl: './monaco.component.html',
   styleUrls: ['./monaco.component.scss']
 })
-export class MonacoComponent implements OnInit, OnChanges {
+export class MonacoComponent implements AfterViewInit, OnChanges {
   id: string = 'editor';
 
   editor!: EditorView;
@@ -38,11 +39,8 @@ export class MonacoComponent implements OnInit, OnChanges {
 
   constructor() { }
 
-  ngOnInit(): void {
-    // No idea why editorRef isn't filled at this point.
-    setTimeout(() => {
-      this.setupEditor()
-    }, 0)
+  ngAfterViewInit() {
+    this.setupEditor()
   }
 
   // Handle this better, as in not like shit

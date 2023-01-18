@@ -1,6 +1,6 @@
 using api.Data;
 using api.Models;
-using data.Models;
+using data.View;
 
 namespace api.Services;
 

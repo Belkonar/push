@@ -12,11 +12,21 @@ export const navItems: INavData[] = [
   },
   {
     title: true,
-    name: 'Organizations'
+    name: 'OPS'
   },
   {
-    name: 'Search',
-    url: '/org-search',
+    name: 'Organizations',
+    url: '/org/list',
+    iconComponent: { name: 'cil-magnifying-glass' }
+  },
+  {
+    name: 'Pipelines',
+    url: '/pipelines/list',
+    iconComponent: { name: 'cil-magnifying-glass' }
+  },
+  {
+    name: 'Things',
+    url: '/things/list',
     iconComponent: { name: 'cil-magnifying-glass' }
   },
   /*{

@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace data.Models;
+namespace data.View;
 
 public class PermissionQuery
 {

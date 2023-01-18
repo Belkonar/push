@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // deps lol
 builder.Services.AddTransient<PolicyLogic>();
+builder.Services.AddTransient<OrganizationLogic>();
 
 builder.Services.AddTransient<OpaService>();
 builder.Services.AddTransient<PermissionService>();

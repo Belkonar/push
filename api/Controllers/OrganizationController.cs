@@ -25,6 +25,12 @@ public class OrganizationController : ControllerBase
     {
         return await _organizationLogic.GetAll();
     }
+    
+    [HttpGet("{id}")]
+    public async Task<OrganizationView> GetOrg([FromRoute] Guid id)
+    {
+        return await _organizationLogic.Get(id);
+    }
 
     [HttpPost]
     public async Task<OrganizationView> Create([FromBody] UpdateOrganization body)

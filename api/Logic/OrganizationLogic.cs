@@ -1,5 +1,7 @@
+using api.Services;
 using AutoMapper;
 using data;
+using data.Models;
 using data.ORM;
 using data.UpdateModels;
 using data.View;
@@ -11,11 +13,13 @@ public class OrganizationLogic
 {
     private readonly MainContext _mainContext;
     private readonly IMapper _mapper;
+    private readonly PermissionService _permissionService;
 
-    public OrganizationLogic(MainContext mainContext, IMapper mapper)
+    public OrganizationLogic(MainContext mainContext, IMapper mapper, PermissionService permissionService)
     {
         _mainContext = mainContext;
         _mapper = mapper;
+        _permissionService = permissionService;
     }
     
     public async Task<List<OrganizationView>> GetAll()
@@ -27,6 +31,13 @@ public class OrganizationLogic
 
     public async Task<OrganizationView> Update(Guid id, UpdateOrganization body)
     {
+        var permissions =  await _permissionService.GetPermissions(new PermissionQuery());
+
+        if (permissions.IsMissing("global.org.manage"))
+        {
+            throw new UnauthorizedAccessException("Fam what are you doing");
+        }
+        
         var dto = await _mainContext.Organizations.FindAsync(id);
 
         _mapper.Map(body, dto);
@@ -38,6 +49,16 @@ public class OrganizationLogic
 
     public async Task<OrganizationView> UpdateMetadata(Guid id, Dictionary<string, string> body)
     {
+        var permissions =  await _permissionService.GetPermissions(new PermissionQuery()
+        {
+            Organization = id
+        });
+
+        if (permissions.IsMissing("org.manage"))
+        {
+            throw new UnauthorizedAccessException("Fam what are you doing");
+        }
+        
         var dto = await _mainContext.Organizations.FindAsync(id);
 
         dto!.Contents.Metadata = body;
@@ -51,6 +72,13 @@ public class OrganizationLogic
 
     public async Task<OrganizationView> UpdatePrivateMetadata(Guid id, Dictionary<string, string> body)
     {
+        var permissions =  await _permissionService.GetPermissions(new PermissionQuery());
+
+        if (permissions.IsMissing("global.org.update.private_metadata"))
+        {
+            throw new UnauthorizedAccessException("Fam what are you doing");
+        }
+        
         var dto = await _mainContext.Organizations.FindAsync(id);
 
         dto!.Contents.PrivateMetadata = body;
@@ -64,6 +92,16 @@ public class OrganizationLogic
 
     public async Task<OrganizationView> UpdatePolicy(Guid id, string body)
     {
+        var permissions =  await _permissionService.GetPermissions(new PermissionQuery()
+        {
+            Organization = id
+        });
+
+        if (permissions.IsMissing("org.update.policy"))
+        {
+            throw new UnauthorizedAccessException("Fam what are you doing");
+        }
+        
         var dto = await _mainContext.Organizations.FindAsync(id);
 
         dto!.Contents.Policy = body;
@@ -77,13 +115,26 @@ public class OrganizationLogic
 
     public async Task<OrganizationView> Create(UpdateOrganization body)
     {
+        var permissions =  await _permissionService.GetPermissions(new PermissionQuery());
+
+        if (permissions.IsMissing("global.org.manage"))
+        {
+            throw new UnauthorizedAccessException("Fam what are you doing");
+        }
+        
         var dto = _mapper.Map<OrganizationDto>(body);
         
         dto.Id = Guid.NewGuid();
+        dto.Contents = new Organization();
 
         await _mainContext.AddAsync(dto);
         await _mainContext.SaveChangesAsync();
 
         return _mapper.Map<OrganizationView>(dto);
+    }
+
+    public async Task<OrganizationView> Get(Guid id)
+    {
+        return _mapper.Map<OrganizationView>(await _mainContext.Organizations.FindAsync(id));
     }
 }

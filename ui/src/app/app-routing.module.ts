@@ -12,6 +12,8 @@ import { PolicyListComponent } from './policy/policy-list/policy-list.component'
 import { AuthGuard } from './auth.guard';
 import { CallbackComponent } from './callback/callback.component';
 import { CallbackGuard } from './callback.guard';
+import {OrgListComponent} from "./org/org-list/org-list.component";
+import {OrgEditComponent} from "./org/org-edit/org-edit.component";
 
 const routes: Routes = [
   {
@@ -34,6 +36,14 @@ const routes: Routes = [
       {
         path: 'policy/list',
         component: PolicyListComponent
+      },
+      {
+        path: 'org/list',
+        component: OrgListComponent
+      },
+      {
+        path: 'org/edit/:id',
+        component: OrgEditComponent
       },
       {
         path: 'dashboard',

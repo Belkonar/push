@@ -17,7 +17,7 @@ public class Organization
     public Dictionary<string, string> PrivateMetadata { get; set; } = new();
     
     /// <remarks>
-    /// Requires org.update.metadata permission
+    /// Requires org.update.policy permission
     /// </remarks>
     [JsonPropertyName("policy")]
     public string Policy { get; set; }
