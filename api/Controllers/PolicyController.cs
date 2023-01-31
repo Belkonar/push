@@ -1,6 +1,6 @@
 using api.Logic;
 using data.ORM;
-using data.UpdateModels;
+using shared.UpdateModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers;

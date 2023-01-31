@@ -1,9 +1,9 @@
 using api.Services;
 using AutoMapper;
 using data;
-using data.View;
+using shared.View;
 using data.ORM;
-using data.UpdateModels;
+using shared.UpdateModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Logic;

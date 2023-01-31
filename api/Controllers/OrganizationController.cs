@@ -1,7 +1,7 @@
 using api.Logic;
 using AutoMapper;
-using data.UpdateModels;
-using data.View;
+using shared.UpdateModels;
+using shared.View;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers;
