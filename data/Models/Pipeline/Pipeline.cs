@@ -14,7 +14,6 @@ public class Pipeline
     
     [JsonPropertyName("files")]
     public Dictionary<string, string> Files { get; set; } = new();
-    
     [JsonPropertyName("parameters")]
     public List<CommandParameter> Parameters { get; set; } = new();
 }
@@ -66,6 +65,9 @@ public class CommandParameter
     [JsonPropertyName("local")]
     public bool Local { get; set; } = true;
     
-    [JsonPropertyName("type")]
-    public string ParameterType { get; set; }
+    [JsonPropertyName("kind")]
+    public string Kind { get; set; }
+    
+    [JsonPropertyName("subKind")]
+    public string SubKind { get; set; }
 }
