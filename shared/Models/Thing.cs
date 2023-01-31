@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace data.Models;
+namespace shared.Models;
 
 public class Thing
 {

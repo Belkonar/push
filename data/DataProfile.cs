@@ -1,7 +1,7 @@
 using AutoMapper;
 using data.ORM;
-using data.UpdateModels;
-using data.View;
+using shared.UpdateModels;
+using shared.View;
 
 namespace data;
 

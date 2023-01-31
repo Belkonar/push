@@ -1,16 +1,16 @@
 using System.Text.Json.Serialization;
-using data.Models;
+using shared.Models;
 
-namespace data.View;
+namespace shared.View;
 
-public class DeployableView
+public class OrganizationView : BaseView
 {
     [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    public Guid? Id { get; set; }
     
     [JsonPropertyName("name")]
     public string Name { get; set; }
     
     [JsonPropertyName("contents")]
-    public Deployable Contents { get; set; }
+    public Organization Contents { get; set; }
 }

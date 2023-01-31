@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace data.UpdateModels;
+namespace shared.UpdateModels;
 
 public class UpdateOrganization
 {

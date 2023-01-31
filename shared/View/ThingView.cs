@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
-using data.Models;
+using shared.Models;
 
-namespace data.View;
+namespace shared.View;
 
 public class ThingView : BaseView
 {

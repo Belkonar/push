@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using data.Models;
+using shared.Models;
 
 namespace data.ORM;
 

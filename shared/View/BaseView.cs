@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace data.View;
+namespace shared.View;
 
 public class BaseView
 {

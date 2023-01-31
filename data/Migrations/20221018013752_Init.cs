@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-using data.Models;
+using shared.Models;
 
 #nullable disable
 

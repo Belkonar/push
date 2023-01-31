@@ -2,7 +2,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 // use this with `using Pipeline = data.Models.Pipeline;` to handle collisions and make it cleaner
-namespace data.Models.Pipeline;
+namespace shared.Models.Pipeline;
 
 public class Pipeline
 {
