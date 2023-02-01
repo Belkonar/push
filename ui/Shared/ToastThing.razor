@@ -1,0 +1,32 @@
+@inject ToastService ToastService
+
+<div id="toast-holder">
+    @foreach (var toast in Toasts)
+    {
+        <div onclick="@(() => RemoveToast(toast.Id))" class="toast-msg toast-@toast.Kind">
+            @toast.Message
+        </div>
+    }
+</div>
+
+@code {
+    private List<Toast> Toasts { get; set; } = new ();
+
+    protected override void OnInitialized()
+    {
+        ToastService.Update += LoadToasts;
+    }
+
+    public void LoadToasts()
+    {
+        Toasts = ToastService.GetToasts();
+        StateHasChanged();
+    }
+
+    public void RemoveToast(Guid id)
+    {
+        Toasts = Toasts.Where(x => x.Id != id).ToList();
+        StateHasChanged();
+    }
+
+}

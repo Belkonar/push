@@ -1,0 +1,55 @@
+@page "/policy/{key}"
+@using System.Xml.Linq
+@using shared.UpdateModels
+@inject WebClient Web
+@inject ToastService ToastService
+
+<PageTitle>Policy Edit - @Key</PageTitle>
+
+<h3>Policy Edit - @Key</h3>
+
+<div class="card">
+    <div class="card-body">
+        @if (Policy != null)
+        {
+            <div class="mb-3">
+                <label class="form-label" for="policy-input">Policy</label>
+                <textarea rows="15" id="policy-input" class="form-control" @bind="Policy.Policy"></textarea>
+                @if (Key == "global")
+                {
+                    <div class="text-danger">You are editing the global policy.</div>
+                }
+            </div>
+            
+            <button onclick="@Save" class="btn btn-primary">Save</button>
+        }
+        else
+        {
+            <span>Loading...</span>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string Key { get; set; }
+    
+    private PolicyView? Policy { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Policy = (await Web.Get<List<PolicyView>>($"/policy"))
+            .FirstOrDefault(x => x.Key == Key);
+    }
+
+    public async Task Save()
+    {
+        var update = new UpdatePolicy()
+        {
+            Policy = Policy?.Policy ?? ""
+        };
+        await Web.Put<UpdatePolicy, object>($"/policy/{Key}", update);
+        ToastService.AddSuccess("Saved");
+    }
+
+}

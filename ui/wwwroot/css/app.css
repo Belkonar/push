@@ -1,5 +1,25 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
+/* My stuff goes here */
+#toast-holder {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+}
+
+.toast-msg {
+    padding: 0.5rem;
+}
+
+.toast-success {
+    background-color: lightgreen;
+}
+
+.toast-error {
+    background-color: lightcoral;
+}
+/* My stuff goes here */
+
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
@@ -99,3 +119,5 @@ a, .btn-link {
     .loading-progress-text:after {
         content: var(--blazor-load-percentage-text, "Loading");
     }
+
+    
