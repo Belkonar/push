@@ -1,18 +1,39 @@
 @page "/policies"
-@using ui.Services
-@using shared.View
-@inject WebClient web
+@inject WebClient Web
 
-<h3>PolicyList</h3>
-<textarea @bind="Text"></textarea>
+<PageTitle>Policy List</PageTitle>
+
+<h3>Policy List</h3>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Key</th>
+                <th>Created</th>
+                <th>Last Update</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var policy in Policies)
+            {
+                <tr>
+                    <td><a href="/policy/@policy.Key">@policy.Key</a></td>
+                    <td>@policy.Created</td>
+                    <td>@policy.Updated</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
 
 @code {
-    private string Text { get; set; }
+    private List<PolicyView> Policies { get; set; } = new();
+    
     protected override async Task OnInitializedAsync()
     {
-        //var client = ClientFactory.CreateClient("Api");
-        Text = (await web.Get<List<PolicyView>>("/policy"))
-            ?.FirstOrDefault()?.Policy ?? "none";
+        Policies = await Web.Get<List<PolicyView>>("/policy");
     }
-
 }

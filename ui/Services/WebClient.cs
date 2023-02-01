@@ -11,8 +11,8 @@ public class WebClient
         _client = client;
     }
 
-    public async Task<T?> Get<T>(string uri)
+    public async Task<T> Get<T>(string uri)
     {
-        return await _client.GetFromJsonAsync<T>(uri);
+        return await _client.GetFromJsonAsync<T>(uri) ?? throw new Exception("404");
     }
 }
