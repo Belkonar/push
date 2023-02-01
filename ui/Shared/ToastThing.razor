@@ -25,8 +25,7 @@
 
     public void RemoveToast(Guid id)
     {
-        Toasts = Toasts.Where(x => x.Id != id).ToList();
-        StateHasChanged();
+        ToastService.RemoveToast(id);
     }
 
 }
