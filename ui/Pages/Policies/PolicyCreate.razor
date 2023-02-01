@@ -1,0 +1,43 @@
+@page "/policy-create"
+@inject HttpClient http
+@inject ToastService Toaster
+@inject NavigationManager Nav
+
+<PageTitle>@Title</PageTitle>
+
+<h3>@Title</h3>
+
+<Card>
+    <div class="mb-3">
+        <label class="form-label" for="policy-input">Policy Key</label>
+        <input id="policy-input" class="form-control" @bind="Key" />
+    </div>
+                
+    <button onclick="@Save" class="btn btn-primary">Save</button>
+</Card>
+
+@code {
+    private string Title = "Policy Create";
+    
+    private string Key { get; set; } = "";
+
+    private async Task Save()
+    {
+        if (string.IsNullOrWhiteSpace(Key))
+        {
+            Toaster.AddError("Need key");
+            return;
+        }
+        
+        try
+        {
+            await http.PostAsync($"/Policy/{Key}", null);
+            Toaster.AddSuccess("Policy Created");
+            Nav.NavigateTo("/policies");
+        }
+        catch (Exception e)
+        {
+            Toaster.AddError(e.Message);
+        }
+    }
+}
