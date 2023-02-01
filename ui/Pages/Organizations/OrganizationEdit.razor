@@ -1,0 +1,31 @@
+@page "/organization/{Id:guid}"
+@using ui.Models
+
+<PageTitle>@Title</PageTitle>
+
+<h3>@Title</h3>
+
+<Card>
+    
+    <hr>
+    <button @onclick="Save" class="btn btn-primary">Save</button>
+</Card>
+
+@code {
+    public string Title = "Organization Edit - ";
+    
+    [Parameter]
+    public Guid Id { get; set; }
+
+    public List<KeyValue> Meta = new List<KeyValue>();
+    public List<KeyValue> PrivateMeta = new List<KeyValue>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        
+    }
+
+    public async Task Save()
+    {
+    }
+}

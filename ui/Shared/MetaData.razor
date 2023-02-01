@@ -1,0 +1,38 @@
+@using ui.Models
+<div>
+    <Table>
+        <THead>
+        <th>Key</th>
+        <th>Value</th>
+        <th>Actions</th>
+        </THead>
+        <TBody>
+        @for (var i = 0; i < Value.Count; i++)
+        {
+            var item = Value[i];
+            <tr>
+                <td><input class="form-control" type="text" @bind="item.Key"></td>
+                <td><input class="form-control" type="text" @bind="item.Value"></td>
+                <td><button @onclick="() => Remove(item)" class="btn btn-danger"><span class="oi oi-trash" aria-hidden="true"></span></button></td>
+            </tr>
+        }
+        </TBody>
+    </Table>
+    <button @onclick="Add" class="btn btn-warning">Add</button>
+</div>
+
+@code {
+
+    [Parameter]
+    public List<KeyValue> Value { get; set; } = new();
+
+    public void Remove(KeyValue kv)
+    {
+        Value.Remove(kv);
+    }
+
+    public void Add()
+    {
+        Value.Add(new KeyValue());
+    }
+}

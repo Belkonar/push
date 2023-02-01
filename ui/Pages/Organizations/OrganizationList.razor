@@ -1,6 +1,40 @@
 @page "/organizations"
-<h3>OrganizationList</h3>
+@inject HttpClient Http
+
+<PageTitle>@Title</PageTitle>
+
+<h3>@Title</h3>
+
+<Card>
+    <Table>
+        <THead>
+        <th>Name</th>
+        <th>Created</th>
+        <th>Last Update</th>
+        </THead>
+        <TBody>
+        @foreach (var organization in Organizations)
+        {
+            <tr>
+                <td><a href="/organization/@organization.Id">@organization.Name</a></td>
+                <td>@organization.Created</td>
+                <td>@organization.Updated</td>
+            </tr>
+        }
+        </TBody>
+    </Table>
+</Card>
 
 @code {
+
+    private List<OrganizationView> Organizations = new ();
     
+    private string Title = "Organization List";
+
+    protected override async Task OnInitializedAsync()
+    {
+        Organizations = await Http.GetFromJsonAsync<List<OrganizationView>>("/organization") 
+                        ?? new List<OrganizationView>();
+    }
+
 }
