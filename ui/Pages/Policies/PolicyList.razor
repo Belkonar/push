@@ -1,0 +1,18 @@
+@page "/policies"
+@using ui.Services
+@using shared.View
+@inject WebClient web
+
+<h3>PolicyList</h3>
+<textarea @bind="Text"></textarea>
+
+@code {
+    private string Text { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        //var client = ClientFactory.CreateClient("Api");
+        Text = (await web.Get<List<PolicyView>>("/policy"))
+            ?.FirstOrDefault()?.Policy ?? "none";
+    }
+
+}
