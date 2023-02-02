@@ -18,6 +18,18 @@
 .toast-error {
     background-color: lightcoral;
 }
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+textarea.form-control {
+    min-height: 300px !important;
+}
+
+.toast {
+    margin-bottom: 1rem;
+}
 /* My stuff goes here */
 
 html, body {

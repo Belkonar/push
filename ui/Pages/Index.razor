@@ -7,3 +7,22 @@
 Welcome to your new app.
 
 <SurveyPrompt Title="How is Blazor working for you?" />
+
+Interval Test: @_counter
+
+@code
+{
+    private int _counter = 0;
+    private System.Timers.Timer _timer = new ();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _timer.Interval = 3000;
+        _timer.Elapsed += async (_, _) =>
+        {
+            _counter++;
+            await InvokeAsync(StateHasChanged);
+        };
+        _timer.Enabled = true;
+    }
+}

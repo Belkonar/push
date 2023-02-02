@@ -1,10 +1,16 @@
 @inject ToastService ToastService
 
-<div id="toast-holder">
+<div class="position-fixed bottom-0 end-0 p-3">
     @foreach (var toast in Toasts)
-    {
-        <div onclick="@(() => RemoveToast(toast.Id))" class="toast-msg toast-@toast.Kind">
-            @toast.Message
+    { 
+        <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header @toast.Classes">
+                <strong class="me-auto">@toast.Kind</strong>
+                <button onclick="@(() => RemoveToast(toast.Id))" type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                @toast.Message
+            </div>
         </div>
     }
 </div>

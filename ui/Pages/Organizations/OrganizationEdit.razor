@@ -1,14 +1,51 @@
 @page "/organization/{Id:guid}"
 @using ui.Models
+@using shared.UpdateModels
+@inject HttpClient Http
+@inject ToastService Toaster
 
-<PageTitle>@Title</PageTitle>
+<PageTitle>Organization Edit</PageTitle>
 
-<h3>@Title</h3>
+<h3>Organization Edit - @Name</h3>
 
 <Card>
+    <div class="form-group">
+        <label class="form-label" for="name">Name:</label>
+        <input class="form-control" id="name" type="text" @bind="Name">
+    </div>
+    <div class="form-group">
+        <button @onclick="SaveBasics" class="btn btn-primary">Save Basics</button>
+    </div>
     
-    <hr>
-    <button @onclick="Save" class="btn btn-primary">Save</button>
+    <hr/>
+    
+    <div class="form-group">
+        <span class="form-label">Metadata:</span>
+        <MetaData Value="Meta" />
+    </div>
+    <div class="form-group">
+        <button @onclick="SaveMetadata" class="btn btn-primary">Save Metadata</button>
+    </div>
+    
+    <hr/>
+    
+    <div class="form-group">
+        <span class="form-label">Private Metadata:</span>
+        <MetaData Value="PrivateMeta" />
+    </div>
+    <div class="form-group">
+        <button @onclick="SavePrivateMetadata" class="btn btn-primary">Save Private Metadata</button>
+    </div>
+    
+    <hr/>
+    
+    <div class="form-group">
+        <label class="form-label" for="policy">Policy:</label>
+        <textarea class="form-control" @bind="Policy" id="policy"></textarea>
+    </div>
+    <div class="form-group">
+        <button @onclick="SavePolicy" class="btn btn-primary">Save Policy</button>
+    </div>
 </Card>
 
 @code {
@@ -17,15 +54,84 @@
     [Parameter]
     public Guid Id { get; set; }
 
+    private string Name { get; set; } = "";
+    private string Policy { get; set; } = "";
     public List<KeyValue> Meta = new List<KeyValue>();
     public List<KeyValue> PrivateMeta = new List<KeyValue>();
 
     protected override async Task OnInitializedAsync()
     {
+        // TODO: Error handle this lol
+        var response = await Http.GetFromJsonAsync<OrganizationView>($"/organization/{Id}");
         
+        Name = response.Name;
+        Policy = response.Contents.Policy;
+
+        Title += Name;
+
+        Meta.AddRange(response.Contents.Metadata.GetKVList());
+        
+        PrivateMeta.AddRange(response.Contents.PrivateMetadata.GetKVList());
     }
 
-    public async Task Save()
+    public async Task SaveBasics()
     {
+        var request = new UpdateOrganization()
+        {
+            Name = Name
+        };
+
+        try
+        {
+            await Http.PutAsJsonAsync($"/organization/{Id}", request);
+            Toaster.AddSuccess("Basics Saved");
+        }
+        catch (Exception e)
+        {
+            Toaster.AddError(e);
+        }
+    }
+
+    public async Task SaveMetadata()
+    {
+        var request = Meta.GetDictionary();
+
+        try
+        {
+            await Http.PutAsJsonAsync($"/organization/{Id}/metadata", request);
+            Toaster.AddSuccess("Metadata Saved");
+        }
+        catch (Exception e)
+        {
+            Toaster.AddError(e);
+        }
+    }
+    
+    public async Task SavePrivateMetadata()
+    {
+        var request = PrivateMeta.GetDictionary();
+
+        try
+        {
+            await Http.PutAsJsonAsync($"/organization/{Id}/private_metadata", request);
+            Toaster.AddSuccess("Private Metadata Saved");
+        }
+        catch (Exception e)
+        {
+            Toaster.AddError(e);
+        }
+    }
+    
+    public async Task SavePolicy()
+    {
+        try
+        {
+            await Http.PutAsJsonAsync($"/organization/{Id}/policy", Policy);
+            Toaster.AddSuccess("Policy Saved");
+        }
+        catch (Exception e)
+        {
+            Toaster.AddError(e);
+        }
     }
 }

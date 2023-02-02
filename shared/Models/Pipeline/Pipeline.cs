@@ -9,13 +9,14 @@ public class Pipeline
     [JsonPropertyName("stages")]
     public List<Stage> Stages { get; set; } = new ();
 
-    [JsonPropertyName("commands")]
-    public List<Command> Commands { get; set; } = new();
+    [JsonPropertyName("steps")]
+    public List<Step> Steps { get; set; } = new();
     
     [JsonPropertyName("files")]
     public Dictionary<string, string> Files { get; set; } = new();
+    
     [JsonPropertyName("parameters")]
-    public List<CommandParameter> Parameters { get; set; } = new();
+    public List<StepParameter> Parameters { get; set; } = new();
 }
 
 public class Stage
@@ -23,11 +24,11 @@ public class Stage
     [JsonPropertyName("name")]
     public string Name { get; set; }
     
-    [JsonPropertyName("commands")]
-    public List<StageCommand> Commands { get; set; } = new();
+    [JsonPropertyName("steps")]
+    public List<StageStep> Steps { get; set; } = new();
 }
 
-public class StageCommand
+public class StageStep
 {
     [JsonPropertyName("name")]
     public string Name { get; set; }
@@ -36,13 +37,13 @@ public class StageCommand
     public IDictionary<string, JsonElement> Parameters { get; set; }
 }
 
-public class Command
+public class Step
 {
     [JsonPropertyName("name")]
     public string Name { get; set; }
 
     [JsonPropertyName("parameters")]
-    public List<CommandParameter> Parameters { get; set; } = new();
+    public List<StepParameter> Parameters { get; set; } = new();
 
     [JsonPropertyName("docker")]
     public string Docker { get; set; }
@@ -57,7 +58,7 @@ public class Command
     public List<string> Steps { get; set; } = new();
 }
 
-public class CommandParameter
+public class StepParameter
 {
     [JsonPropertyName("name")]
     public string Name { get; set; }
