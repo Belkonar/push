@@ -54,6 +54,27 @@ namespace data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PipelineDTO",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    name = table.Column<string>(type: "text", nullable: false),
+                    description = table.Column<string>(type: "text", nullable: false),
+                    organization = table.Column<Guid>(type: "uuid", nullable: true),
+                    created = table.Column<DateTime>(type: "timestamp", nullable: false),
+                    updated = table.Column<DateTime>(type: "timestamp", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PipelineDTO", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_PipelineDTO_organization_organization",
+                        column: x => x.organization,
+                        principalTable: "organization",
+                        principalColumn: "id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "thing",
                 columns: table => new
                 {
@@ -104,6 +125,11 @@ namespace data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_PipelineDTO_organization",
+                table: "PipelineDTO",
+                column: "organization");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_thing_organization",
                 table: "thing",
                 column: "organization");
@@ -116,6 +142,9 @@ namespace data.Migrations
 
             migrationBuilder.DropTable(
                 name: "deployable");
+
+            migrationBuilder.DropTable(
+                name: "PipelineDTO");
 
             migrationBuilder.DropTable(
                 name: "policy");

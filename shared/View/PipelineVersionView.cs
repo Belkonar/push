@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using shared.Models.Pipeline;
 
 namespace shared.View;
 
@@ -9,5 +10,6 @@ public class PipelineVersionView : BaseView
     [JsonPropertyName("id")]
     public string Id { get; set; }
     
-    
+    [JsonPropertyName("contents")]
+    public PipelineVersionContents Contents { get; set; }
 }

@@ -15,6 +15,12 @@ public class DataProfile : Profile
         CreateMap<ThingView, ThingDto>()
             .Setup();
         
+        CreateMap<PipelineView, PipelineDTO>()
+            .Setup();
+        
+        CreateMap<PipelineVersionView, PipelineVersionDTO>()
+            .Setup();
+        
         // For updates with smaller surfaces
         CreateMap<UpdateOrganization, OrganizationDto>();
         CreateMap<UpdatePolicy, PolicyDto>();

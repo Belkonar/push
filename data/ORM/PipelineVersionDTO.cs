@@ -1,10 +1,14 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using shared.Models.Pipeline;
 
 namespace data.ORM;
 
-public class PipelineVersionDTO
+public class PipelineVersionDTO : BaseDto
 {
     [Key, Column("id")]
-    public Guid Id { get; set; }
+    public string Id { get; set; }
+    
+    [Column("contents", TypeName = "jsonb")]
+    public PipelineVersionContents Contents { get; set; }
 }

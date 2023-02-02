@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using shared;
+using data;
 using shared.Models;
 
 #nullable disable
@@ -114,6 +114,42 @@ namespace data.Migrations
                     b.ToTable("organization");
                 });
 
+            modelBuilder.Entity("data.ORM.PipelineDTO", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp")
+                        .HasColumnName("created");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("description");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.Property<Guid?>("OrganizationId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("organization");
+
+                    b.Property<DateTime>("Updated")
+                        .HasColumnType("timestamp")
+                        .HasColumnName("updated");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrganizationId");
+
+                    b.ToTable("PipelineDTO");
+                });
+
             modelBuilder.Entity("data.ORM.PolicyDto", b =>
                 {
                     b.Property<string>("Key")
@@ -181,6 +217,13 @@ namespace data.Migrations
                         .HasForeignKey("data.ORM.DeployableDto", "ThingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("data.ORM.PipelineDTO", b =>
+                {
+                    b.HasOne("data.ORM.OrganizationDto", null)
+                        .WithMany()
+                        .HasForeignKey("OrganizationId");
                 });
 
             modelBuilder.Entity("data.ORM.ThingDto", b =>

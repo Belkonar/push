@@ -13,6 +13,7 @@ public class Step
     [JsonPropertyName("docker")]
     public string Docker { get; set; }
    
+    // TODO: This will be ignore for the demo
     [JsonPropertyName("remote")]
     public bool Remote { get; set; } = true;
 
