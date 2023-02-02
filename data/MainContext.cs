@@ -27,6 +27,11 @@ public class MainContext : DbContext
             .HasMany<ThingDto>()
             .WithOne()
             .HasForeignKey(x => x.OrganizationId);
+        
+        modelBuilder.Entity<OrganizationDto>()
+            .HasMany<PipelineDTO>()
+            .WithOne()
+            .HasForeignKey(x => x.OrganizationId);
 
         modelBuilder.Entity<ThingDto>()
             .HasOne<DeployableDto>()
