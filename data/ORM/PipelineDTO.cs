@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace data.ORM;
 
+[Table("pipeline")]
 public class PipelineDTO : BaseDto
 {
     [Key, Column("id")]

@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 using shared.Models;
+using shared.Models.Pipeline;
 
 #nullable disable
 
@@ -40,6 +41,20 @@ namespace data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "pipeline_version",
+                columns: table => new
+                {
+                    id = table.Column<string>(type: "text", nullable: false),
+                    contents = table.Column<PipelineVersionContents>(type: "jsonb", nullable: false),
+                    created = table.Column<DateTime>(type: "timestamp", nullable: false),
+                    updated = table.Column<DateTime>(type: "timestamp", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_pipeline_version", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "policy",
                 columns: table => new
                 {
@@ -54,7 +69,7 @@ namespace data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PipelineDTO",
+                name: "pipeline",
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -66,9 +81,9 @@ namespace data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PipelineDTO", x => x.id);
+                    table.PrimaryKey("PK_pipeline", x => x.id);
                     table.ForeignKey(
-                        name: "FK_PipelineDTO_organization_organization",
+                        name: "FK_pipeline_organization_organization",
                         column: x => x.organization,
                         principalTable: "organization",
                         principalColumn: "id");
@@ -125,8 +140,8 @@ namespace data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_PipelineDTO_organization",
-                table: "PipelineDTO",
+                name: "IX_pipeline_organization",
+                table: "pipeline",
                 column: "organization");
 
             migrationBuilder.CreateIndex(
@@ -144,7 +159,10 @@ namespace data.Migrations
                 name: "deployable");
 
             migrationBuilder.DropTable(
-                name: "PipelineDTO");
+                name: "pipeline");
+
+            migrationBuilder.DropTable(
+                name: "pipeline_version");
 
             migrationBuilder.DropTable(
                 name: "policy");

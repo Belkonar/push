@@ -4,6 +4,7 @@ using shared.Models.Pipeline;
 
 namespace data.ORM;
 
+[Table("pipeline_version")]
 public class PipelineVersionDTO : BaseDto
 {
     [Key, Column("id")]

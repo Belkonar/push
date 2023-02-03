@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using data;
 using shared.Models;
+using shared.Models.Pipeline;
 
 #nullable disable
 
@@ -147,7 +148,31 @@ namespace data.Migrations
 
                     b.HasIndex("OrganizationId");
 
-                    b.ToTable("PipelineDTO");
+                    b.ToTable("pipeline");
+                });
+
+            modelBuilder.Entity("data.ORM.PipelineVersionDTO", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text")
+                        .HasColumnName("id");
+
+                    b.Property<PipelineVersionContents>("Contents")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("contents");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp")
+                        .HasColumnName("created");
+
+                    b.Property<DateTime>("Updated")
+                        .HasColumnType("timestamp")
+                        .HasColumnName("updated");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("pipeline_version");
                 });
 
             modelBuilder.Entity("data.ORM.PolicyDto", b =>

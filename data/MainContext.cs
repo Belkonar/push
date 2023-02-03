@@ -13,6 +13,9 @@ public class MainContext : DbContext
     public DbSet<OrganizationDto> Organizations { get; set; }
     public DbSet<ThingDto> Things { get; set; }
     
+    public DbSet<PipelineDTO> Pipelines { get; set; }
+    public DbSet<PipelineVersionDTO> PipelineVersions { get; set; }
+
     // Resource types
     public DbSet<DeployableDto> Deployables { get; set; }
 
