@@ -14,14 +14,15 @@ using shared.Models.Pipeline;
 namespace data.Migrations
 {
     [DbContext(typeof(MainContext))]
-    [Migration("20230203132612_Init")]
+    [Migration("20230204023611_Init")]
     partial class Init
     {
+        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.7")
+                .HasAnnotation("ProductVersion", "7.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
