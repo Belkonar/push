@@ -1,15 +1,18 @@
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace shared.Models.Pipeline;
 
 public class Step
 {
+    [Required]
     [JsonPropertyName("name")]
     public string Name { get; set; }
 
     [JsonPropertyName("parameters")]
     public List<StepParameter> Parameters { get; set; } = new();
 
+    [Required]
     [JsonPropertyName("docker")]
     public string Docker { get; set; }
    
@@ -20,6 +23,7 @@ public class Step
     [JsonPropertyName("persist")]
     public bool Persist { get; set; } = true;
 
-    [JsonPropertyName("steps")]
-    public List<string> Steps { get; set; } = new();
+    [Required]
+    [JsonPropertyName("commands")]
+    public List<string> Commands { get; set; } = new();
 }
