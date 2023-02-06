@@ -40,6 +40,11 @@ public class MainContext : DbContext
             .HasOne<DeployableDto>()
             .WithOne()
             .HasForeignKey<DeployableDto>(x => x.ThingId);
+
+        modelBuilder.Entity<PipelineDTO>()
+            .HasMany<PipelineVersionDTO>()
+            .WithOne()
+            .HasForeignKey(x => x.PipelineId);
     }
 
     // The purpose of this is to ensure dates are tracked correctly

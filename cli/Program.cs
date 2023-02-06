@@ -1,9 +1,8 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using System.ComponentModel.DataAnnotations;
-using System.Net.Http.Json;
-using System.Text.Json;
+using cli;
 using shared.Models.Pipeline;
+using shared.View;
 
 if (args.Length == 0)
 {
@@ -21,6 +20,7 @@ if (!Directory.Exists(target))
 }
 
 var pipelineLocation = Path.Join(target, "pipeline.json");
+var infoLocation = Path.Join(target, "info.json");
 
 if (!File.Exists(pipelineLocation))
 {
@@ -28,24 +28,32 @@ if (!File.Exists(pipelineLocation))
     return;
 }
 
-var jsonFile = File.ReadAllBytes(pipelineLocation);
-
-using var m = new MemoryStream(jsonFile);
-var pipeline = await JsonSerializer.DeserializeAsync<PipelineVersion>(m);
-m.Close();
-
-List<ValidationResult> results = new List<ValidationResult>(); 
-
-var valid = Validator.TryValidateObject(pipeline, new ValidationContext(pipeline), results, true);
-
-if (!valid)
+if (!File.Exists(infoLocation))
 {
-    Console.WriteLine("validation errors were found");
-    foreach (var validationResult in results)
-    {
-        Console.WriteLine(validationResult);
-    }
+    Console.WriteLine("Info doesn't exist at target");
+    return;
 }
+
+var pipeline = await JsonHelper.GetFile<PipelineVersion>(pipelineLocation);
+var info = await JsonHelper.GetFile<Info>(infoLocation);
+
+if (!JsonHelper.IsValid(pipeline))
+{
+    return;
+}
+
+var files = new Dictionary<string, string>();
+
+var body = new PipelineVersionView
+{
+    Version = "dev",
+    PipelineId = info.Id,
+    Contents = new PipelineVersionContents
+    {
+        PipelineCode = pipeline,
+        Files = files
+    }
+};
 
 using var http = new HttpClient();
 

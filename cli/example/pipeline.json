@@ -3,14 +3,17 @@
   "stages": [
     {
       "name": "build",
-      "steps": [{
-        "name": "build"
-      }]
+      "steps": [
+        {
+          "name": "build"
+        }
+      ]
     }
   ],
   "steps": [
     {
       "name": "build",
+      "docker": "node",
       "commands": [
         "echo babber > me.txt"
       ]

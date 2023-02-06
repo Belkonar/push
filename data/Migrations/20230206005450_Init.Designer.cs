@@ -14,7 +14,7 @@ using shared.Models.Pipeline;
 namespace data.Migrations
 {
     [DbContext(typeof(MainContext))]
-    [Migration("20230204023611_Init")]
+    [Migration("20230206005450_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -22,7 +22,7 @@ namespace data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.2")
+                .HasAnnotation("ProductVersion", "7.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -156,9 +156,9 @@ namespace data.Migrations
 
             modelBuilder.Entity("data.ORM.PipelineVersionDTO", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("Version")
                         .HasColumnType("text")
-                        .HasColumnName("id");
+                        .HasColumnName("version");
 
                     b.Property<PipelineVersionContents>("Contents")
                         .IsRequired()
@@ -169,11 +169,17 @@ namespace data.Migrations
                         .HasColumnType("timestamp")
                         .HasColumnName("created");
 
+                    b.Property<Guid>("PipelineId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("pipeline_id");
+
                     b.Property<DateTime>("Updated")
                         .HasColumnType("timestamp")
                         .HasColumnName("updated");
 
-                    b.HasKey("Id");
+                    b.HasKey("Version");
+
+                    b.HasIndex("PipelineId");
 
                     b.ToTable("pipeline_version");
                 });
@@ -252,6 +258,15 @@ namespace data.Migrations
                     b.HasOne("data.ORM.OrganizationDto", null)
                         .WithMany()
                         .HasForeignKey("OrganizationId");
+                });
+
+            modelBuilder.Entity("data.ORM.PipelineVersionDTO", b =>
+                {
+                    b.HasOne("data.ORM.PipelineDTO", null)
+                        .WithMany()
+                        .HasForeignKey("PipelineId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("data.ORM.ThingDto", b =>

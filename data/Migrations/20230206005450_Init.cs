@@ -43,20 +43,6 @@ namespace data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "pipeline_version",
-                columns: table => new
-                {
-                    id = table.Column<string>(type: "text", nullable: false),
-                    contents = table.Column<PipelineVersionContents>(type: "jsonb", nullable: false),
-                    created = table.Column<DateTime>(type: "timestamp", nullable: false),
-                    updated = table.Column<DateTime>(type: "timestamp", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_pipeline_version", x => x.id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "policy",
                 columns: table => new
                 {
@@ -114,6 +100,27 @@ namespace data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "pipeline_version",
+                columns: table => new
+                {
+                    version = table.Column<string>(type: "text", nullable: false),
+                    pipelineid = table.Column<Guid>(name: "pipeline_id", type: "uuid", nullable: false),
+                    contents = table.Column<PipelineVersionContents>(type: "jsonb", nullable: false),
+                    created = table.Column<DateTime>(type: "timestamp", nullable: false),
+                    updated = table.Column<DateTime>(type: "timestamp", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_pipeline_version", x => x.version);
+                    table.ForeignKey(
+                        name: "FK_pipeline_version_pipeline_pipeline_id",
+                        column: x => x.pipelineid,
+                        principalTable: "pipeline",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "deployable",
                 columns: table => new
                 {
@@ -147,6 +154,11 @@ namespace data.Migrations
                 column: "organization");
 
             migrationBuilder.CreateIndex(
+                name: "IX_pipeline_version_pipeline_id",
+                table: "pipeline_version",
+                column: "pipeline_id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_thing_organization",
                 table: "thing",
                 column: "organization");
@@ -162,9 +174,6 @@ namespace data.Migrations
                 name: "deployable");
 
             migrationBuilder.DropTable(
-                name: "pipeline");
-
-            migrationBuilder.DropTable(
                 name: "pipeline_version");
 
             migrationBuilder.DropTable(
@@ -172,6 +181,9 @@ namespace data.Migrations
 
             migrationBuilder.DropTable(
                 name: "thing");
+
+            migrationBuilder.DropTable(
+                name: "pipeline");
 
             migrationBuilder.DropTable(
                 name: "organization");
