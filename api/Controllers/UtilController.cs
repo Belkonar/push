@@ -24,21 +24,27 @@ public class UtilController : ControllerBase
     public async Task<IActionResult> Fill()
     {
         var global = await _context.Policies.FindAsync("global");
+        const string policy = @"package main
 
+global_admin { true }";
+        
         if (global == null)
         {
             await _context.AddAsync(new PolicyDto()
             {
                 Key = "global",
-                Policy = @"package main
-
-global_admin { true }"
+                Policy = policy
             });
+        }
+        else
+        {
+            // TODO: Remove this prior to go live
+            global.Policy = policy;
         }
 
         await _context.SaveChangesAsync();
 
-        return Ok();
+        return Ok("filled basic info");
     }
     
     /// <summary>

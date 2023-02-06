@@ -16,29 +16,29 @@
     <div class="form-group">
         <button @onclick="SaveBasics" class="btn btn-primary">Save Basics</button>
     </div>
-    
+
     <hr/>
-    
+
     <div class="form-group">
         <span class="form-label">Metadata:</span>
-        <MetaData Value="Meta" />
+        <MetaData Value="Meta"/>
     </div>
     <div class="form-group">
         <button @onclick="SaveMetadata" class="btn btn-primary">Save Metadata</button>
     </div>
-    
+
     <hr/>
-    
+
     <div class="form-group">
         <span class="form-label">Private Metadata:</span>
-        <MetaData Value="PrivateMeta" />
+        <MetaData Value="PrivateMeta"/>
     </div>
     <div class="form-group">
         <button @onclick="SavePrivateMetadata" class="btn btn-primary">Save Private Metadata</button>
     </div>
-    
+
     <hr/>
-    
+
     <div class="form-group">
         <label class="form-label" for="policy">Policy:</label>
         <textarea class="form-control" @bind="Policy" id="policy"></textarea>
@@ -83,7 +83,9 @@
 
         try
         {
-            await Http.PutAsJsonAsync($"/organization/{Id}", request);
+            using var response = await Http.PutAsJsonAsync($"/organization/{Id}", request);
+            response.EnsureSuccessStatusCode();
+            
             Toaster.AddSuccess("Basics Saved");
         }
         catch (Exception e)
@@ -98,7 +100,9 @@
 
         try
         {
-            await Http.PutAsJsonAsync($"/organization/{Id}/metadata", request);
+            using var response = await Http.PutAsJsonAsync($"/organization/{Id}/metadata", request);
+            response.EnsureSuccessStatusCode();
+
             Toaster.AddSuccess("Metadata Saved");
         }
         catch (Exception e)
@@ -113,7 +117,9 @@
 
         try
         {
-            await Http.PutAsJsonAsync($"/organization/{Id}/private_metadata", request);
+            using var response = await Http.PutAsJsonAsync($"/organization/{Id}/private_metadata", request);
+            response.EnsureSuccessStatusCode();
+
             Toaster.AddSuccess("Private Metadata Saved");
         }
         catch (Exception e)
@@ -126,7 +132,9 @@
     {
         try
         {
-            await Http.PutAsJsonAsync($"/organization/{Id}/policy", Policy);
+            using var response = await Http.PutAsJsonAsync($"/organization/{Id}/policy", Policy);
+            response.EnsureSuccessStatusCode();
+
             Toaster.AddSuccess("Policy Saved");
         }
         catch (Exception e)

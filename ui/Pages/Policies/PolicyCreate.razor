@@ -31,7 +31,9 @@
         
         try
         {
-            await http.PostAsync($"/Policy/{Key}", null);
+            using var response = await http.PostAsync($"/Policy/{Key}", null);
+            response.EnsureSuccessStatusCode();
+            
             Toaster.AddSuccess("Policy Created");
             Nav.NavigateTo("/policies");
         }
