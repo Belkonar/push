@@ -20,6 +20,7 @@ builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>()
 
 builder.Services.AddTransient<WebClient>();
 builder.Services.AddSingleton<ToastService>();
+builder.Services.AddScoped<OrganizationService>();
 
 builder.Services.AddOidcAuthentication(options =>
 {

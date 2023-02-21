@@ -3,6 +3,7 @@
 @inject HttpClient http
 @inject ToastService Toaster
 @inject NavigationManager Nav
+@inject OrganizationService OrgService
 
 <PageTitle>@Title</PageTitle>
 
@@ -41,6 +42,7 @@
             response.EnsureSuccessStatusCode();
             
             Toaster.AddSuccess("Org Created");
+            OrgService.Clear();
             Nav.NavigateTo("/organizations");
         }
         catch (Exception e)

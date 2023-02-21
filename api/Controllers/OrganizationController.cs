@@ -1,5 +1,4 @@
 using api.Logic;
-using AutoMapper;
 using shared.UpdateModels;
 using shared.View;
 using Microsoft.AspNetCore.Mvc;
@@ -10,12 +9,10 @@ namespace api.Controllers;
 [Route("[controller]")]
 public class OrganizationController : ControllerBase
 {
-    private readonly IMapper _mapper;
     private readonly OrganizationLogic _organizationLogic;
 
-    public OrganizationController(IMapper mapper, OrganizationLogic organizationLogic)
+    public OrganizationController(OrganizationLogic organizationLogic)
     {
-        _mapper = mapper;
         _organizationLogic = organizationLogic;
     }
     
