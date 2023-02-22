@@ -3,6 +3,7 @@ using data;
 using data.ORM;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using shared;
 using shared.Models.Pipeline;
 using shared.View;
@@ -71,18 +72,34 @@ public class PipelineLogic
 
     public async Task<PipelineVersionView> GetVersionByConstraint(Guid id, string constraint)
     {
-        var query = _mainContext.PipelineVersions.Where(x => x.PipelineId == id);
+        var versions = (await GetVersions(id)).AsEnumerable();
 
         if (constraint.EndsWith('.'))
         {
-            query = query.Where(x => x.Version.StartsWith(constraint));
+            versions = versions.Where(x => x.StartsWith(constraint));
         }
         else
         {
-            query = query.Where(x => x.Version == constraint);
+            // this may seem stupid but it makes everything cleaner.
+            versions = versions.Where(x => x == constraint);
         }
 
-        return _mapper.Map<PipelineVersionDTO, PipelineVersionView>(await query.FirstOrDefaultAsync());
+        var filtered = versions
+            .Select(x => new Semver(x))
+            .Where(x => x.IsValid)
+            .OrderDescending()
+            .FirstOrDefault()
+            ?.ToString() ?? "";
+
+        if (filtered.IsNullOrEmpty())
+        {
+            throw new Exception("no version matching constraint");
+        }
+
+        var version = await _mainContext.PipelineVersions
+            .FirstAsync(x => x.PipelineId == id && x.Version == filtered);
+        
+        return _mapper.Map<PipelineVersionDTO, PipelineVersionView>(version);
     }
     
     public async Task<PipelineView> CreatePipeline(PipelineView data)
