@@ -15,4 +15,9 @@ public class StepParameter
     
     [JsonPropertyName("subKind")]
     public string SubKind { get; set; }
+
+    public StepParameter Clone()
+    {
+        return (StepParameter)MemberwiseClone();
+    }
 }

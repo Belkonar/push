@@ -5,15 +5,15 @@ namespace shared;
 /// <summary>
 /// A class for handling semver with sorting
 /// </summary>
-public struct Semver : IComparable<Semver>
+public class Semver : IComparable<Semver>
 {
-   public readonly ushort Major { get; }
-   public readonly ushort Minor { get; }
-   public readonly ushort Patch { get; }
+   public ushort Major { get; }
+   public ushort Minor { get; }
+   public ushort Patch { get; }
    
-   public readonly string Text { get; }
+   public string Text { get; }
 
-   public readonly bool IsValid { get; }
+   public bool IsValid { get; }
 
    public Semver(string text)
    {

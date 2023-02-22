@@ -10,6 +10,10 @@ public class StageStep
     [JsonPropertyName("name")]
     public string Name { get; set; }
     
+    [Required]
+    [JsonPropertyName("step")]
+    public string Step { get; set; }
+    
     [JsonExtensionData]
     public IDictionary<string, JsonElement> Parameters { get; set; }
 }
