@@ -1,4 +1,4 @@
-namespace api.Services;
+namespace shared;
 
 /// <summary>
 /// Generates a temporary folder, disposing deletes it
@@ -6,6 +6,8 @@ namespace api.Services;
 public class TempFolder : IDisposable
 {
     public string Dir { get; }
+
+    private readonly bool _shouldClear = true;
     
     public TempFolder()
     {
@@ -17,14 +19,29 @@ public class TempFolder : IDisposable
         }
     }
 
+    public TempFolder(string path, bool shouldClear = false)
+    {
+        _shouldClear = shouldClear;
+        Dir = path;
+    }
+
     public string GetFile(string fileName)
     {
         return Path.Join(Dir, fileName);
     }
     
+    /// <summary>
+    /// Get a file with a randomized name
+    /// </summary>
+    /// <returns>filepath</returns>
+    public string GetFile()
+    {
+        return GetFile(Guid.NewGuid().ToString());
+    }
+    
     public void Dispose()
     {
-        if (Directory.Exists(Dir))
+        if (_shouldClear && Directory.Exists(Dir))
         {
             Directory.Delete(Dir, true);
         }

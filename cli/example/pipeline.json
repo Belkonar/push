@@ -19,7 +19,8 @@
       "name": "build",
       "docker": "node:16",
       "commands": [
-        "echo babber > me.txt"
+        "echo babber > me.txt",
+        "cat me.txt"
       ]
     }
   ]

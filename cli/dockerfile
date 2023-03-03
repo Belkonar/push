@@ -1,0 +1,4 @@
+FROM node:16
+COPY /var/folders/0n/nyr9_xtj3h7dhhf0dg3qzv280000gn/T/eb6379f7-fc8c-49bf-8207-92019aa507b4/b6622b1b-2fbc-45fd-9aed-4821f89138f6 /command
+RUN chmod +x /command
+ENTRYPOINT [ "/command" ]
