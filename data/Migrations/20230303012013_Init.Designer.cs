@@ -14,7 +14,7 @@ using shared.Models.Pipeline;
 namespace data.Migrations
 {
     [DbContext(typeof(MainContext))]
-    [Migration("20230206005450_Init")]
+    [Migration("20230303012013_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -160,6 +160,10 @@ namespace data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("version");
 
+                    b.Property<Guid>("PipelineId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("pipeline_id");
+
                     b.Property<PipelineVersionContents>("Contents")
                         .IsRequired()
                         .HasColumnType("jsonb")
@@ -169,15 +173,11 @@ namespace data.Migrations
                         .HasColumnType("timestamp")
                         .HasColumnName("created");
 
-                    b.Property<Guid>("PipelineId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("pipeline_id");
-
                     b.Property<DateTime>("Updated")
                         .HasColumnType("timestamp")
                         .HasColumnName("updated");
 
-                    b.HasKey("Version");
+                    b.HasKey("Version", "PipelineId");
 
                     b.HasIndex("PipelineId");
 

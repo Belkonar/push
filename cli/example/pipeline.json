@@ -1,11 +1,15 @@
 {
-  "$schema": "http://localhost:5183/schema/PipelineVersion?1",
+  "$schema": "http://localhost:5183/schema/PipelineVersion?3",
   "stages": [
     {
       "name": "build",
       "steps": [
         {
-          "name": "build"
+          "name": "build",
+          "step": "build",
+          "parameters": {
+            "bob": "a"
+          }
         }
       ]
     }
@@ -13,7 +17,7 @@
   "steps": [
     {
       "name": "build",
-      "docker": "node:14",
+      "docker": "node:16",
       "commands": [
         "echo babber > me.txt"
       ]

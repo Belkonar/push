@@ -16,7 +16,7 @@ dotnet ef migrations add Init
 dotnet ef database update
 
 # Start api back up
-curl http://localhost:5251/Util/fill
+curl http://localhost:5183/Util/fill
 ```
 
 Just reset database

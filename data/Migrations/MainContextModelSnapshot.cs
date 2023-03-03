@@ -157,6 +157,10 @@ namespace data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("version");
 
+                    b.Property<Guid>("PipelineId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("pipeline_id");
+
                     b.Property<PipelineVersionContents>("Contents")
                         .IsRequired()
                         .HasColumnType("jsonb")
@@ -166,15 +170,11 @@ namespace data.Migrations
                         .HasColumnType("timestamp")
                         .HasColumnName("created");
 
-                    b.Property<Guid>("PipelineId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("pipeline_id");
-
                     b.Property<DateTime>("Updated")
                         .HasColumnType("timestamp")
                         .HasColumnName("updated");
 
-                    b.HasKey("Version");
+                    b.HasKey("Version", "PipelineId");
 
                     b.HasIndex("PipelineId");
 

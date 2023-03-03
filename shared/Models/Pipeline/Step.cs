@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.InteropServices;
 using System.Text.Json.Serialization;
 
 namespace shared.Models.Pipeline;
@@ -8,7 +9,7 @@ public class Step
     [Required]
     [JsonPropertyName("name")]
     public string Name { get; set; }
-
+    
     [JsonPropertyName("parameters")]
     public List<StepParameter> Parameters { get; set; } = new();
 

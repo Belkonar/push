@@ -111,7 +111,7 @@ namespace data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_pipeline_version", x => x.version);
+                    table.PrimaryKey("PK_pipeline_version", x => new { x.version, x.pipelineid });
                     table.ForeignKey(
                         name: "FK_pipeline_version_pipeline_pipeline_id",
                         column: x => x.pipelineid,

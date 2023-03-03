@@ -141,10 +141,12 @@ public class PipelineLogic
 
         if (old == null)
         {
+            Console.WriteLine("adding");
             await _mainContext.AddAsync(_mapper.Map<PipelineVersionView, PipelineVersionDTO>(data));
         }
         else
         {
+            Console.WriteLine("updating");
             _mapper.Map(data, old);
             _mainContext.Mark(old);
         }

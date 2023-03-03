@@ -14,6 +14,6 @@ public class StageStep
     [JsonPropertyName("step")]
     public string Step { get; set; }
     
-    [JsonExtensionData]
-    public IDictionary<string, JsonElement> Parameters { get; set; }
+    [JsonPropertyName("parameters")]
+    public Dictionary<string, string> Parameters { get; set; }
 }

@@ -1,38 +1,10 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using System.Net.Http.Json;
 using cli;
 using shared;
 using shared.Models.Pipeline;
 using shared.View;
-
-// Use this for unit tests later lol
-
-/*var t = new List<Semver>();
-
-t.Add(new Semver("v0.0.1"));
-t.Add(new Semver("v12.0.1"));
-t.Add(new Semver("bvav"));
-t.Add(new Semver("v1.0.2"));
-t.Add(new Semver("v1.0.1"));
-
-foreach (var semver in t.Order())
-{
-    Console.WriteLine(semver);
-}
-
-return;*/
-
-// var t = new List<Semver>();
-//
-// t.Add(new Semver("v0.0.1"));
-// t.Add(new Semver("v12.0.1"));
-// t.Add(new Semver("bvav"));
-// t.Add(new Semver("v1.0.2"));
-// t.Add(new Semver("v1.0.1"));
-//
-// Console.WriteLine(t.OrderDescending().FirstOrDefault().GetConstraint());
-//
-// return;
 
 if (args.Length == 0)
 {
@@ -86,5 +58,16 @@ var body = new PipelineVersionView
 };
 
 using var http = new HttpClient();
+using var response = await http.PostAsJsonAsync($"http://localhost:5183/pipeline/{info.Id}/version/{body.Version}", body);
 
-//http.PostAsJsonAsync()
+try
+{
+    Console.WriteLine(await response.Content.ReadAsStringAsync());
+    response.EnsureSuccessStatusCode();
+}
+catch (Exception e)
+{
+    Console.WriteLine(e.Message);
+}
+
+Console.WriteLine("wot");
