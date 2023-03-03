@@ -1,4 +1,6 @@
 @page "/pipelines"
+@inject HttpClient http
+
 <h3>@Title</h3>
 
 <PageTitle>@Title</PageTitle>
@@ -10,9 +12,26 @@
         <th>Created</th>
         <th>Updated</th>
         </THead>
+        <TBody>
+        @foreach (var pipeline in Pipelines)
+        {
+            <tr>
+                <td><a href="/pipeline/@pipeline.Id">@pipeline.Name</a></td>
+                <td>@pipeline.Created</td>
+                <td>@pipeline.Updated</td>
+            </tr>
+        }
+        </TBody>
     </Table>
 </Card>
 
 @code {
     const string Title = "Pipeline List";
+
+    public List<PipelineView> Pipelines = new List<PipelineView>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Pipelines = await http.GetFromJsonAsync<List<PipelineView>>("/pipeline") ?? new List<PipelineView>();
+    }
 }

@@ -18,6 +18,8 @@ public class ErrorController : ControllerBase
         {
             return StatusCode(403, new ErrorMessage(error.Message));
         }
+        
+        Console.WriteLine(exceptionHandlerPathFeature?.Error?.Message);
 
         return StatusCode(500, new ErrorMessage("I got no clue"));
     }

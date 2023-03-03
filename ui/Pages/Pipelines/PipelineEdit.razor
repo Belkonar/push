@@ -1,0 +1,69 @@
+@page "/pipeline-create"
+@page "/pipeline/{id:guid}"
+@inject HttpClient Http
+@inject ToastService ToastService
+@inject NavigationManager Nav
+
+<h3>Pipeline Edit</h3>
+
+<PageTitle>Pipeline Edit</PageTitle>
+
+<Card>
+    <div class="mb-3">
+        <label class="form-label" for="field-name">Name</label>
+        <input type="text" id="field-name" class="form-control" @bind="Pipeline.Name" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="field-description">Description</label>
+        <textarea id="field-description" class="form-control" @bind="Pipeline.Description"></textarea>
+    </div>
+    <button onclick="@Save" class="btn btn-primary">Save</button>
+</Card>
+
+@code {
+    [Parameter]
+    public Guid? ID { get; set; }
+
+    // This defaults to an edit model but it'll be replaced if needed
+    public PipelineView Pipeline = new PipelineView();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (ID.HasValue)
+        {
+            Pipeline = await Http.GetFromJsonAsync<PipelineView>($"/pipeline/{ID}") ?? new PipelineView();
+        }
+    }
+
+    private async Task Save()
+    {
+        if (!ID.HasValue)
+        {
+            try
+            {
+                using var response = await Http.PostAsJsonAsync("/pipeline", Pipeline);
+                response.EnsureSuccessStatusCode();
+                var responseData = await response.Content.ReadFromJsonAsync<PipelineView>();
+                ToastService.AddSuccess("Saved");
+                Nav.NavigateTo($"/pipeline/{responseData.Id}");
+            }
+            catch (Exception e)
+            {
+                ToastService.AddError("Error Creating Pipeline");
+            }
+        }
+        else
+        {
+            try
+            {
+                using var response = await Http.PutAsJsonAsync($"/pipeline/{ID}", Pipeline);
+                response.EnsureSuccessStatusCode();
+                ToastService.AddSuccess("Saved");
+            }
+            catch (Exception e)
+            {
+                ToastService.AddError("Error Updating Pipeline");
+            }
+        }
+    }
+}

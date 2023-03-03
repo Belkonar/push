@@ -106,7 +106,7 @@ public class PipelineLogic
     {
         data.Id = Guid.NewGuid();
 
-        await _mainContext.AddAsync(data);
+        await _mainContext.AddAsync(_mapper.Map<PipelineView, PipelineDTO>(data));
         await _mainContext.SaveChangesAsync();
         
         return data;
@@ -131,6 +131,7 @@ public class PipelineLogic
     }
 
     // TODO: Handle calculation of parameters and comparing them against a real version
+    // TODO: Once we are going to go live, actually enforce versions
     public async Task<PipelineVersionView> UpdatePipelineVersion(Guid id, string key, PipelineVersionView data)
     {
         data.Contents.CompiledParameters = CalculateParams(data.Contents.PipelineCode);

@@ -67,7 +67,6 @@ public class PipelineController
     // Create/Update a version
     // This is technically an upsert but only if the version is a dev version
     // TODO: If it's a non-major change, check the params don't change, since the last version
-    // Also check that the 
     [HttpPost("{id}/version/{key}")]
     public async Task<PipelineVersionView> UpdatePipelineVersion([FromRoute] Guid id, [FromRoute] string key, [FromBody] PipelineVersionView data)
     {
