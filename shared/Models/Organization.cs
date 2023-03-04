@@ -17,6 +17,12 @@ public class Organization
     public Dictionary<string, string> PrivateMetadata { get; set; } = new();
     
     /// <remarks>
+    /// Requires org.update.variables permission
+    /// </remarks>
+    [JsonPropertyName("variables")]
+    public Dictionary<string, string> Variables { get; set; } = new();
+    
+    /// <remarks>
     /// Requires org.update.policy permission
     /// </remarks>
     [JsonPropertyName("policy")]

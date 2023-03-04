@@ -7,8 +7,8 @@ public class Deployable
     [JsonPropertyName("pipelineId")]
     public Guid? PipelineId { get; set; }
     
-    [JsonPropertyName("pipelineVersionId")]
-    public Guid? PipelineVersionId { get; set; }
+    [JsonPropertyName("pipelineConstraint")]
+    public string PipelineConstraint { get; set; }
     
     [JsonPropertyName("sourceControlUri")]
     public string SourceControlUri { get; set; }

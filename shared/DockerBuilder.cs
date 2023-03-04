@@ -1,7 +1,6 @@
 ﻿using System.Text;
-using shared;
 
-namespace docker_builder;
+namespace shared;
 public class DockerBuilder
 {
     private readonly TempFolder _folder;
@@ -61,6 +60,8 @@ public class DockerBuilder
         var commandBuilder = new StringBuilder();
         commandBuilder.AppendLine("#!/usr/bin/env bash");
         commandBuilder.AppendLine(command);
+        
+        File.WriteAllText(scriptLocation, commandBuilder.ToString());
 
         // copy the file to the container
         Copy(scriptLocation, finalLocation);
