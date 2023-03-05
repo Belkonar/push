@@ -38,4 +38,9 @@ public static class DataExtensions
     {
         mainContext.Entry(obj).State = state;
     }
+    
+    public static void Check<T>(this MainContext mainContext, T obj) where T : class
+    {
+        Console.WriteLine(mainContext.Entry(obj).State.ToString());
+    }
 }

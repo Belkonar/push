@@ -1,0 +1,53 @@
+@page "/organization/{Id:guid}/create-app"
+@using shared.UpdateModels
+@inject HttpClient http
+@inject ToastService Toaster
+@inject NavigationManager Nav
+
+<h3>Thing Create</h3>
+
+<Card>
+    <div class="mb-3">
+        <label class="form-label" for="policy-input">App Name</label>
+        <input id="policy-input" class="form-control" @bind="Name" />
+    </div>
+                
+    <button onclick="@Save" class="btn btn-primary">Save</button>
+</Card>
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+    
+    private string Name { get; set; } = "";
+    
+    private async Task Save()
+    {
+        if (string.IsNullOrWhiteSpace(Name))
+        {
+            Toaster.AddError("Need key");
+            return;
+        }
+        
+        try
+        {
+            var request = new UpdateThing()
+            {
+                OrganizationId = Id,
+                Name = Name
+            };
+            
+            using var response = await http.PostAsJsonAsync($"/thing", request);
+            response.EnsureSuccessStatusCode();
+
+            var responseThing = await response.Content.ReadFromJsonAsync<ThingView>();
+            
+            Toaster.AddSuccess("Thing Created");
+            Nav.NavigateTo($"/thing/{responseThing.Id}");
+        }
+        catch (Exception e)
+        {
+            Toaster.AddError(e.Message);
+        }
+    }
+}

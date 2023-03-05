@@ -1,0 +1,87 @@
+@using System.Net
+@inject HttpClient Http;
+
+@if (View != null)
+{
+    if (Pipeline == null)
+    {
+        <a class="btn btn-primary" href="/thing/@Id/select-pipeline">Select a pipeline</a>
+    }
+    else
+    {
+        <div>
+            <div>
+                <div>Using pipeline: @Pipeline.Name</div>
+                @if (Version != null)
+                {
+                    <div>Using version: @Version.Version</div>
+                }
+            </div>
+            <div class="form-group">
+                <label>Source Control URI</label>
+                <input type="text" class="form-control" @bind="View.Contents.SourceControlUri">
+            </div>
+            <div class="form-group">
+                <label for="constraint">Constraint</label>
+                <input @onchange="Callback" id="constraint" type="text" class="form-control" value="@View.Contents.PipelineConstraint">
+            </div>
+        </div>
+    }
+}
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+    
+    private DeployableView? View { get; set; } = null;
+    private PipelineView? Pipeline { get; set; } = null;
+    private PipelineVersionView? Version { get; set; } = null;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        View = (await Http.GetFromJsonAsync<DeployableView>($"/thing/{Id}/deployable"))!;
+
+        if (View.Contents.PipelineId.HasValue)
+        {
+            Pipeline = await Http.GetFromJsonAsync<PipelineView>($"/pipeline/{View.Contents.PipelineId}");
+
+            if (!string.IsNullOrWhiteSpace(View.Contents.PipelineConstraint))
+            {
+                Version = 
+                    await Http.GetFromJsonAsync<PipelineVersionView>($"/pipeline/{View.Contents.PipelineId}/version/{View.Contents.PipelineConstraint}");
+            }
+        }
+    }
+
+    private async Task Callback(ChangeEventArgs arg)
+    {
+        
+        Version = null;
+        var constraint = arg.Value?.ToString() ?? "";
+        View!.Contents.PipelineConstraint = constraint;
+
+        if (string.IsNullOrWhiteSpace(constraint))
+        {
+            return;
+        }
+
+        using var response = await Http.GetAsync($"/pipeline/{View.Contents.PipelineId}/version/{View.Contents.PipelineConstraint}");
+
+        if (response.StatusCode == HttpStatusCode.NotFound)
+        {
+            return;
+        }
+
+        try
+        {
+            response.EnsureSuccessStatusCode();
+        }
+        catch (Exception e)
+        {
+            // TODO: Add toast here
+        }
+
+        Version = await response.Content.ReadFromJsonAsync<PipelineVersionView>();
+    }
+
+}

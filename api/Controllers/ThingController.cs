@@ -1,5 +1,6 @@
 using api.Logic;
 using Microsoft.AspNetCore.Mvc;
+using shared.UpdateModels;
 using shared.View;
 
 namespace api.Controllers;
@@ -16,10 +17,12 @@ public class ThingController : ControllerBase
         _thingLogic = thingLogic;
     }
     
+    // TODO: Maybe add a method to get stuff by org, but for now it's not needed
+    // TODO: Add query string to filter list, maybe even paging stuff
     [HttpGet]
-    public async Task<List<ThingView>> GetThings([FromQuery] Guid org)
+    public async Task<List<ThingView>> GetThings()
     {
-        return await _thingLogic.GetThings(org);
+        return await _thingLogic.GetThings();
     }
     
     [HttpGet("{id}")]
@@ -29,7 +32,7 @@ public class ThingController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ThingView> CreateThing([FromBody] ThingView thingView)
+    public async Task<ThingView> CreateThing([FromBody] UpdateThing thingView)
     {
         return await _thingLogic.CreateThing(thingView);
     }
@@ -38,5 +41,17 @@ public class ThingController : ControllerBase
     public async Task<ThingView> UpdateThing([FromRoute] Guid id, [FromBody] ThingView thingView)
     {
         return await _thingLogic.UpdateThing(id, thingView);
+    }
+
+    [HttpGet("{id}/deployable")]
+    public async Task<DeployableView> GetDeployable(Guid id)
+    {
+        return await _thingLogic.GetDeployable(id);
+    }
+
+    [HttpPut("{id}/deployable")]
+    public async Task<DeployableView> UpdateDeployable(Guid id, DeployableView deployableView)
+    {
+        return await _thingLogic.UpdateDeployable(id, deployableView);
     }
 }

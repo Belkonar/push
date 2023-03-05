@@ -21,9 +21,13 @@ public class DataProfile : Profile
         CreateMap<PipelineVersionView, PipelineVersionDTO>()
             .Setup();
         
+        CreateMap<DeployableView, DeployableDto>()
+            .Setup();
+        
         // For updates with smaller surfaces
         CreateMap<UpdateOrganization, OrganizationDto>();
         CreateMap<UpdatePolicy, PolicyDto>();
+        CreateMap<UpdateThing, ThingDto>();
     }
     
 }

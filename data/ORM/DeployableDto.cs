@@ -10,6 +10,7 @@ public class DeployableDto : BaseDto
     [Key, Column("id")]
     public Guid Id { get; set; }
     
+    // TODO: get rid of this lol
     [Column("name")]
     public string Name { get; set; }
     

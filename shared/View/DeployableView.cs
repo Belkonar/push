@@ -9,7 +9,10 @@ public class DeployableView
     public Guid Id { get; set; }
     
     [JsonPropertyName("name")]
-    public string Name { get; set; }
+    public string Name { get; set; } = "";
+    
+    [JsonPropertyName("thing")]
+    public Guid ThingId { get; set; }
     
     [JsonPropertyName("contents")]
     public Deployable Contents { get; set; }

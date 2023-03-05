@@ -1,5 +1,9 @@
 @page "/pipelines"
+@page "/thing/{Id:guid}/select-pipeline"
+
 @inject HttpClient http
+@inject ToastService Toaster
+@inject NavigationManager Nav
 
 <h3>@Title</h3>
 
@@ -11,6 +15,10 @@
         <th>Name</th>
         <th>Created</th>
         <th>Updated</th>
+        @if (Id.HasValue)
+        {
+            <th>Actions</th>
+        }
         </THead>
         <TBody>
         @foreach (var pipeline in Pipelines)
@@ -19,6 +27,10 @@
                 <td><a href="/pipeline/@pipeline.Id">@pipeline.Name</a></td>
                 <td>@pipeline.Created</td>
                 <td>@pipeline.Updated</td>
+                @if (Id.HasValue)
+                {
+                    <td><button @onclick="async () => await SelectPipeline(pipeline.Id)" class="btn btn-primary btn-sm">Select</button></td>
+                }
             </tr>
         }
         </TBody>
@@ -26,12 +38,38 @@
 </Card>
 
 @code {
+    [Parameter]
+    public Guid? Id { get; set; }
+    
     const string Title = "Pipeline List";
 
-    public List<PipelineView> Pipelines = new List<PipelineView>();
+    private List<PipelineView> Pipelines { get; set; } = new List<PipelineView>();
 
     protected override async Task OnInitializedAsync()
     {
         Pipelines = await http.GetFromJsonAsync<List<PipelineView>>("/pipeline") ?? new List<PipelineView>();
     }
+
+    private async Task SelectPipeline(Guid pipelineId)
+    {
+        Console.WriteLine("wot");
+        var deployment = (await http.GetFromJsonAsync<DeployableView>($"/thing/{Id}/deployable"))!;
+        deployment.Contents.PipelineId = pipelineId;
+        deployment.Contents.PipelineConstraint =
+            (await http.GetFromJsonAsync<SimpleValue>($"/pipeline/{pipelineId}/latest"))?.Value ?? "";
+        
+        using var response = await http.PutAsJsonAsync($"/Thing/{Id}/deployable", deployment);
+        try
+        {
+            response.EnsureSuccessStatusCode();
+        }
+        catch (Exception e)
+        {
+            Toaster.AddError(e);
+            return;
+        }
+        Toaster.AddSuccess("Saved Pipeline");
+        Nav.NavigateTo($"/thing/{Id}");
+    }
+
 }

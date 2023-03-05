@@ -1,4 +1,7 @@
 @page "/things"
+@inject OrganizationService OrgService
+@inject HttpClient Http
+
 <h3>@Title</h3>
 <PageTitle>@Title</PageTitle>
 
@@ -10,9 +13,30 @@
         <th>Created</th>
         <th>Updated</th>
         </THead>
+        <TBody>
+        @foreach (var thing in _things)
+        {
+            <tr>
+                <td><a href="/thing/@thing.Id">@thing.Name</a></td>
+                <td>@OrgService.GetName(thing.OrganizationId)</td>
+                <td>@thing.Created</td>
+                <td>@thing.Updated</td>
+            </tr>
+        }
+        </TBody>
     </Table>
 </Card>
 
 @code {
     const string Title = "Thing List";
+    private List<ThingView> _things = new ();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Don't need the return value, just need to make sure the list is populated
+        await OrgService.GetOrganizations();
+
+        _things = await Http.GetFromJsonAsync<List<ThingView>>("/thing") ?? new List<ThingView>();
+    }
+
 }

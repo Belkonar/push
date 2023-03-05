@@ -1,0 +1,12 @@
+@page "/thing/{Id:guid}"
+
+<h3>Thing Edit</h3>
+
+<Card>
+    <ThingEditDeployment Id="Id" />
+</Card>
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+}

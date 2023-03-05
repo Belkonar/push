@@ -39,7 +39,7 @@ public class OrganizationService
             return _organizations;
         }
 
-        _organizations = await _client.GetFromJsonAsync<List<OrganizationView>>("/organizations");
+        _organizations = await _client.GetFromJsonAsync<List<OrganizationView>>("/organization");
 
         return _organizations!;
     }

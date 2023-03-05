@@ -11,7 +11,7 @@ public class ThingView : BaseView
     [JsonPropertyName("name")]
     public string Name { get; set; }
 
-    [JsonPropertyName("organization_id")]
+    [JsonPropertyName("organization")]
     public Guid OrganizationId { get; set; }
     
     [JsonPropertyName("contents")]

@@ -12,10 +12,13 @@ builder.Logging.AddConsole();
 // Add services to the container.
 
 // deps lol
+// Logics
 builder.Services.AddTransient<PolicyLogic>();
 builder.Services.AddTransient<OrganizationLogic>();
 builder.Services.AddTransient<PipelineLogic>();
+builder.Services.AddTransient<ThingLogic>();
 
+// Services
 builder.Services.AddTransient<OpaService>();
 builder.Services.AddTransient<PermissionService>();
 builder.Services.AddTransient<PermissionData>();

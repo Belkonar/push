@@ -6,9 +6,15 @@
 
 <PageTitle>Organization Edit</PageTitle>
 
-<h3>Organization Edit - @Name</h3>
+<h3>Organization Edit</h3>
+
+
 
 <Card>
+    <div>
+        <a class="btn btn-secondary" href="/organization/@Id/create-app">Create App</a>
+    </div>
+    
     <div class="form-group">
         <label class="form-label" for="name">Name:</label>
         <input class="form-control" id="name" type="text" @bind="Name">

@@ -31,12 +31,17 @@ public class ErrorController : ControllerBase
         
         _logger.LogError(e, "Caught error");
 
-        if (e is UnauthorizedAccessException error)
+        switch (e)
         {
-            _logger.LogWarning("{Message}", e.Message);
-            return StatusCode(403, new ErrorMessage(error.Message));
+            case UnauthorizedAccessException error:
+                _logger.LogWarning("{Message}", e.Message);
+                return StatusCode(403, new ErrorMessage(error.Message));
+            
+            case FileNotFoundException err404:
+                return StatusCode(404, new ErrorMessage("File Not Found"));
+            
+            default:
+                return StatusCode(500, new ErrorMessage(e.Message));
         }
-
-        return StatusCode(500, new ErrorMessage(e.Message));
     }
 }

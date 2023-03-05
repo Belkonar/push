@@ -10,7 +10,7 @@ public class PipelineVersionView : BaseView
     [JsonPropertyName("version")]
     public string Version { get; set; }
     
-    [JsonPropertyName("pipeline_id")]
+    [JsonPropertyName("pipeline")]
     public Guid PipelineId { get; set; }
     
     [JsonPropertyName("contents")]

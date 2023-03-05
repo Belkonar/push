@@ -93,7 +93,7 @@ public class PipelineLogic
 
         if (filtered.IsNullOrEmpty())
         {
-            throw new Exception("no version matching constraint");
+            throw new FileNotFoundException("no version matching constraint");
         }
 
         var version = await _mainContext.PipelineVersions

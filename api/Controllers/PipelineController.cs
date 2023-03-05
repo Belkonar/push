@@ -31,9 +31,12 @@ public class PipelineController
     
     // Get the latest major version constraint
     [HttpGet("{id}/latest")]
-    public async Task<string> GetLatestMajor([FromRoute] Guid id)
+    public async Task<SimpleValue> GetLatestMajor([FromRoute] Guid id)
     {
-        return await _pipelineLogic.GetLatestMajor(id);
+        return new SimpleValue()
+        {
+            Value = await _pipelineLogic.GetLatestMajor(id)
+        };
     }
     
     // Get the versions of a pipeline (this is a string array)
