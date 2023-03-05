@@ -1,5 +1,7 @@
 @using System.Net
+@using shared.Models.Pipeline
 @inject HttpClient Http;
+@inject ToastService Toaster
 
 @if (View != null)
 {
@@ -25,6 +27,23 @@
                 <label for="constraint">Constraint</label>
                 <input @onchange="Callback" id="constraint" type="text" class="form-control" value="@View.Contents.PipelineConstraint">
             </div>
+
+            <h4>Pipeline Parameters</h4>
+            
+            @if (Parameters.Count == 0)
+            {
+                <p>Ain't Nobody Here but Us Chickens</p>
+            }
+
+            @foreach (var parameter in Parameters)
+            {
+                <div class="form-group">
+                    <label for="@parameter.Name">@parameter.Name</label>
+                    <input @bind="Variables[parameter.Name]" type="text" class="form-control" id="@parameter.Name">
+                </div>
+            }
+            
+            <button @onclick="Save" class="btn btn-primary">Save</button>
         </div>
     }
 }
@@ -36,10 +55,14 @@
     private DeployableView? View { get; set; } = null;
     private PipelineView? Pipeline { get; set; } = null;
     private PipelineVersionView? Version { get; set; } = null;
+    private List<StepParameter> Parameters { get; set; } = new List<StepParameter>();
     
+    private Dictionary<string, string> Variables { get; set; } = new Dictionary<string, string>();
+
     protected override async Task OnInitializedAsync()
     {
         View = (await Http.GetFromJsonAsync<DeployableView>($"/thing/{Id}/deployable"))!;
+        Variables = View.Contents.Variables;
 
         if (View.Contents.PipelineId.HasValue)
         {
@@ -49,19 +72,20 @@
             {
                 Version = 
                     await Http.GetFromJsonAsync<PipelineVersionView>($"/pipeline/{View.Contents.PipelineId}/version/{View.Contents.PipelineConstraint}");
+                ResetParameters();
             }
         }
     }
 
     private async Task Callback(ChangeEventArgs arg)
     {
-        
         Version = null;
         var constraint = arg.Value?.ToString() ?? "";
         View!.Contents.PipelineConstraint = constraint;
 
         if (string.IsNullOrWhiteSpace(constraint))
         {
+            ResetParameters();
             return;
         }
 
@@ -69,6 +93,8 @@
 
         if (response.StatusCode == HttpStatusCode.NotFound)
         {
+            // In this case 404's are OK!
+            ResetParameters();
             return;
         }
 
@@ -79,9 +105,53 @@
         catch (Exception e)
         {
             // TODO: Add toast here
+            ResetParameters();
+            return;
         }
 
         Version = await response.Content.ReadFromJsonAsync<PipelineVersionView>();
+        ResetParameters();
     }
 
+    private async Task Save()
+    {
+        // TODO: Remove variables no longer needed
+        View!.Contents.Variables = Variables;
+        
+        using var response = await Http.PutAsJsonAsync($"/Thing/{Id}/deployable", View);
+        try
+        {
+            response.EnsureSuccessStatusCode();
+        }
+        catch (Exception e)
+        {
+            Toaster.AddError(e);
+            return;
+        }
+        Toaster.AddSuccess("Saved Deployment");
+    }
+
+    private void ResetParameters()
+    {
+        if (Version == null)
+        {
+            Parameters = new List<StepParameter>();
+            return;
+        }
+
+        Parameters = Version.Contents.CompiledParameters;
+
+        foreach (var parameter in Version.Contents.CompiledParameters)
+        {
+            if (!Variables.ContainsKey(parameter.Name))
+            {
+                Variables[parameter.Name] = "";
+            }
+
+            if (string.IsNullOrWhiteSpace(Variables[parameter.Name]) && !parameter.Local)
+            {
+                // TODO: check against org variables
+            }
+        }
+    }
 }

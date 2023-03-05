@@ -8,7 +8,7 @@
           "name": "build",
           "step": "build",
           "parameters": {
-            "bob": "a"
+            "bab": "a"
           }
         }
       ]
@@ -18,8 +18,13 @@
     {
       "name": "build",
       "docker": "node:16",
+      "parameters": [
+        {
+          "name": "person"
+        }
+      ],
       "commands": [
-        "echo babber > me.txt",
+        "echo {parameter.person} > me.txt",
         "cat me.txt"
       ]
     }

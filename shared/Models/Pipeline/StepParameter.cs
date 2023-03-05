@@ -11,10 +11,10 @@ public class StepParameter
     public bool Local { get; set; } = true;
     
     [JsonPropertyName("kind")]
-    public string Kind { get; set; }
+    public string Kind { get; set; } = "string";
     
     [JsonPropertyName("subKind")]
-    public string SubKind { get; set; }
+    public string SubKind { get; set; } = "";
 
     public StepParameter Clone()
     {

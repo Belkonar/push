@@ -59,7 +59,7 @@ var files = new Dictionary<string, string>();
 
 var body = new PipelineVersionView
 {
-    Version = "dev",
+    Version = "v1.0.0",
     PipelineId = info.Id,
     Contents = new PipelineVersionContents
     {
