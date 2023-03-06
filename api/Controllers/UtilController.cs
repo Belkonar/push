@@ -41,6 +41,19 @@ global_admin { true }";
             // TODO: Remove this prior to go live
             global.Policy = policy;
         }
+        
+        // bcb885d2-b0dd-4cad-85a8-14de0b67d012
+
+        var nestjsPipeline = await _context.Pipelines.FindAsync(Guid.Parse("bcb885d2-b0dd-4cad-85a8-14de0b67d012"));
+        if (nestjsPipeline == null)
+        {
+            await _context.AddAsync(new PipelineDTO()
+            {
+                Id = Guid.Parse("bcb885d2-b0dd-4cad-85a8-14de0b67d012"),
+                Description = "basic pipeline for testing purposes",
+                Name = "nestjs"
+            });
+        }
 
         await _context.SaveChangesAsync();
 

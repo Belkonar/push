@@ -1,5 +1,5 @@
 {
-  "$schema": "http://localhost:5183/schema/PipelineVersion?3",
+  "$schema": "http://localhost:5183/schema/PipelineVersion?2",
   "stages": [
     {
       "name": "build",
@@ -20,7 +20,8 @@
       "docker": "node:16",
       "parameters": [
         {
-          "name": "person"
+          "name": "person",
+          "local": false
         }
       ],
       "commands": [

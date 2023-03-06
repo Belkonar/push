@@ -3,6 +3,7 @@ using AutoMapper;
 using data;
 using shared.Models;
 using data.ORM;
+using Microsoft.AspNetCore.Mvc;
 using shared.UpdateModels;
 using shared.View;
 using Microsoft.EntityFrameworkCore;
@@ -73,11 +74,8 @@ public class OrganizationLogic
     public async Task<OrganizationView> UpdatePrivateMetadata(Guid id, Dictionary<string, string> body)
     {
         var permissions =  await _permissionService.GetPermissions(new PermissionQuery());
-
-        if (permissions.IsMissing("global.org.update.private_metadata"))
-        {
-            throw new UnauthorizedAccessException("Fam what are you doing");
-        }
+        
+        permissions.Check("global.org.update.private_metadata");
         
         var dto = await _mainContext.Organizations.FindAsync(id);
 
@@ -117,10 +115,7 @@ public class OrganizationLogic
     {
         var permissions =  await _permissionService.GetPermissions(new PermissionQuery());
 
-        if (permissions.IsMissing("global.org.manage"))
-        {
-            throw new UnauthorizedAccessException("Fam what are you doing");
-        }
+        permissions.Check("global.org.manage");
         
         var dto = _mapper.Map<OrganizationDto>(body);
         
@@ -136,5 +131,19 @@ public class OrganizationLogic
     public async Task<OrganizationView> Get(Guid id)
     {
         return _mapper.Map<OrganizationView>(await _mainContext.Organizations.FindAsync(id));
+    }
+
+    public async Task UpdateVariable(Guid id, UpdateOrganizationVariable variable)
+    {
+        var org = await _mainContext.Organizations.FindAsync(id);
+        if (org == null)
+        {
+            throw new FileNotFoundException();
+        }
+
+        org.Contents.Variables[variable.Key] = variable.Value;
+        _mainContext.Mark(org);
+
+        await _mainContext.SaveChangesAsync();
     }
 }

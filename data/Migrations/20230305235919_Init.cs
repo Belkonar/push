@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 using shared.Models;
+using shared.Models.Job;
 using shared.Models.Pipeline;
 
 #nullable disable
@@ -125,7 +126,6 @@ namespace data.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    name = table.Column<string>(type: "text", nullable: false),
                     thing = table.Column<Guid>(type: "uuid", nullable: false),
                     contents = table.Column<Deployable>(type: "jsonb", nullable: false),
                     created = table.Column<DateTime>(type: "timestamp", nullable: false),
@@ -142,11 +142,39 @@ namespace data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "job",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    thing = table.Column<Guid>(type: "uuid", nullable: false),
+                    status = table.Column<string>(type: "text", nullable: false),
+                    statusReason = table.Column<string>(type: "text", nullable: false),
+                    contents = table.Column<Job>(type: "jsonb", nullable: false),
+                    created = table.Column<DateTime>(type: "timestamp", nullable: false),
+                    updated = table.Column<DateTime>(type: "timestamp", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_job", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_job_thing_thing",
+                        column: x => x.thing,
+                        principalTable: "thing",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_deployable_thing",
                 table: "deployable",
                 column: "thing",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_job_thing",
+                table: "job",
+                column: "thing");
 
             migrationBuilder.CreateIndex(
                 name: "IX_pipeline_organization",
@@ -172,6 +200,9 @@ namespace data.Migrations
 
             migrationBuilder.DropTable(
                 name: "deployable");
+
+            migrationBuilder.DropTable(
+                name: "job");
 
             migrationBuilder.DropTable(
                 name: "pipeline_version");

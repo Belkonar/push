@@ -79,7 +79,6 @@ public class ThingLogic
         {
             deployable = _mapper.Map<DeployableView, DeployableDto>(deployableView);
             deployable.Id = Guid.NewGuid();
-            deployable.Name = "delete me";
             await _mainContext.AddAsync(deployable);
         }
         else

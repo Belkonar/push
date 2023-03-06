@@ -15,6 +15,8 @@ public class MainContext : DbContext
     
     public DbSet<PipelineDTO> Pipelines { get; set; }
     public DbSet<PipelineVersionDTO> PipelineVersions { get; set; }
+    
+    public DbSet<JobDto> Jobs { get; set; }
 
     // Resource types
     public DbSet<DeployableDto> Deployables { get; set; }
@@ -40,6 +42,12 @@ public class MainContext : DbContext
             .HasOne<DeployableDto>()
             .WithOne()
             .HasForeignKey<DeployableDto>(x => x.ThingId);
+
+        modelBuilder.Entity<ThingDto>()
+            .HasMany<JobDto>()
+            .WithOne()
+            .OnDelete(DeleteBehavior.Cascade)
+            .HasForeignKey(x => x.ThingId);
 
         modelBuilder.Entity<PipelineDTO>()
             .HasMany<PipelineVersionDTO>()

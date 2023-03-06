@@ -1,5 +1,6 @@
 @using System.Net
 @using shared.Models.Pipeline
+@using shared.UpdateModels
 @inject HttpClient Http;
 @inject ToastService Toaster
 
@@ -39,7 +40,14 @@
             {
                 <div class="form-group">
                     <label for="@parameter.Name">@parameter.Name</label>
-                    <input @bind="Variables[parameter.Name]" type="text" class="form-control" id="@parameter.Name">
+                    <div class="input-group">
+                        <input @bind="Variables[parameter.Name]" type="text" class="form-control" id="@parameter.Name">
+                        
+                        @if (!parameter.Local)
+                        {
+                            <button @onclick="async () => await UpdateOrgVariable(parameter)" class="btn btn-secondary">Update Org</button>                            
+                        }
+                    </div>
                 </div>
             }
             
@@ -53,6 +61,8 @@
     public Guid Id { get; set; }
     
     private DeployableView? View { get; set; } = null;
+    private ThingView? Thing { get; set; } = null;
+    private OrganizationView? Organization { get; set; } = null;
     private PipelineView? Pipeline { get; set; } = null;
     private PipelineVersionView? Version { get; set; } = null;
     private List<StepParameter> Parameters { get; set; } = new List<StepParameter>();
@@ -62,6 +72,9 @@
     protected override async Task OnInitializedAsync()
     {
         View = (await Http.GetFromJsonAsync<DeployableView>($"/thing/{Id}/deployable"))!;
+        Thing = (await Http.GetFromJsonAsync<ThingView>($"/thing/{Id}"))!;
+        Organization = (await Http.GetFromJsonAsync<OrganizationView>($"/organization/{Thing!.OrganizationId}"))!;
+        
         Variables = View.Contents.Variables;
 
         if (View.Contents.PipelineId.HasValue)
@@ -113,6 +126,27 @@
         ResetParameters();
     }
 
+    private async Task UpdateOrgVariable(StepParameter parameter)
+    {
+        var response = await Http.PutAsJsonAsync($"/organization/{Thing!.OrganizationId}/variable", new UpdateOrganizationVariable()
+        {
+            Key = parameter.Name,
+            Value = Variables[parameter.Name]
+        });
+
+        try
+        {
+            response.EnsureSuccessStatusCode();
+        }
+        catch (Exception e)
+        {
+            Toaster.AddError(e);
+            return;
+        }
+        
+        Toaster.AddSuccess($"Updated organization variable `{parameter.Name}`");
+    }
+
     private async Task Save()
     {
         // TODO: Remove variables no longer needed
@@ -151,6 +185,10 @@
             if (string.IsNullOrWhiteSpace(Variables[parameter.Name]) && !parameter.Local)
             {
                 // TODO: check against org variables
+                if (Organization!.Contents.Variables.ContainsKey(parameter.Name))
+                {
+                    Variables[parameter.Name] = Organization!.Contents.Variables[parameter.Name];
+                }
             }
         }
     }

@@ -5,6 +5,7 @@ using ui;
 using ui.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
+Console.WriteLine(builder.HostEnvironment.BaseAddress);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 

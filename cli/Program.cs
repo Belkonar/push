@@ -50,12 +50,14 @@ if (!File.Exists(infoLocation))
 var pipeline = await JsonHelper.GetFile<PipelineVersion>(pipelineLocation);
 var info = await JsonHelper.GetFile<Info>(infoLocation);
 
-if (!JsonHelper.IsValid(pipeline))
-{
-    return;
-}
+// if (!JsonHelper.IsValid(pipeline))
+// {
+//     return;
+// }
 
 var files = new Dictionary<string, string>();
+
+// TODO: Files
 
 var body = new PipelineVersionView
 {

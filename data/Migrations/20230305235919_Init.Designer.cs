@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using data;
 using shared.Models;
+using shared.Models.Job;
 using shared.Models.Pipeline;
 
 #nullable disable
@@ -14,7 +15,7 @@ using shared.Models.Pipeline;
 namespace data.Migrations
 {
     [DbContext(typeof(MainContext))]
-    [Migration("20230303012013_Init")]
+    [Migration("20230305235919_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -67,11 +68,6 @@ namespace data.Migrations
                         .HasColumnType("timestamp")
                         .HasColumnName("created");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("name");
-
                     b.Property<Guid>("ThingId")
                         .HasColumnType("uuid")
                         .HasColumnName("thing");
@@ -86,6 +82,47 @@ namespace data.Migrations
                         .IsUnique();
 
                     b.ToTable("deployable");
+                });
+
+            modelBuilder.Entity("data.ORM.JobDto", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Job>("Contents")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("contents");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp")
+                        .HasColumnName("created");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("status");
+
+                    b.Property<string>("StatusReason")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("statusReason");
+
+                    b.Property<Guid>("ThingId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("thing");
+
+                    b.Property<DateTime>("Updated")
+                        .HasColumnType("timestamp")
+                        .HasColumnName("updated");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ThingId");
+
+                    b.ToTable("job");
                 });
 
             modelBuilder.Entity("data.ORM.OrganizationDto", b =>
@@ -249,6 +286,15 @@ namespace data.Migrations
                     b.HasOne("data.ORM.ThingDto", null)
                         .WithOne()
                         .HasForeignKey("data.ORM.DeployableDto", "ThingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("data.ORM.JobDto", b =>
+                {
+                    b.HasOne("data.ORM.ThingDto", null)
+                        .WithMany()
+                        .HasForeignKey("ThingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

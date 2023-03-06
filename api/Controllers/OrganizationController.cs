@@ -58,4 +58,18 @@ public class OrganizationController : ControllerBase
     {
         return await _organizationLogic.UpdatePolicy(id, body);
     }
+
+    /// <summary>
+    /// While this isn't technically correct from a REST perspective it makes it cleaner
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="variable"></param>
+    /// <returns></returns>
+    [HttpPut("{id}/variable")]
+    public async Task<IActionResult> UpdateVariable([FromRoute] Guid id, [FromBody] UpdateOrganizationVariable variable)
+    {
+        await _organizationLogic.UpdateVariable(id, variable);
+        
+        return Ok();
+    }
 }
