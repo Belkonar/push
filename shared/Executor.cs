@@ -19,7 +19,7 @@ public static class Executor
     /// <returns>The output, errors and exit code in one package.</returns>
     public static ExecutorResponse Execute(ExecutorConfig config, Func<string?, Task>? sharedReceiver = null, Func<string?, Task>? outputReceiver = null, Func<string?, Task>? errorReceiver = null)
     {
-        Console.WriteLine(config);
+        Console.WriteLine($"[{config}]");
         using Process process = new Process();
 
         process.StartInfo.FileName = config.Command;

@@ -9,24 +9,27 @@ using shared.View;
 // use this to test
 // dotnet run && docker build . -t tester && docker run tester
 
-using var temp = new TempFolder(false);
-var dockerfile = new DockerBuilder(temp);
-
-dockerfile.From("node:16");
-dockerfile.SetupScript($"echo $CI > file.txt; ls; pwd");
-dockerfile.WorkDir("/app");
-dockerfile.Volume("/Users/dotson/tester", "/app");
-// 
-
-dockerfile.CreateFile();
-
-Executor.Execute(dockerfile.GetBuildConfig());
-
-var r = Executor.Execute(dockerfile.GetRunConfig());
-
-Console.WriteLine(r.Shared);
-
-return;
+// using var temp = new TempFolder(false);
+// var dockerfile = new DockerBuilder(temp);
+//
+// dockerfile.From("node:16");
+// dockerfile.SetupScript(new List<string>()
+// {
+//     "echo hi",
+//     "echo $CI > babber.txt",
+//     "ls"
+// });
+// dockerfile.WorkDirVolume("/Users/dotson/tester", "/app");
+//
+// dockerfile.CreateFile();
+//
+// Executor.Execute(dockerfile.GetBuildConfig());
+//
+// var r = Executor.Execute(dockerfile.GetRunConfig());
+//
+// Console.WriteLine(r.Shared);
+//
+// return;
 
 if (args.Length == 0)
 {

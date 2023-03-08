@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Microsoft.VisualBasic;
 
 namespace shared;
 public class DockerBuilder
@@ -80,6 +81,11 @@ public class DockerBuilder
         
         // set the entrypoint to our new script
         Entrypoint(finalLocation);
+    }
+
+    public void SetupScript(List<string> commands)
+    {
+        SetupScript(string.Join("\n", commands));
     }
 
     public void Env(string key, string value)
@@ -167,7 +173,6 @@ public class DockerBuilder
         };
     }
     
-    // clean these up because it's annoying for my jobs
     public void WorkDir(string dir)
     {
         _builder.AppendLine($"WORKDIR {dir}");
@@ -176,5 +181,16 @@ public class DockerBuilder
     public void Volume(string src, string dest)
     {
         _volumes.Add(src, dest);
+    }
+
+    /// <summary>
+    /// Creates a volume and uses the destination as the working directory
+    /// </summary>
+    /// <param name="src">The folder on the host to bind</param>
+    /// <param name="dest">The location on the container to bind to (and make working directory)</param>
+    public void WorkDirVolume(string src, string dest)
+    {
+        Volume(src, dest);
+        WorkDir(dest);
     }
 }
