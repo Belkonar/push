@@ -122,10 +122,10 @@ public class ExecutorResponse
 
 public class ExecutorConfig
 {
-    public string Command { get; set; }
-    public List<string> Arguments { get; set; } = new List<string>();
+    public string Command { get; init; }
+    public List<string> Arguments { get; init; } = new List<string>();
 
-    public string WorkingDirectory { get; set; } = "";
+    public string WorkingDirectory { get; init; } = "";
 
-    public Dictionary<string, string> EnvironmentVariables { get; set; } = new ();
+    public Dictionary<string, string> EnvironmentVariables { get; init; } = new ();
 }

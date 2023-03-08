@@ -135,8 +135,7 @@ public class DockerBuilder
             Arguments = new List<string>()
             {
                 "build",
-                "-t",
-                _containerName,
+                "-t", _containerName,
                 "."
             },
             WorkingDirectory = _folder.Dir
