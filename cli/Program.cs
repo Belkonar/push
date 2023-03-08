@@ -6,16 +6,25 @@ using shared;
 using shared.Models.Pipeline;
 using shared.View;
 
-// // use this to test
-// // dotnet run && docker build . -t tester && docker run tester
-//
-// using var temp = new TempFolder(".");
-// var dockerfile = new DockerBuilder(temp);
-// dockerfile.From("node:16");
-// dockerfile.SetupScript("echo hi");
-//
-// File.WriteAllText("dockerfile", dockerfile.GetDockerfile());
-// return;
+// use this to test
+// dotnet run && docker build . -t tester && docker run tester
+
+using var temp = new TempFolder(false);
+var dockerfile = new DockerBuilder(temp);g
+
+dockerfile.From("node:16");
+dockerfile.SetupScript("echo hi;echo $CI");
+
+dockerfile.CreateFile();
+
+Executor.Execute(dockerfile.GetBuildConfig());
+
+Executor.Execute(dockerfile.GetRunConfig(), async s =>
+{
+   Console.WriteLine(s); 
+});
+
+return;
 
 if (args.Length == 0)
 {

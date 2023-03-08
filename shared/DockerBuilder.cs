@@ -5,6 +5,7 @@ public class DockerBuilder
 {
     private readonly TempFolder _folder;
     private readonly StringBuilder _builder = new ();
+    private readonly string _containerName = Guid.NewGuid().ToString();
 
     /// <param name="folder">This is a temp folder to drop any files needed to run this Dockerfile</param>
     public DockerBuilder(TempFolder folder)
@@ -40,6 +41,12 @@ public class DockerBuilder
     {
         _builder.AppendLine($"COPY {from} {to}");
     }
+    
+    public void Copy(string relativeTo, string from, string to)
+    {
+        var relativePath = Path.GetRelativePath(relativeTo, from);
+        _builder.AppendLine($"COPY {relativePath} {to}");
+    }
 
     public void Run(string command)
     {
@@ -62,9 +69,9 @@ public class DockerBuilder
         commandBuilder.AppendLine(command);
         
         File.WriteAllText(scriptLocation, commandBuilder.ToString());
-
+        
         // copy the file to the container
-        Copy(scriptLocation, finalLocation);
+        Copy(_folder.Dir, scriptLocation, finalLocation);
         
         // get exec permissions
         Run($"chmod +x {finalLocation}");
@@ -110,5 +117,43 @@ public class DockerBuilder
         Console.WriteLine(_builder.ToString());
         Console.WriteLine("----------- END DOCKERFILE -----------");
         return _builder.ToString();
+    }
+
+    public void CreateFile()
+    {
+        // some stuff needs this to not hang for user input
+        Env("CI", "true");
+        
+        File.WriteAllText(_folder.GetFile("dockerfile"), GetDockerfile());
+    }
+
+    public ExecutorConfig GetBuildConfig()
+    {
+        return new ExecutorConfig()
+        {
+            Command = "docker",
+            Arguments = new List<string>()
+            {
+                "build",
+                "-t",
+                _containerName,
+                "."
+            },
+            WorkingDirectory = _folder.Dir
+        };
+    }
+    
+    public ExecutorConfig GetRunConfig()
+    {
+        return new ExecutorConfig()
+        {
+            Command = "docker",
+            Arguments = new List<string>()
+            {
+                "run",
+                _containerName
+            },
+            WorkingDirectory = _folder.Dir
+        };
     }
 }
