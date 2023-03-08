@@ -7,6 +7,8 @@ public class DockerBuilder
     private readonly StringBuilder _builder = new ();
     private readonly string _containerName = Guid.NewGuid().ToString();
 
+    private readonly Dictionary<string, string> _volumes = new Dictionary<string, string>();
+
     /// <param name="folder">This is a temp folder to drop any files needed to run this Dockerfile</param>
     public DockerBuilder(TempFolder folder)
     {
@@ -123,7 +125,7 @@ public class DockerBuilder
     {
         // some stuff needs this to not hang for user input
         Env("CI", "true");
-        
+
         File.WriteAllText(_folder.GetFile("dockerfile"), GetDockerfile());
     }
 
@@ -144,15 +146,35 @@ public class DockerBuilder
     
     public ExecutorConfig GetRunConfig()
     {
+        var args = new List<string>()
+        {
+            "run",
+        };
+
+        foreach (var volume in _volumes)
+        {
+            args.Add("-v");
+            args.Add($"{volume.Key}:{volume.Value}");
+        }
+        
+        args.Add(_containerName);
+
         return new ExecutorConfig()
         {
             Command = "docker",
-            Arguments = new List<string>()
-            {
-                "run",
-                _containerName
-            },
+            Arguments = args,
             WorkingDirectory = _folder.Dir
         };
+    }
+    
+    // clean these up because it's annoying for my jobs
+    public void WorkDir(string dir)
+    {
+        _builder.AppendLine($"WORKDIR {dir}");
+    }
+
+    public void Volume(string src, string dest)
+    {
+        _volumes.Add(src, dest);
     }
 }

@@ -13,7 +13,10 @@ using var temp = new TempFolder(false);
 var dockerfile = new DockerBuilder(temp);
 
 dockerfile.From("node:16");
-dockerfile.SetupScript("echo hi;echo $CI");
+dockerfile.SetupScript($"echo $CI > file.txt; ls; pwd");
+dockerfile.WorkDir("/app");
+dockerfile.Volume("/Users/dotson/tester", "/app");
+// 
 
 dockerfile.CreateFile();
 

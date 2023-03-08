@@ -19,6 +19,7 @@ public static class Executor
     /// <returns>The output, errors and exit code in one package.</returns>
     public static ExecutorResponse Execute(ExecutorConfig config, Func<string?, Task>? sharedReceiver = null, Func<string?, Task>? outputReceiver = null, Func<string?, Task>? errorReceiver = null)
     {
+        Console.WriteLine(config);
         using Process process = new Process();
 
         process.StartInfo.FileName = config.Command;
@@ -128,4 +129,9 @@ public class ExecutorConfig
     public string WorkingDirectory { get; init; } = "";
 
     public Dictionary<string, string> EnvironmentVariables { get; init; } = new ();
+
+    public override string ToString()
+    {
+        return $"{Command} {string.Join(" ", Arguments)}";
+    }
 }
