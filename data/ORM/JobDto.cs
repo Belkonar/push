@@ -20,5 +20,5 @@ public class JobDto : BaseDto
     public string StatusReason { get; set; } = "";
 
     [Column("contents", TypeName = "jsonb")]
-    public Job Contents { get; set; }
+    public Job Contents { get; set; } = new ();
 }

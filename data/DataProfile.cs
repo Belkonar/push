@@ -1,5 +1,7 @@
 using AutoMapper;
 using data.ORM;
+using shared.Models.Job;
+using shared.Models.Pipeline;
 using shared.UpdateModels;
 using shared.View;
 
@@ -31,6 +33,9 @@ public class DataProfile : Profile
         CreateMap<UpdateOrganization, OrganizationDto>();
         CreateMap<UpdatePolicy, PolicyDto>();
         CreateMap<UpdateThing, ThingDto>();
+
+        CreateMap<StepParameter, JobStepParameter>();
+        CreateMap<Step, JobStepInfo>();
     }
     
 }

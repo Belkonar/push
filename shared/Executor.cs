@@ -11,15 +11,17 @@ public static class Executor
     /// </summary>
     /// <remarks>
     /// So this is super weird but the handlers are passed into the function so that I don't create a memory leak.
+    /// The shared reciever is also throttled to only send once per timespan
     /// </remarks>
     /// <param name="config"></param>
-    /// <param name="sharedReceiver">A combination of STDOUT and STDERR</param>
+    /// <param name="sharedReceiver">A combination of STDOUT and STDERR, currently the only one throttled</param>
     /// <param name="outputReceiver"></param>
     /// <param name="errorReceiver"></param>
     /// <returns>The output, errors and exit code in one package.</returns>
     public static ExecutorResponse Execute(ExecutorConfig config, Func<string?, Task>? sharedReceiver = null, Func<string?, Task>? outputReceiver = null, Func<string?, Task>? errorReceiver = null)
     {
         Console.WriteLine($"[{config}]");
+        
         using Process process = new Process();
 
         process.StartInfo.FileName = config.Command;
@@ -46,13 +48,21 @@ public static class Executor
         {
             process.StartInfo.EnvironmentVariables.Add(env.Key, env.Value);
         }
-
+        
         var output = new StringBuilder();
         var error = new StringBuilder();
         var shared = new StringBuilder();
 
+        // Make this configurable
+        var bufferSize = 5;
+        
+        var startTime = DateTime.Now;
+        var startLock = new object();
+
         process.OutputDataReceived += async (_, args) =>
         {
+            DateTime start;
+            
             output.AppendLine(args.Data);
             shared.AppendLine(args.Data);
             
@@ -61,14 +71,29 @@ public static class Executor
                 await outputReceiver(output.ToString());
             }
 
-            if (sharedReceiver != null)
+            lock (startLock)
             {
+                start = startTime;
+            }
+            
+            var end = DateTime.Now;
+            var span = end - start;
+
+            if (sharedReceiver != null && span.TotalSeconds > bufferSize)
+            {
+                lock (startLock)
+                {
+                    startTime = end;
+                }
+                
                 await sharedReceiver(shared.ToString());
             }
         };
             
         process.ErrorDataReceived += async (_, args) =>
         {
+            DateTime start;
+            
             error.AppendLine(args.Data);
             shared.AppendLine(args.Data);
             
@@ -77,8 +102,21 @@ public static class Executor
                 await errorReceiver(error.ToString());
             }
             
-            if (sharedReceiver != null)
+            lock (startLock)
             {
+                start = startTime;
+            }
+            
+            var end = DateTime.Now;
+            var span = end - start;
+            
+            if (sharedReceiver != null && span.TotalSeconds > bufferSize)
+            {
+                lock (startLock)
+                {
+                    startTime = end;
+                }
+                
                 await sharedReceiver(shared.ToString());
             }
         };
@@ -101,15 +139,16 @@ public static class Executor
 
 public class ExecutorResponse
 {
-    public string Output { get; set; }
-    public string Error { get; set; }
-    public string Shared { set; get; }
-    public int ResponseCode { get; set; }
+    public string Output { get; init; }
+    public string Error { get; init; }
+    public string Shared { get; init; }
+    public int ResponseCode { get; init; }
     
 
     public override string ToString()
     {
         var builder = new StringBuilder();
+        
         builder.AppendLine("========== Status Code ==========");
         builder.AppendLine($"{ResponseCode}");
         builder.AppendLine("============ Output =============");

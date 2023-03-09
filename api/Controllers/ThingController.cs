@@ -44,14 +44,20 @@ public class ThingController : ControllerBase
     }
 
     [HttpGet("{id}/deployable")]
-    public async Task<DeployableView> GetDeployable(Guid id)
+    public async Task<DeployableView> GetDeployable([FromRoute] Guid id)
     {
         return await _thingLogic.GetDeployable(id);
     }
 
     [HttpPut("{id}/deployable")]
-    public async Task<DeployableView> UpdateDeployable(Guid id, DeployableView deployableView)
+    public async Task<DeployableView> UpdateDeployable([FromRoute] Guid id, DeployableView deployableView)
     {
         return await _thingLogic.UpdateDeployable(id, deployableView);
+    }
+    
+    [HttpPost("{id}/deployable/start/{reference}")]
+    public async Task<JobView> StartDeployment([FromRoute] Guid id, [FromRoute] string reference)
+    {
+        return await _thingLogic.StartDeployment(id, reference);
     }
 }

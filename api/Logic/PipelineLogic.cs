@@ -70,6 +70,13 @@ public class PipelineLogic
             .ToListAsync());
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="constraint"></param>
+    /// <returns></returns>
+    /// <exception cref="FileNotFoundException"></exception>
     public async Task<PipelineVersionView> GetVersionByConstraint(Guid id, string constraint)
     {
         var versions = (await GetVersions(id)).AsEnumerable();

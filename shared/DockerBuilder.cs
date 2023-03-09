@@ -59,6 +59,10 @@ public class DockerBuilder
     /// <summary>
     /// This sets up the entrypoint for running a script saved as a file
     /// </summary>
+    /// <remarks>
+    /// This currently only supports linux. Windows will need to be supported differently (likely raw)
+    /// Theoretically we can handle it the same way for windows containers but I've literally never used them.
+    /// </remarks>
     /// <param name="command">the command run as part of the script</param>
     public void SetupScript(string command)
     {
@@ -79,7 +83,7 @@ public class DockerBuilder
         // get exec permissions
         Run($"chmod +x {finalLocation}");
         
-        // set the entrypoint to our new script
+        // set the entrypoint to our new scriptIf
         Entrypoint(finalLocation);
     }
 

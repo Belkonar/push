@@ -9,6 +9,9 @@ public class PipelineFile
     
     [JsonPropertyName("location")]
     public string Location { get; set; }
+
+    [JsonPropertyName("isBinary")]
+    public bool IsBinary { get; set; } = false;
     
     /// <summary>
     /// If this is true, users will *not* be able to

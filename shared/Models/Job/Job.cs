@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using shared.Models.Pipeline;
 
 namespace shared.Models.Job;
 
@@ -16,11 +17,26 @@ public class Job
     [JsonPropertyName("steps")]
     public List<JobStep> Steps { get; set; } = new();
     
+    /// <summary>
+    /// This field is solely used right now for file replacements
+    /// </summary>
+    [JsonPropertyName("parameters")]
+    public List<JobStepParameter> Parameters { get; set; } = new();
+    
     [JsonPropertyName("sourceControlUri")]
     public string SourceControlUri { get; set; }
     
     [JsonPropertyName("sourceReference")]
     public string SourceReference { get; set; }
+    
+    [JsonPropertyName("files")]
+    public List<PipelineFile> Files { get; set; } = new();
+
+    [JsonPropertyName("pipeline")]
+    public Guid PipelineId { get; set; }
+    
+    [JsonPropertyName("pipelineVersion")]
+    public string PipelineVersion { get; set; }
 }
 
 /// <summary>
@@ -52,6 +68,9 @@ public class JobStep
 
     [JsonPropertyName("stepInfo")]
     public JobStepInfo? StepInfo { get; set; } = null;
+
+    [JsonPropertyName("step")]
+    public string Step { get; set; }
 }
 
 public class JobStepInfo
@@ -67,6 +86,9 @@ public class JobStepInfo
     
     [JsonPropertyName("commands")]
     public List<string> Commands { get; set; } = new();
+    
+    [JsonPropertyName("output")]
+    public ExecutorResponse? Output { get; set; } = null;
 }
 
 public class JobStepParameter
