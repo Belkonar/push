@@ -9,38 +9,38 @@ using shared.View;
 // use this to test
 // dotnet run && docker build . -t tester && docker run tester
 
-using var temp = new TempFolder(false);
-var dockerfile = new DockerBuilder(temp);
-
-dockerfile.From("node:16");
-dockerfile.SetupScript(new List<string>()
-{
-    "echo 1;sleep 3",
-    "echo 2;sleep 3",
-    "echo 3;sleep 3",
-    "echo 4;sleep 3",
-    "echo 5;sleep 3",
-    "echo 6;sleep 3",
-    "echo 7;sleep 3",
-    "echo 8;sleep 3",
-    "echo 9;sleep 3",
-});
-dockerfile.WorkDirVolume("/Users/dotson/tester", "/app");
-
-dockerfile.CreateFile();
-
-Executor.Execute(dockerfile.GetBuildConfig());
-
-var r = Executor.Execute(dockerfile.GetRunConfig(), async s =>
-{
-    Console.WriteLine("======= START =======");
-    Console.WriteLine(s);
-    Console.WriteLine("======== END ========");
-});
-
-//Console.WriteLine(r.Shared);
-
-return;
+// using var temp = new TempFolder(false);
+// var dockerfile = new DockerBuilder(temp);
+//
+// dockerfile.From("node:16");
+// dockerfile.SetupScript(new List<string>()
+// {
+//     "echo 1;sleep 3",
+//     "echo 2;sleep 3",
+//     "echo 3;sleep 3",
+//     "echo 4;sleep 3",
+//     "echo 5;sleep 3",
+//     "echo 6;sleep 3",
+//     "echo 7;sleep 3",
+//     "echo 8;sleep 3",
+//     "echo 9;sleep 3",
+// });
+// dockerfile.WorkDirVolume("/Users/dotson/tester", "/app");
+//
+// dockerfile.CreateFile();
+//
+// Executor.Execute(dockerfile.GetBuildConfig());
+//
+// var r = Executor.Execute(dockerfile.GetRunConfig(), async s =>
+// {
+//     Console.WriteLine("======= START =======");
+//     Console.WriteLine(s);
+//     Console.WriteLine("======== END ========");
+// });
+//
+// //Console.WriteLine(r.Shared);
+//
+// return;
 
 if (args.Length == 0)
 {

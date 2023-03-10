@@ -17,6 +17,10 @@ builder.Services.AddTransient<PolicyLogic>();
 builder.Services.AddTransient<OrganizationLogic>();
 builder.Services.AddTransient<PipelineLogic>();
 builder.Services.AddTransient<ThingLogic>();
+builder.Services.AddTransient<JobLogic>();
+
+// TODO: Properly handle distributed cache
+builder.Services.AddDistributedMemoryCache();
 
 // Services
 builder.Services.AddTransient<OpaService>();

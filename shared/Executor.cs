@@ -40,9 +40,9 @@ public static class Executor
         process.StartInfo.RedirectStandardError = true;
         process.StartInfo.CreateNoWindow = true;
         process.StartInfo.UseShellExecute = false;
-          
-        // probably don't actually need this, though likely will in the container
-        //process.StartInfo.EnvironmentVariables.Add("CI", "true");
+        
+        // This will be used eventually for "raw" executions
+        process.StartInfo.EnvironmentVariables.Add("CI", "true");
         
         foreach (var env in config.EnvironmentVariables)
         {
@@ -53,16 +53,16 @@ public static class Executor
         var error = new StringBuilder();
         var shared = new StringBuilder();
 
-        // Make this configurable
-        var bufferSize = 5;
-        
-        var startTime = DateTime.Now;
-        var startLock = new object();
+        var sharedThrottle = new Throttle(async () =>
+        {
+            if (sharedReceiver != null)
+            {
+                await sharedReceiver(shared.ToString());
+            }
+        });
 
         process.OutputDataReceived += async (_, args) =>
         {
-            DateTime start;
-            
             output.AppendLine(args.Data);
             shared.AppendLine(args.Data);
             
@@ -71,29 +71,14 @@ public static class Executor
                 await outputReceiver(output.ToString());
             }
 
-            lock (startLock)
+            if (sharedReceiver != null)
             {
-                start = startTime;
-            }
-            
-            var end = DateTime.Now;
-            var span = end - start;
-
-            if (sharedReceiver != null && span.TotalSeconds > bufferSize)
-            {
-                lock (startLock)
-                {
-                    startTime = end;
-                }
-                
-                await sharedReceiver(shared.ToString());
+                await sharedThrottle.Call();
             }
         };
             
         process.ErrorDataReceived += async (_, args) =>
         {
-            DateTime start;
-            
             error.AppendLine(args.Data);
             shared.AppendLine(args.Data);
             
@@ -102,22 +87,9 @@ public static class Executor
                 await errorReceiver(error.ToString());
             }
             
-            lock (startLock)
+            if (sharedReceiver != null)
             {
-                start = startTime;
-            }
-            
-            var end = DateTime.Now;
-            var span = end - start;
-            
-            if (sharedReceiver != null && span.TotalSeconds > bufferSize)
-            {
-                lock (startLock)
-                {
-                    startTime = end;
-                }
-                
-                await sharedReceiver(shared.ToString());
+                await sharedThrottle.Call();
             }
         };
             
