@@ -3,6 +3,10 @@ using api.Logic;
 using api.Middleware;
 using api.Services;
 using data;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
+using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +32,22 @@ builder.Services.AddTransient<PermissionService>();
 builder.Services.AddTransient<PermissionData>();
 
 builder.Services.AddHttpClient<Auth0Service>();
+
+#pragma warning disable 618
+//BsonDefaults.GuidRepresentation = GuidRepresentation.Standard;
+BsonDefaults.GuidRepresentationMode = GuidRepresentationMode.V3;
+#pragma warning restore
+
+BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
+
+builder.Services.AddTransient<MongoClient>(provider =>
+{
+    var connectionString = Environment.GetEnvironmentVariable("MongoUri");
+    return new MongoClient(connectionString);
+});
+
+builder.Services.AddTransient<IMongoDatabase>(provider => provider.GetService<MongoClient>()
+    .GetDatabase("push"));
 
 builder.Services.AddAutoMapper(x => x.AddProfile<DataProfile>());
 

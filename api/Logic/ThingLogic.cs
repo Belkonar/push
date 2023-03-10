@@ -3,6 +3,7 @@ using data;
 using data.ORM;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson;
+using MongoDB.Driver;
 using shared.Models;
 using shared.Models.Job;
 using shared.Models.Pipeline;
@@ -16,12 +17,14 @@ public class ThingLogic
     private readonly IMapper _mapper;
     private readonly MainContext _mainContext;
     private readonly PipelineLogic _pipelineLogic;
+    private readonly MongoClient _mongoClient;
 
-    public ThingLogic(IMapper mapper, MainContext mainContext, PipelineLogic pipelineLogic)
+    public ThingLogic(IMapper mapper, MainContext mainContext, PipelineLogic pipelineLogic, MongoClient mongoClient)
     {
         _mapper = mapper;
         _mainContext = mainContext;
         _pipelineLogic = pipelineLogic;
+        _mongoClient = mongoClient;
     }
     
     public async Task<List<ThingView>> GetThings()
@@ -150,10 +153,11 @@ public class ThingLogic
 
         var job = new Job()
         {
-            Id = ObjectId.GenerateNewId(),
+            Id = Guid.NewGuid(),
             ThingId = id
         };
 
+        job.SourceControlUri = deployable.Contents.SourceControlUri;
         job.SourceReference = reference;
         job.PipelineId = pipeline.PipelineId;
         job.PipelineVersion = pipeline.Version;
@@ -243,6 +247,9 @@ public class ThingLogic
         }
 
         // TODO: Save Job
+        var collection = _mongoClient.GetDatabase("push").GetCollection<Job>("jobs");
+
+        await collection.InsertOneAsync(job);
         
         return job;
     }

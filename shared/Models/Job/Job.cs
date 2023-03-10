@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using shared.Models.Pipeline;
 
 namespace shared.Models.Job;
@@ -14,7 +15,7 @@ namespace shared.Models.Job;
 public class Job
 {
     [Column("id")]
-    public ObjectId Id { get; set; }
+    public Guid Id { get; set; }
 
     [Column("thing")]
     public Guid ThingId { get; set; }

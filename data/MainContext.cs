@@ -16,8 +16,6 @@ public class MainContext : DbContext
     public DbSet<PipelineDTO> Pipelines { get; set; }
     public DbSet<PipelineVersionDTO> PipelineVersions { get; set; }
     
-    public DbSet<JobDto> Jobs { get; set; }
-
     // Resource types
     public DbSet<DeployableDto> Deployables { get; set; }
 

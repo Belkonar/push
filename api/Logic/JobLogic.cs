@@ -3,6 +3,9 @@ using data;
 using data.ORM;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
+using MongoDB.Bson;
+using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using shared.Models.Job;
 using shared.UpdateModels;
 using shared.View;
@@ -14,29 +17,38 @@ public class JobLogic
     private readonly MainContext _context;
     private readonly IMapper _mapper;
     private readonly IDistributedCache _cache;
+    private readonly IMongoDatabase _mongoDatabase;
 
-    public JobLogic(MainContext context, IMapper mapper, IDistributedCache cache)
+    public JobLogic(MainContext context, IMapper mapper, IDistributedCache cache, IMongoDatabase mongoDatabase)
     {
         _context = context;
         _mapper = mapper;
         _cache = cache;
+        _mongoDatabase = mongoDatabase;
     }
     
     public async Task<List<Job>> GetJobByStatus(string status)
     {
-        throw new NotImplementedException();
+        var collection = _mongoDatabase.GetCollection<Job>("jobs");
+
+        var filter = Builders<Job>.Filter
+            .Eq(x => x.Status, "pending");
+
+        return await collection.Find(filter).ToListAsync();
     }
 
     public async Task<JobView> GetJob(Guid id)
     {
-        var job = await _context.Jobs.FindAsync(id);
-        
-        if (job == null)
-        {
-            throw new FileNotFoundException();
-        }
-        
-        return _mapper.Map<JobDto, JobView>(job);
+        // var job = await _context.Jobs.FindAsync(id);
+        //
+        // if (job == null)
+        // {
+        //     throw new FileNotFoundException();
+        // }
+        //
+        // return _mapper.Map<JobDto, JobView>(job);
+
+        throw new NotImplementedException();
     }
 
     public async Task UpdateStepOutput(Guid id, int ordinal, SimpleValue output)
@@ -53,49 +65,45 @@ public class JobLogic
 
     public async Task UpdateStatus(Guid id, UpdateStatus status)
     {
-        var job = await _context.Jobs.FindAsync(id);
+        var collection = _mongoDatabase.GetCollection<Job>("jobs");
+
+        var filter = Builders<Job>.Filter
+            .Eq(x => x.Id, id);
         
-        if (job == null)
-        {
-            throw new FileNotFoundException();
-        }
+        var update = Builders<Job>.Update
+            .Set(x => x.Status, status.Status)
+            .Set(x => x.StatusReason, status.StatusReason);
 
-        job.Status = status.Status;
-        job.StatusReason = status.StatusReason;
-
-        await _context.SaveChangesAsync();
+        await collection.UpdateOneAsync(filter, update);
     }
     
-    // NOTE: This method is sensitive to race conditions when async workflows are made.
-    // When I switch to mongo this will be no longer a problem
+    // TODO: updateJob
     public async Task UpdateStepStatus(Guid id, int ordinal, UpdateStatus status, bool updateJob = false)
     {
-        var job = await _context.Jobs.FindAsync(id);
+        var collection = _mongoDatabase.GetCollection<Job>("jobs");
+
+        var filter = Builders<Job>.Filter
+            .Eq(x => x.Id, id);
+
+        var update = Builders<Job>.Update
+            .Set("Steps.$[s].Status", status.Status)
+            .Set("Steps.$[s].StatusReason", status.StatusReason);
         
-        if (job == null)
+        var arrayFilters = new[]
         {
-            throw new FileNotFoundException();
-        }
+            new BsonDocumentArrayFilterDefinition<BsonDocument>(new BsonDocument("s.Ordinal", ordinal)),
+        };
 
-        var step = job.Contents.Steps.FirstOrDefault(x => x.Ordinal == ordinal);
-
-        if (step == null)
+        await collection.UpdateOneAsync(filter, update, new UpdateOptions()
         {
-            throw new FileNotFoundException();
-        }
+            ArrayFilters = arrayFilters
+        });
 
-        step.Status = status.Status;
-        step.StatusReason = status.StatusReason;
-        
-        _context.Mark(job);
-
+        // This is mostly used on errors to bubble them up
         if (updateJob)
         {
-            job.Status = status.Status;
-            job.StatusReason = status.StatusReason;
+            await UpdateStatus(id, status);
         }
-        
-        await _context.SaveChangesAsync();
     }
 
     /// <summary>
@@ -111,33 +119,35 @@ public class JobLogic
     /// <exception cref="FileNotFoundException"></exception>
     public async Task<SimpleValue> GetStepOutput(Guid id, int ordinal)
     {
-        var job = await _context.Jobs.FindAsync(id);
-        if (job == null)
-        {
-            throw new FileNotFoundException();
-        }
+        // var job = await _context.Jobs.FindAsync(id);
+        // if (job == null)
+        // {
+        //     throw new FileNotFoundException();
+        // }
+        //
+        // var step = job.Contents.Steps.FirstOrDefault(x => x.Ordinal == ordinal);
+        // if (step == null)
+        // {
+        //     throw new FileNotFoundException();
+        // }
+        //
+        // if (step.Status == "running")
+        // {
+        //     var key = $"step-output.{id}.{ordinal}";
+        //
+        //     return new SimpleValue()
+        //     {
+        //         Value = await _cache.GetStringAsync(key) ?? "No output yet"
+        //     };
+        // }
+        // else
+        // {
+        //     return new SimpleValue()
+        //     {
+        //         Value = step.StepInfo?.Output?.Shared ?? "No output yet"
+        //     };
+        // }
 
-        var step = job.Contents.Steps.FirstOrDefault(x => x.Ordinal == ordinal);
-        if (step == null)
-        {
-            throw new FileNotFoundException();
-        }
-
-        if (step.Status == "running")
-        {
-            var key = $"step-output.{id}.{ordinal}";
-
-            return new SimpleValue()
-            {
-                Value = await _cache.GetStringAsync(key) ?? "No output yet"
-            };
-        }
-        else
-        {
-            return new SimpleValue()
-            {
-                Value = step.StepInfo?.Output?.Shared ?? "No output yet"
-            };
-        }
+        throw new NotImplementedException();
     }
 }
