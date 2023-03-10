@@ -43,12 +43,6 @@ public class MainContext : DbContext
             .WithOne()
             .HasForeignKey<DeployableDto>(x => x.ThingId);
 
-        modelBuilder.Entity<ThingDto>()
-            .HasMany<JobDto>()
-            .WithOne()
-            .OnDelete(DeleteBehavior.Cascade)
-            .HasForeignKey(x => x.ThingId);
-
         modelBuilder.Entity<PipelineDTO>()
             .HasMany<PipelineVersionDTO>()
             .WithOne()

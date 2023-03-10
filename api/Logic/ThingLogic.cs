@@ -2,6 +2,7 @@ using AutoMapper;
 using data;
 using data.ORM;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson;
 using shared.Models;
 using shared.Models.Job;
 using shared.Models.Pipeline;
@@ -122,7 +123,7 @@ public class ThingLogic
     /// <param name="id">id of the thing (not the deployable)</param>
     /// <param name="reference">the source reference</param>
     /// TODO: Add the job viewmodel and DTO stuff here
-    public async Task<JobView> StartDeployment(Guid id, string reference)
+    public async Task<Job> StartDeployment(Guid id, string reference)
     {
         var thing = await _mainContext.Things.FindAsync(id);
 
@@ -147,15 +148,15 @@ public class ThingLogic
         var pipeline = await _pipelineLogic.GetVersionByConstraint(deployable.Contents.PipelineId.Value, deployable.Contents.PipelineConstraint);
         var pipelineCode = pipeline.Contents.PipelineCode;
 
-        var job = new JobDto()
+        var job = new Job()
         {
-            Id = Guid.NewGuid(),
+            Id = ObjectId.GenerateNewId(),
             ThingId = id
         };
 
-        job.Contents.SourceReference = reference;
-        job.Contents.PipelineId = pipeline.PipelineId;
-        job.Contents.PipelineVersion = pipeline.Version;
+        job.SourceReference = reference;
+        job.PipelineId = pipeline.PipelineId;
+        job.PipelineVersion = pipeline.Version;
 
         foreach (var globalParameter in pipeline.Contents.PipelineCode.Parameters)
         {
@@ -167,13 +168,13 @@ public class ThingLogic
                 param.Value = deployable.Contents.Variables[param.Name];
             }
             
-            job.Contents.Parameters.Add(param);
+            job.Parameters.Add(param);
         }
 
         var ordinal = 0;
         foreach (var stage in pipelineCode.Stages)
         {
-            job.Contents.Stages.Add(new JobStage()
+            job.Stages.Add(new JobStage()
             {
                 Name = stage.Name
             });
@@ -237,13 +238,12 @@ public class ThingLogic
                     jobStep.StepInfo = _mapper.Map<Step, JobStepInfo>(stepCode);
                 }
                 
-                job.Contents.Steps.Add(jobStep);
+                job.Steps.Add(jobStep);
             }
         }
 
-        await _mainContext.AddAsync(job);
-        await _mainContext.SaveChangesAsync();
-
-        return _mapper.Map<JobDto, JobView>(job);
+        // TODO: Save Job
+        
+        return job;
     }
 }

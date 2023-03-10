@@ -1,5 +1,6 @@
 using api.Logic;
 using Microsoft.AspNetCore.Mvc;
+using shared.Models.Job;
 using shared.UpdateModels;
 using shared.View;
 
@@ -56,7 +57,7 @@ public class ThingController : ControllerBase
     }
     
     [HttpPost("{id}/deployable/start/{reference}")]
-    public async Task<JobView> StartDeployment([FromRoute] Guid id, [FromRoute] string reference)
+    public async Task<Job> StartDeployment([FromRoute] Guid id, [FromRoute] string reference)
     {
         return await _thingLogic.StartDeployment(id, reference);
     }

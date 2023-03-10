@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using MongoDB.Bson;
 using shared.Models.Pipeline;
 
 namespace shared.Models.Job;
@@ -11,6 +13,18 @@ namespace shared.Models.Job;
 
 public class Job
 {
+    [Column("id")]
+    public ObjectId Id { get; set; }
+
+    [Column("thing")]
+    public Guid ThingId { get; set; }
+
+    [Column("status")]
+    public string Status { get; set; } = "pending";
+    
+    [Column("statusReason")]
+    public string StatusReason { get; set; } = "";
+    
     [JsonPropertyName("stages")]
     public List<JobStage> Stages { get; set; } = new();
 

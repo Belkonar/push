@@ -3,6 +3,8 @@ using data;
 using data.ORM;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
+using shared.Models.Job;
+using shared.UpdateModels;
 using shared.View;
 
 namespace api.Logic;
@@ -20,15 +22,9 @@ public class JobLogic
         _cache = cache;
     }
     
-    public async Task<List<JobView>> GetJobByStatus(string status)
+    public async Task<List<Job>> GetJobByStatus(string status)
     {
-        return (
-                await _context.Jobs
-                    .Where(x => x.Status == status)
-                    .ToListAsync()
-            )
-            .Select(x => _mapper.Map<JobDto, JobView>(x))
-            .ToList();
+        throw new NotImplementedException();
     }
 
     public async Task<JobView> GetJob(Guid id)
@@ -54,7 +50,54 @@ public class JobLogic
             AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
         });
     }
+
+    public async Task UpdateStatus(Guid id, UpdateStatus status)
+    {
+        var job = await _context.Jobs.FindAsync(id);
+        
+        if (job == null)
+        {
+            throw new FileNotFoundException();
+        }
+
+        job.Status = status.Status;
+        job.StatusReason = status.StatusReason;
+
+        await _context.SaveChangesAsync();
+    }
     
+    // NOTE: This method is sensitive to race conditions when async workflows are made.
+    // When I switch to mongo this will be no longer a problem
+    public async Task UpdateStepStatus(Guid id, int ordinal, UpdateStatus status, bool updateJob = false)
+    {
+        var job = await _context.Jobs.FindAsync(id);
+        
+        if (job == null)
+        {
+            throw new FileNotFoundException();
+        }
+
+        var step = job.Contents.Steps.FirstOrDefault(x => x.Ordinal == ordinal);
+
+        if (step == null)
+        {
+            throw new FileNotFoundException();
+        }
+
+        step.Status = status.Status;
+        step.StatusReason = status.StatusReason;
+        
+        _context.Mark(job);
+
+        if (updateJob)
+        {
+            job.Status = status.Status;
+            job.StatusReason = status.StatusReason;
+        }
+        
+        await _context.SaveChangesAsync();
+    }
+
     /// <summary>
     /// The purpose of this is to get the logs. Either the cached run logs
     /// or the output logs from the ran step. Which you get is dependant on

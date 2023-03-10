@@ -28,6 +28,8 @@ public class Worker : BackgroundService
             
             _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
             
+            Console.WriteLine("hi");
+            
             break; // delete this later lol
         }
         
