@@ -190,7 +190,7 @@ public class DockerBuilder
     /// <summary>
     /// Creates a volume and uses the destination as the working directory
     /// </summary>
-    /// <param name="src">The folder on the host to bind</param>
+    /// <param name="src">The folder on the host to bind (has to be in the build context)</param>
     /// <param name="dest">The location on the container to bind to (and make working directory)</param>
     public void WorkDirVolume(string src, string dest)
     {

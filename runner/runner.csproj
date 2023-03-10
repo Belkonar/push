@@ -4,11 +4,11 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>dotnet-scheduler-05b16262-0737-4b1f-a652-7fbd670ae68e</UserSecretsId>
+    <UserSecretsId>dotnet-runner-a813cc76-d8b5-4cdb-a90f-80c481afa104</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
-    
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -8,5 +8,5 @@ public class UpdateStatus
     public string Status { get; set; }
     
     [JsonPropertyName("statusReason")]
-    public string StatusReason { get; set; }
+    public string StatusReason { get; set; } = "";
 }

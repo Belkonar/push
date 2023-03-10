@@ -32,23 +32,26 @@ public class JobLogic
         var collection = _mongoDatabase.GetCollection<Job>("jobs");
 
         var filter = Builders<Job>.Filter
-            .Eq(x => x.Status, "pending");
+            .Eq(x => x.Status, status);
 
         return await collection.Find(filter).ToListAsync();
     }
 
-    public async Task<JobView> GetJob(Guid id)
+    public async Task<Job> GetJob(Guid id)
     {
-        // var job = await _context.Jobs.FindAsync(id);
-        //
-        // if (job == null)
-        // {
-        //     throw new FileNotFoundException();
-        // }
-        //
-        // return _mapper.Map<JobDto, JobView>(job);
+        var collection = _mongoDatabase.GetCollection<Job>("jobs");
 
-        throw new NotImplementedException();
+        var filter = Builders<Job>.Filter
+            .Eq(x => x.Id, id);
+
+        var job = await collection.Find(filter).FirstOrDefaultAsync();
+
+        if (job == null)
+        {
+            throw new FileNotFoundException();
+        }
+
+        return job;
     }
 
     public async Task UpdateStepOutput(Guid id, int ordinal, SimpleValue output)
@@ -77,7 +80,6 @@ public class JobLogic
         await collection.UpdateOneAsync(filter, update);
     }
     
-    // TODO: updateJob
     public async Task UpdateStepStatus(Guid id, int ordinal, UpdateStatus status, bool updateJob = false)
     {
         var collection = _mongoDatabase.GetCollection<Job>("jobs");
@@ -119,35 +121,39 @@ public class JobLogic
     /// <exception cref="FileNotFoundException"></exception>
     public async Task<SimpleValue> GetStepOutput(Guid id, int ordinal)
     {
-        // var job = await _context.Jobs.FindAsync(id);
-        // if (job == null)
-        // {
-        //     throw new FileNotFoundException();
-        // }
-        //
-        // var step = job.Contents.Steps.FirstOrDefault(x => x.Ordinal == ordinal);
-        // if (step == null)
-        // {
-        //     throw new FileNotFoundException();
-        // }
-        //
-        // if (step.Status == "running")
-        // {
-        //     var key = $"step-output.{id}.{ordinal}";
-        //
-        //     return new SimpleValue()
-        //     {
-        //         Value = await _cache.GetStringAsync(key) ?? "No output yet"
-        //     };
-        // }
-        // else
-        // {
-        //     return new SimpleValue()
-        //     {
-        //         Value = step.StepInfo?.Output?.Shared ?? "No output yet"
-        //     };
-        // }
+        var collection = _mongoDatabase.GetCollection<Job>("jobs");
 
-        throw new NotImplementedException();
+        var filter = Builders<Job>.Filter
+            .Eq(x => x.Id, id);
+
+        var job = await collection.Find(filter).FirstOrDefaultAsync();
+
+        if (job == null)
+        {
+            throw new FileNotFoundException();
+        }
+        
+        var step = job.Steps.FirstOrDefault(x => x.Ordinal == ordinal);
+        if (step == null)
+        {
+            throw new FileNotFoundException();
+        }
+        
+        if (step.Status == "running")
+        {
+            var key = $"step-output.{id}.{ordinal}";
+        
+            return new SimpleValue()
+            {
+                Value = await _cache.GetStringAsync(key) ?? "No output yet"
+            };
+        }
+        else
+        {
+            return new SimpleValue()
+            {
+                Value = step.StepInfo?.Output?.Shared ?? "No output yet"
+            };
+        }
     }
 }

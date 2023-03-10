@@ -5,8 +5,6 @@ namespace data;
 
 public class MainContext : DbContext
 {
-    // KVs
-    public DbSet<ConfigDto> Configs { get; set; }
     public DbSet<PolicyDto> Policies { get; set; }
 
     // Org Structure

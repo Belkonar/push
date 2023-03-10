@@ -25,10 +25,7 @@ public class DataProfile : Profile
         
         CreateMap<DeployableView, DeployableDto>()
             .Setup();
-        
-        CreateMap<JobView, JobDto>()
-            .Setup();
-        
+
         // For updates with smaller surfaces
         CreateMap<UpdateOrganization, OrganizationDto>();
         CreateMap<UpdatePolicy, PolicyDto>();

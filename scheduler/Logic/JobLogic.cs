@@ -4,28 +4,27 @@ using Amazon.S3;
 using Amazon.S3.Model;
 using scheduler.Services;
 using shared;
-using shared.View;
+using shared.Models.Job;
+using shared.UpdateModels;
 
 namespace scheduler.Logic;
 
 public class JobLogic
 {
     private readonly Github _github;
-    private readonly IHttpClientFactory _factory;
     private readonly IConfiguration _configuration;
+    private readonly HttpClient _client;
 
     public JobLogic(Github github, IHttpClientFactory factory, IConfiguration configuration)
     {
         _github = github;
-        _factory = factory;
         _configuration = configuration;
+        _client = factory.CreateClient("api");
     }
     
     public async Task HandlePendingJobs()
     {
-        var client = _factory.CreateClient("api");
-
-        var response = await client.GetFromJsonAsync<List<JobView>>("/job?status=pending");
+        var response = await _client.GetFromJsonAsync<List<Job>>("/job?status=pending");
 
         if (response == null || response.Count == 0)
         {
@@ -38,17 +37,17 @@ public class JobLogic
         }
     }
 
-    public async Task HandlePendingJob(JobView job)
+    public async Task HandlePendingJob(Job job)
     {
-        if (string.IsNullOrWhiteSpace(job.Contents.SourceControlUri) ||
-            string.IsNullOrWhiteSpace(job.Contents.SourceControlUri))
+        if (string.IsNullOrWhiteSpace(job.SourceControlUri) ||
+            string.IsNullOrWhiteSpace(job.SourceControlUri))
         {
             return;
         }
         
         Console.WriteLine(job.Id);
         
-        var code = await _github.GetReference(job.Contents.SourceControlUri, job.Contents.SourceReference);
+        var code = await _github.GetReference(job.SourceControlUri, job.SourceReference);
 
         using var artifactLocation = new TempFile();
         using var finalArtifactLocation = new TempFile();
@@ -67,7 +66,7 @@ public class JobLogic
         
         // We now have an artifact YAY!
 
-        using IAmazonS3 client = new AmazonS3Client(Amazon.RegionEndpoint.USEast2);
+        using IAmazonS3 s3Client = new AmazonS3Client(Amazon.RegionEndpoint.USEast2);
         
         // aws s3 rm s3://{bucket-name} --recursive # to clean stuff up
         
@@ -78,9 +77,16 @@ public class JobLogic
             FilePath = finalArtifactLocation.FilePath,
         };
         
-        var response = await client.PutObjectAsync(request);
+        await s3Client.PutObjectAsync(request);
 
-        var listResponse = await client.ListBucketsAsync();
+        var updateStatus = new UpdateStatus()
+        {
+            Status = "ready",
+            StatusReason = ""
+        };
+
+        var response = await _client.PostAsJsonAsync($"/job/{job.Id.ToString()}/status", updateStatus);
+        response.EnsureSuccessStatusCode();
     }
 
     public async Task HandleReadyJobs()

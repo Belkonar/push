@@ -5,3 +5,4 @@ bin/
 .data/
 
 *.pem
+appsettings.Local.json

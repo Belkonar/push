@@ -39,6 +39,18 @@ public class TempFolder : IDisposable
     {
         return GetFile(Guid.NewGuid().ToString());
     }
+
+    public string CreateRandomFolder()
+    {
+        var name = GetFile();
+        
+        if (!Directory.Exists(name))
+        {
+            Directory.CreateDirectory(name);
+        }
+
+        return name;
+    }
     
     public void Dispose()
     {

@@ -1,6 +1,6 @@
 ﻿{
   "profiles": {
-    "scheduler": {
+    "runner": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "environmentVariables": {
