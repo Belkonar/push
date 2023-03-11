@@ -63,6 +63,11 @@ public static class Executor
 
         process.OutputDataReceived += async (_, args) =>
         {
+            if (string.IsNullOrWhiteSpace(args.Data))
+            {
+                return;
+            }
+            
             output.AppendLine(args.Data);
             shared.AppendLine(args.Data);
             
@@ -79,6 +84,11 @@ public static class Executor
             
         process.ErrorDataReceived += async (_, args) =>
         {
+            if (string.IsNullOrWhiteSpace(args.Data))
+            {
+                return;
+            }
+            
             error.AppendLine(args.Data);
             shared.AppendLine(args.Data);
             

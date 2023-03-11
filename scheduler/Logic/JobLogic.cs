@@ -5,6 +5,7 @@ using Amazon.S3.Model;
 using scheduler.Services;
 using shared;
 using shared.Models.Job;
+using shared.Models.Nomad;
 using shared.UpdateModels;
 
 namespace scheduler.Logic;
@@ -14,12 +15,14 @@ public class JobLogic
     private readonly Github _github;
     private readonly IConfiguration _configuration;
     private readonly HttpClient _client;
+    private readonly HttpClient _nomadClient;
 
     public JobLogic(Github github, IHttpClientFactory factory, IConfiguration configuration)
     {
         _github = github;
         _configuration = configuration;
         _client = factory.CreateClient("api");
+        _nomadClient = factory.CreateClient("nomad");
     }
     
     public async Task HandlePendingJobs()
@@ -91,6 +94,71 @@ public class JobLogic
 
     public async Task HandleReadyJobs()
     {
+        var response = await _client.GetFromJsonAsync<List<Job>>("/job?status=ready");
+
+        if (response == null || response.Count == 0)
+        {
+            return;
+        }
+
+        foreach (var job in response)
+        {
+            await HandleReadyJob(job);
+        }
+    }
+
+    private async Task HandleReadyJob(Job job)
+    {
+        await UpdateJobStatus(job, "running");
         
+        var steps = job.Steps
+            .Where(x => x.Status == "pending")
+            .OrderBy(x => x.Ordinal)
+            .ToList();
+
+        if (steps.Count == 0)
+        {
+            // No more pending steps!
+            await UpdateJobStatus(job, "success");
+            return;
+        }
+
+        var step = steps.First();
+        
+        // I got everything I need for nomad!
+        var request = new NomadJobRequest();
+
+        request.Job.Id = job.Id.ToString();
+        request.Job.Name = job.Id.ToString();
+        
+        var taskGroup = new NomadJobTaskGroup();
+        var task = new NomadTask
+        {
+            Config =
+            {
+                Command = "runner",
+                Arguments = new List<string>()
+                {
+                    { job.Id.ToString() },
+                    { step.Ordinal.ToString() }
+                }
+            }
+        };
+        
+        taskGroup.Tasks.Add(task);
+        request.Job.TaskGroups.Add(taskGroup);
+
+        var nomadRequest = await _nomadClient.PostAsJsonAsync($"/v1/job/{job.Id}", request);
+        nomadRequest.EnsureSuccessStatusCode();
+    }
+
+    private async Task UpdateJobStatus(Job job, string status)
+    {
+        using var response = await _client.PostAsJsonAsync($"/job/{job.Id.ToString()}/status", new UpdateStatus()
+        {
+            Status = status
+        });
+
+        response.EnsureSuccessStatusCode();
     }
 }

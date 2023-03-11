@@ -23,14 +23,12 @@ public class Worker : BackgroundService
             {
                 var logic = scope.ServiceProvider.GetRequiredService<JobLogic>();
                 await logic.HandlePendingJobs();
-                // await logic.HandleReadyJobs(); // This basically just drops jobs on nomad if a step is ready
+                await logic.HandleReadyJobs(); // This basically just drops jobs on nomad if a step is ready
             }
             
             _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
             
-            Console.WriteLine("hi");
-            
-            break; // delete this later lol
+            Thread.Sleep(1000);
         }
         
         // If the loop dies, just kill the app, but don't bother if it's already requested

@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.Extensions.Caching.Distributed;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using shared;
 using shared.Models.Job;
 using shared.UpdateModels;
 using shared.View;
@@ -46,6 +47,16 @@ public class JobLogic
         return job;
     }
 
+    public async Task<Job> GetSafeJob(Guid id)
+    {
+        var collection = _mongoDatabase.GetCollection<Job>("Safe Jobs");
+        
+        // var filter = Builders<BsonDocument>.Filter
+        //     .Eq("_id", id);
+
+        return await collection.Find(new BsonDocument()).FirstOrDefaultAsync();
+    }
+
     public async Task UpdateStepOutput(Guid id, int ordinal, SimpleValue output)
     {
         var key = $"step-output.{id}.{ordinal}";
@@ -72,7 +83,7 @@ public class JobLogic
         await collection.UpdateOneAsync(filter, update);
     }
     
-    public async Task UpdateStepStatus(Guid id, int ordinal, UpdateStatus status, bool updateJob = false)
+    public async Task UpdateStepStatus(Guid id, int ordinal, UpdateStatus status)
     {
         var collection = _mongoDatabase.GetCollection<Job>("jobs");
 
@@ -92,11 +103,55 @@ public class JobLogic
         {
             ArrayFilters = arrayFilters
         });
+    }
 
-        // This is mostly used on errors to bubble them up
-        if (updateJob)
+    public async Task FinalizeStep(Guid id, int ordinal, ExecutorResponse response)
+    {
+        var collection = _mongoDatabase.GetCollection<Job>("jobs");
+        
+        var status = new UpdateStatus();
+
+        if (response.ResponseCode != 0)
         {
+            status.Status = "error";
+            status.StatusReason = "step ended in failure";
+        }
+        else
+        {
+            status.Status = "success";
+            status.StatusReason = "";
+        }
+        
+        var filter = Builders<Job>.Filter
+            .Eq(x => x.Id, id);
+
+        var update = Builders<Job>.Update
+            .Set("Steps.$[s].Status", status.Status)
+            .Set("Steps.$[s].StatusReason", status.StatusReason)
+            .Set("Steps.$[s].StepInfo.Output", response);
+        
+        var arrayFilters = new[]
+        {
+            new BsonDocumentArrayFilterDefinition<BsonDocument>(new BsonDocument("s.Ordinal", ordinal)),
+        };
+
+        await collection.UpdateOneAsync(filter, update, new UpdateOptions()
+        {
+            ArrayFilters = arrayFilters
+        });
+
+        if (response.ResponseCode != 0)
+        {
+            // just bubble the error
             await UpdateStatus(id, status);
+        }
+        else
+        {
+            await UpdateStatus(id, new UpdateStatus()
+            {
+                Status = "ready",
+                StatusReason = ""
+            });
         }
     }
 

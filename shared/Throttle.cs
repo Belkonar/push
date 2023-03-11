@@ -6,7 +6,7 @@ public class Throttle
     private readonly Object _locker = new object();
     private DateTime _time = DateTime.Now;
 
-    public int Interval { get; set; } = 5;
+    public int Interval { get; set; } = 3;
 
     public Throttle(Func<Task> func)
     {

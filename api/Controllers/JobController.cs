@@ -1,5 +1,7 @@
 using api.Logic;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
+using shared;
 using shared.Models.Job;
 using shared.UpdateModels;
 using shared.View;
@@ -28,6 +30,12 @@ public class JobController : ControllerBase
     {
         return await _logic.GetJob(id);
     }
+    
+    [HttpGet("{id}/safe")]
+    public async Task<Job> GetSafeJob([FromRoute] Guid id)
+    {
+        return await _logic.GetSafeJob(id);
+    }
 
     [HttpPost("{id}/status")]
     public async Task UpdateStatus([FromRoute] Guid id, [FromBody] UpdateStatus status)
@@ -35,9 +43,27 @@ public class JobController : ControllerBase
         await _logic.UpdateStatus(id, status);
     }
 
-    [HttpPost("{id}/step/{ordinal}")]
-    public async Task UpdateStepStatus([FromRoute] Guid id, [FromRoute] int ordinal, [FromBody] UpdateStatus status, [FromQuery] bool updateJob = false)
+    [HttpPost("{id}/step/{ordinal}/status")]
+    public async Task UpdateStepStatus([FromRoute] Guid id, [FromRoute] int ordinal, [FromBody] UpdateStatus status)
     {
-        await _logic.UpdateStepStatus(id, ordinal, status, updateJob);
+        await _logic.UpdateStepStatus(id, ordinal, status);
+    }
+    
+    [HttpGet("{id}/step/{ordinal}/output")]
+    public async Task<SimpleValue> GetStepOutput([FromRoute] Guid id, [FromRoute] int ordinal)
+    {
+        return await _logic.GetStepOutput(id, ordinal);
+    }
+
+    [HttpPut("{id}/step/{ordinal}/output")]
+    public async Task UpdateStepOutput([FromRoute] Guid id, [FromRoute] int ordinal, [FromBody] SimpleValue output)
+    {
+        await _logic.UpdateStepOutput(id, ordinal, output);
+    }
+
+    [HttpPost("{id}/step/{ordinal}/finalize")]
+    public async Task FinalizeStep([FromRoute] Guid id, [FromRoute] int ordinal, [FromBody] ExecutorResponse response)
+    {
+        await _logic.FinalizeStep(id, ordinal, response);
     }
 }

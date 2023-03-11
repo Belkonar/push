@@ -4,6 +4,8 @@ using Amazon.S3;
 using Amazon.S3.Model;
 using shared;
 using shared.Models.Job;
+using shared.UpdateModels;
+using shared.View;
 
 namespace runner;
 
@@ -39,9 +41,15 @@ public class Runner
         }
         
         Console.WriteLine("got everything");
-        
-        // _configuration.GetValue<string>("BucketName")
 
+        var updateStatusResponse = await _client.PostAsJsonAsync($"/job/{job.Id}/step/{ordinal}/status", new UpdateStatus()
+        {
+            Status = "running",
+            StatusReason = ""
+        });
+
+        updateStatusResponse.EnsureSuccessStatusCode();
+        
         if (step.StepInfo != null)
         {
             await ProcessDockerStep(job, step);
@@ -55,11 +63,9 @@ public class Runner
         using IAmazonS3 s3Client = new AmazonS3Client(Amazon.RegionEndpoint.USEast2);
         
         using var startingLocation = new TempFile();
-        using var endingLocation = new TempFile();
         using var dockerSpace = new TempFolder();
+        using var volumeDir = new TempFolder();
 
-        var volumeDir = dockerSpace.CreateRandomFolder();
-        
         var getRequest = new GetObjectRequest()
         {
             BucketName = _configuration.GetValue<string>("BucketName"),
@@ -71,37 +77,53 @@ public class Runner
             await getResponse.WriteResponseStreamToFileAsync(startingLocation.FilePath, false, new CancellationToken());
         }
         
-        ZipFile.ExtractToDirectory(startingLocation.FilePath, volumeDir);
-        File.WriteAllText(Path.Join(volumeDir, "myfile"), "my content");
+        ZipFile.ExtractToDirectory(startingLocation.FilePath, volumeDir.Dir);
 
         var dockerfile = new DockerBuilder(dockerSpace);
         
         dockerfile.From(step.StepInfo.Docker);
         
         dockerfile.SetupScript(step.StepInfo.Commands);
-        
-        foreach (var file in Directory.GetFiles(volumeDir))
-        {
-            Console.WriteLine(file);
-        }
-        dockerfile.WorkDirVolume(volumeDir, "/app");
+
+        dockerfile.WorkDirVolume(volumeDir.Dir, "/app");
         
         dockerfile.CreateFile();
         
         Executor.Execute(dockerfile.GetBuildConfig());
 
-        var response = Executor.Execute(dockerfile.GetRunConfig());
-        Console.WriteLine(response);
-        
-        ZipFile.CreateFromDirectory(volumeDir, endingLocation.FilePath);
-        
-        var uploadRequest = new PutObjectRequest
+        var response = Executor.Execute(dockerfile.GetRunConfig(), async s =>
         {
-            BucketName = _configuration.GetValue<string>("BucketName"),
-            Key = job.Id.ToString(),
-            FilePath = endingLocation.FilePath
-        };
+            if (string.IsNullOrWhiteSpace(s))
+            {
+                return;
+            }
+            
+            using var outputResponse = await _client.PutAsJsonAsync($"/job/{job.Id}/step/{step.Ordinal}/output", new SimpleValue()
+            {
+                Value = s
+            });
 
-        await s3Client.PutObjectAsync(uploadRequest);
+            outputResponse.EnsureSuccessStatusCode();
+        });
+
+        if (step.StepInfo.Persist)
+        {
+            using var endingLocation = new TempFile();
+        
+            ZipFile.CreateFromDirectory(volumeDir.Dir, endingLocation.FilePath);
+        
+            var uploadRequest = new PutObjectRequest
+            {
+                BucketName = _configuration.GetValue<string>("BucketName"),
+                Key = job.Id.ToString(),
+                FilePath = endingLocation.FilePath
+            };
+
+            await s3Client.PutObjectAsync(uploadRequest);
+        }
+
+        using var finalizeResponse = await _client.PostAsJsonAsync($"/job/{job.Id}/step/{step.Ordinal}/finalize", response);
+
+        finalizeResponse.EnsureSuccessStatusCode();
     }
 }

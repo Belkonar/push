@@ -14,6 +14,11 @@ IHost host = Host.CreateDefaultBuilder(args)
             client.BaseAddress = new Uri("http://localhost:5183");
         });
         
+        services.AddHttpClient("nomad", client =>
+        {
+            client.BaseAddress = new Uri("http://localhost:4646");
+        });
+        
     })
     .Build();
 
