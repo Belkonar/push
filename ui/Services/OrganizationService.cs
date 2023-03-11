@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using shared.Models;
 using shared.View;
 
 namespace ui.Services;
@@ -7,7 +8,7 @@ namespace ui.Services;
 public class OrganizationService
 {
     private readonly HttpClient _client;
-    private List<OrganizationView>? _organizations = null;
+    private List<Organization>? _organizations = null;
 
     public OrganizationService(HttpClient client)
     {
@@ -32,14 +33,14 @@ public class OrganizationService
         return _organizations?.FirstOrDefault(x => x.Id == id)?.Name ?? "N/A";
     }
     
-    public async Task<List<OrganizationView>> GetOrganizations()
+    public async Task<List<Organization>> GetOrganizations()
     {
         if (_organizations != null)
         {
             return _organizations;
         }
 
-        _organizations = await _client.GetFromJsonAsync<List<OrganizationView>>("/organization");
+        _organizations = await _client.GetFromJsonAsync<List<Organization>>("/organization");
 
         return _organizations!;
     }

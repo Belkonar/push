@@ -1,4 +1,5 @@
 @page "/organizations"
+@using shared.Models
 @inject HttpClient Http
 
 <PageTitle>@Title</PageTitle>
@@ -12,16 +13,12 @@
     <Table>
         <THead>
         <th>Name</th>
-        <th>Created</th>
-        <th>Last Update</th>
         </THead>
         <TBody>
         @foreach (var organization in Organizations)
         {
             <tr>
                 <td><a href="/organization/@organization.Id">@organization.Name</a></td>
-                <td>@organization.Created</td>
-                <td>@organization.Updated</td>
             </tr>
         }
         </TBody>
@@ -30,14 +27,14 @@
 
 @code {
 
-    private List<OrganizationView> Organizations = new ();
+    private List<Organization> Organizations = new ();
     
     private string Title = "Organization List";
 
     protected override async Task OnInitializedAsync()
     {
-        Organizations = await Http.GetFromJsonAsync<List<OrganizationView>>("/organization") 
-                        ?? new List<OrganizationView>();
+        Organizations = await Http.GetFromJsonAsync<List<Organization>>("/organization") 
+                        ?? new List<Organization>();
     }
 
 }

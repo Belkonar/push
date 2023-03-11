@@ -1,4 +1,5 @@
 @using System.Net
+@using shared.Models
 @using shared.Models.Pipeline
 @using shared.UpdateModels
 @inject HttpClient Http;
@@ -17,16 +18,16 @@
                 <div>Using pipeline: @Pipeline.Name</div>
                 @if (Version != null)
                 {
-                    <div>Using version: @Version.Version</div>
+                    <div>Using version: @Version.Id.Version</div>
                 }
             </div>
             <div class="form-group">
                 <label>Source Control URI</label>
-                <input type="text" class="form-control" @bind="View.Contents.SourceControlUri">
+                <input type="text" class="form-control" @bind="View.SourceControlUri">
             </div>
             <div class="form-group">
                 <label for="constraint">Constraint</label>
-                <input @onchange="Callback" id="constraint" type="text" class="form-control" value="@View.Contents.PipelineConstraint">
+                <input @onchange="Callback" id="constraint" type="text" class="form-control" value="@View.PipelineConstraint">
             </div>
 
             <h4>Pipeline Parameters</h4>
@@ -60,31 +61,31 @@
     [Parameter]
     public Guid Id { get; set; }
     
-    private DeployableView? View { get; set; } = null;
-    private ThingView? Thing { get; set; } = null;
-    private OrganizationView? Organization { get; set; } = null;
-    private PipelineView? Pipeline { get; set; } = null;
-    private PipelineVersionView? Version { get; set; } = null;
+    private Deployable? View { get; set; } = null;
+    private Thing? Thing { get; set; } = null;
+    private Organization? Organization { get; set; } = null;
+    private Pipeline? Pipeline { get; set; } = null;
+    private PipelineVersion? Version { get; set; } = null;
     private List<StepParameter> Parameters { get; set; } = new List<StepParameter>();
     
     private Dictionary<string, string> Variables { get; set; } = new Dictionary<string, string>();
 
     protected override async Task OnInitializedAsync()
     {
-        View = (await Http.GetFromJsonAsync<DeployableView>($"/thing/{Id}/deployable"))!;
-        Thing = (await Http.GetFromJsonAsync<ThingView>($"/thing/{Id}"))!;
-        Organization = (await Http.GetFromJsonAsync<OrganizationView>($"/organization/{Thing!.OrganizationId}"))!;
+        View = (await Http.GetFromJsonAsync<Deployable>($"/thing/{Id}/deployable"))!;
+        Thing = (await Http.GetFromJsonAsync<Thing>($"/thing/{Id}"))!;
+        Organization = (await Http.GetFromJsonAsync<Organization>($"/organization/{Thing!.OrganizationId}"))!;
         
-        Variables = View.Contents.Variables;
+        Variables = View.Variables;
 
-        if (View.Contents.PipelineId.HasValue)
+        if (View.PipelineId.HasValue)
         {
-            Pipeline = await Http.GetFromJsonAsync<PipelineView>($"/pipeline/{View.Contents.PipelineId}");
+            Pipeline = await Http.GetFromJsonAsync<Pipeline>($"/pipeline/{View.PipelineId}");
 
-            if (!string.IsNullOrWhiteSpace(View.Contents.PipelineConstraint))
+            if (!string.IsNullOrWhiteSpace(View.PipelineConstraint))
             {
                 Version = 
-                    await Http.GetFromJsonAsync<PipelineVersionView>($"/pipeline/{View.Contents.PipelineId}/version/{View.Contents.PipelineConstraint}");
+                    await Http.GetFromJsonAsync<PipelineVersion>($"/pipeline/{View.PipelineId}/version/{View.PipelineConstraint}");
                 ResetParameters();
             }
         }
@@ -94,7 +95,7 @@
     {
         Version = null;
         var constraint = arg.Value?.ToString() ?? "";
-        View!.Contents.PipelineConstraint = constraint;
+        View!.PipelineConstraint = constraint;
 
         if (string.IsNullOrWhiteSpace(constraint))
         {
@@ -102,7 +103,7 @@
             return;
         }
 
-        using var response = await Http.GetAsync($"/pipeline/{View.Contents.PipelineId}/version/{View.Contents.PipelineConstraint}");
+        using var response = await Http.GetAsync($"/pipeline/{View.PipelineId}/version/{View.PipelineConstraint}");
 
         if (response.StatusCode == HttpStatusCode.NotFound)
         {
@@ -122,7 +123,7 @@
             return;
         }
 
-        Version = await response.Content.ReadFromJsonAsync<PipelineVersionView>();
+        Version = await response.Content.ReadFromJsonAsync<PipelineVersion>();
         ResetParameters();
     }
 
@@ -150,7 +151,7 @@
     private async Task Save()
     {
         // TODO: Remove variables no longer needed
-        View!.Contents.Variables = Variables;
+        View!.Variables = Variables;
         
         using var response = await Http.PutAsJsonAsync($"/Thing/{Id}/deployable", View);
         try
@@ -173,9 +174,9 @@
             return;
         }
 
-        Parameters = Version.Contents.CompiledParameters;
+        Parameters = Version.CompiledParameters;
 
-        foreach (var parameter in Version.Contents.CompiledParameters)
+        foreach (var parameter in Version.CompiledParameters)
         {
             if (!Variables.ContainsKey(parameter.Name))
             {
@@ -185,9 +186,9 @@
             if (string.IsNullOrWhiteSpace(Variables[parameter.Name]) && !parameter.Local)
             {
                 // TODO: check against org variables
-                if (Organization!.Contents.Variables.ContainsKey(parameter.Name))
+                if (Organization!.Variables.ContainsKey(parameter.Name))
                 {
-                    Variables[parameter.Name] = Organization!.Contents.Variables[parameter.Name];
+                    Variables[parameter.Name] = Organization!.Variables[parameter.Name];
                 }
             }
         }

@@ -1,9 +1,6 @@
 using AutoMapper;
-using data;
-using data.ORM;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
+using MongoDB.Bson;
+using MongoDB.Driver;
 using shared;
 using shared.Models.Pipeline;
 using shared.View;
@@ -12,40 +9,35 @@ namespace api.Logic;
 
 public class PipelineLogic
 {
-    private readonly MainContext _mainContext;
-    private readonly IMapper _mapper;
+    private readonly IMongoDatabase _database;
 
-    public PipelineLogic(MainContext mainContext, IMapper mapper)
+    public PipelineLogic(IMongoDatabase database)
     {
-        _mainContext = mainContext;
-        _mapper = mapper;
+        _database = database;
     }
     
-    public async Task<List<PipelineView>> GetPipelines(Guid? org)
+    public async Task<List<Pipeline>> GetPipelines(Guid? org)
     {
-        var query = _mainContext.Pipelines.AsQueryable();
+        var collection = _database.GetCollection<Pipeline>("pipelines");
 
-        if (org.HasValue)
-        {
-            query = query.Where(x => x.OrganizationId == org);
-        }
-
-        return (await query.ToListAsync())
-            .Select(x => _mapper.Map<PipelineDTO, PipelineView>(x))
-            .ToList();
+        return await collection.Find(new BsonDocument()).ToListAsync();
     }
 
-    public async Task<PipelineView> GetPipeline(Guid id)
+    public async Task<Pipeline> GetPipeline(Guid id)
     {
-        var pipeline = await _mainContext.Pipelines.FindAsync(id);
+        var collection = _database.GetCollection<Pipeline>("pipelines");
+
+        var filter = Builders<Pipeline>.Filter
+            .Eq(x => x.Id, id);
+
+        var pipeline = await collection.Find(filter).FirstOrDefaultAsync();
 
         if (pipeline == null)
         {
-            // Make an exception for this
-            return null;
+            throw new FileNotFoundException();
         }
 
-        return _mapper.Map<PipelineDTO, PipelineView>(pipeline);
+        return pipeline;
     }
     
     public async Task<string> GetLatestMajor(Guid id)
@@ -64,10 +56,14 @@ public class PipelineLogic
     // Code re-use across boundries is fire.
     public async Task<List<string>> GetVersions(Guid id)
     {
-        return (await _mainContext.PipelineVersions
-            .Where(x => x.PipelineId == id)
-            .Select(x => x.Version)
-            .ToListAsync());
+        var collection = _database.GetCollection<PipelineVersion>("pipeline_versions");
+
+        var filter = Builders<PipelineVersion>.Filter
+            .Eq(x => x.Id.PipelineId, id);
+
+        return await collection.Find(filter)
+            .Project(x => x.Id.Version)
+            .ToListAsync();
     }
 
     /// <summary>
@@ -77,10 +73,10 @@ public class PipelineLogic
     /// <param name="constraint"></param>
     /// <returns></returns>
     /// <exception cref="FileNotFoundException"></exception>
-    public async Task<PipelineVersionView> GetVersionByConstraint(Guid id, string constraint)
+    public async Task<PipelineVersion> GetVersionByConstraint(Guid id, string constraint)
     {
         var versions = (await GetVersions(id)).AsEnumerable();
-
+        
         if (constraint.EndsWith('.'))
         {
             versions = versions.Where(x => x.StartsWith(constraint));
@@ -90,80 +86,98 @@ public class PipelineLogic
             // this may seem stupid but it makes everything cleaner.
             versions = versions.Where(x => x == constraint);
         }
-
+        
         var filtered = versions
             .Select(x => new Semver(x))
             .Where(x => x.IsValid)
             .OrderDescending()
             .FirstOrDefault()
             ?.ToString() ?? "";
-
-        if (filtered.IsNullOrEmpty())
+        
+        if (string.IsNullOrEmpty(filtered))
         {
             throw new FileNotFoundException("no version matching constraint");
         }
-
-        var version = await _mainContext.PipelineVersions
-            .FirstAsync(x => x.PipelineId == id && x.Version == filtered);
         
-        return _mapper.Map<PipelineVersionDTO, PipelineVersionView>(version);
+        var collection = _database.GetCollection<PipelineVersion>("pipeline_versions");
+        
+        var filter = Builders<PipelineVersion>.Filter
+            .Eq(x => x.Id, new PipelineVersionKey()
+            {
+                PipelineId = id,
+                Version = filtered
+            });
+
+        var version = await collection.Find(filter).FirstOrDefaultAsync();
+
+        if (version == null)
+        {
+            throw new Exception("wot in the fucj");
+        }
+
+        return version;
     }
     
-    public async Task<PipelineView> CreatePipeline(PipelineView data)
+    public async Task<Pipeline> CreatePipeline(Pipeline data)
     {
+        // We'll likely get a dummy ID but make a not crap one
         data.Id = Guid.NewGuid();
-
-        await _mainContext.AddAsync(_mapper.Map<PipelineView, PipelineDTO>(data));
-        await _mainContext.SaveChangesAsync();
         
+        var collection = _database.GetCollection<Pipeline>("pipelines");
+
+        await collection.InsertOneAsync(data);
+
         return data;
     }
 
     // TODO: Use a specific update model for pipelines
-    public async Task<PipelineView> UpdatePipeline(Guid id, PipelineView data)
+    public async Task<Pipeline> UpdatePipeline(Guid id, Pipeline data)
     {
-        var old = await _mainContext.Pipelines.FindAsync(id);
+        data.Id = id;
+        
+        var collection = _database.GetCollection<Pipeline>("pipelines");
 
-        if (old == null)
-        {
-            throw new Exception("not found");
-        }
+        var filter = Builders<Pipeline>.Filter
+            .Eq(x => x.Id, id);
 
-        _mapper.Map(data, old);
-        _mainContext.Mark(old);
-
-        await _mainContext.SaveChangesAsync();
+        await collection.ReplaceOneAsync(filter, data);
 
         return data;
     }
 
     // TODO: Handle calculation of parameters and comparing them against a real version
     // TODO: Once we are going to go live, actually enforce versions
-    public async Task<PipelineVersionView> UpdatePipelineVersion(Guid id, string key, PipelineVersionView data)
+    public async Task<PipelineVersion> UpdatePipelineVersion(Guid id, string key, PipelineVersion data)
     {
-        data.Contents.CompiledParameters = CalculateParams(data.Contents.PipelineCode);
+        data.Id = new PipelineVersionKey()
+        {
+            PipelineId = id,
+            Version = key
+        };
         
-        var old = await _mainContext.PipelineVersions
-            .FirstOrDefaultAsync(x => x.PipelineId == id && x.Version == key);
+        data.CompiledParameters = CalculateParams(data.PipelineCode);
+
+        var collection = _database.GetCollection<PipelineVersion>("pipeline_versions");
+
+        var filter = Builders<PipelineVersion>.Filter
+            .Eq(x => x.Id, data.Id);
+
+        var old = await collection.Find(filter).FirstOrDefaultAsync();
 
         if (old == null)
         {
-            Console.WriteLine("adding");
-            await _mainContext.AddAsync(_mapper.Map<PipelineVersionView, PipelineVersionDTO>(data));
+            Console.WriteLine("write a new version");
+            await collection.InsertOneAsync(data);
         }
         else
         {
-            Console.WriteLine("updating");
-            _mapper.Map(data, old);
-            _mainContext.Mark(old);
+            await collection.ReplaceOneAsync(filter, data);
         }
 
-        await _mainContext.SaveChangesAsync();
-        
         return data;
     }
 
-    public List<StepParameter> CalculateParams(PipelineVersion version)
+    public List<StepParameter> CalculateParams(PipelineVersionCode version)
     {
         var parameters = version.Parameters.ToList();
 

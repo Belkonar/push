@@ -1,6 +1,7 @@
 @page "/organization/{Id:guid}"
 @using ui.Models
 @using shared.UpdateModels
+@using shared.Models
 @inject HttpClient Http
 @inject ToastService Toaster
 
@@ -68,16 +69,21 @@
     protected override async Task OnInitializedAsync()
     {
         // TODO: Error handle this lol
-        var response = await Http.GetFromJsonAsync<OrganizationView>($"/organization/{Id}");
+        var response = await Http.GetFromJsonAsync<Organization>($"/organization/{Id}");
+
+        if (response == null)
+        {
+            return;
+        }
         
         Name = response.Name;
-        Policy = response.Contents.Policy;
+        Policy = response.Policy;
 
         Title += Name;
 
-        Meta.AddRange(response.Contents.Metadata.GetKVList());
+        Meta.AddRange(response.Metadata.GetKVList());
         
-        PrivateMeta.AddRange(response.Contents.PrivateMetadata.GetKVList());
+        PrivateMeta.AddRange(response.PrivateMetadata.GetKVList());
     }
 
     public async Task SaveBasics()

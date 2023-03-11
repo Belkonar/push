@@ -4,6 +4,12 @@ namespace shared.Models;
 
 public class Organization
 {
+    [JsonPropertyName("id")]
+    public Guid? Id { get; set; }
+    
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
+    
     /// <remarks>
     /// Requires org.update permission
     /// </remarks>

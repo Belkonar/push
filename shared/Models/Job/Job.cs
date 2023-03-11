@@ -48,10 +48,7 @@ public class Job
     public List<PipelineFile> Files { get; set; } = new();
 
     [JsonPropertyName("pipeline")]
-    public Guid PipelineId { get; set; }
-    
-    [JsonPropertyName("pipelineVersion")]
-    public string PipelineVersion { get; set; }
+    public PipelineVersionKey PipelineVersion { get; set; }
 }
 
 /// <summary>

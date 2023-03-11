@@ -1,5 +1,3 @@
-using data;
-
 namespace api.Data;
 
 /// <summary>
@@ -7,20 +5,15 @@ namespace api.Data;
 /// </summary>
 public class PermissionData
 {
-    private readonly MainContext _mainContext;
-
-    public PermissionData(MainContext mainContext)
-    {
-        _mainContext = mainContext;
-    }
-
     public async Task<string> GetGlobalPolicy(string key)
     {
-        return (await _mainContext.Policies.FindAsync(key)).Policy;
+        // return (await _mainContext.Policies.FindAsync(key)).Policy;
+        throw new NotImplementedException();
     }
 
     public async Task<string> GetOrgPolicy(Guid id)
     {
-        return (await _mainContext.Organizations.FindAsync(id)).Contents.Policy;
+        //return (await _mainContext.Organizations.FindAsync(id)).Contents.Policy;
+        throw new NotImplementedException();
     }
 }

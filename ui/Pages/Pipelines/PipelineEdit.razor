@@ -25,13 +25,13 @@
     public Guid? ID { get; set; }
 
     // This defaults to an edit model but it'll be replaced if needed
-    public PipelineView Pipeline = new PipelineView();
+    public Pipeline Pipeline = new Pipeline();
 
     protected override async Task OnInitializedAsync()
     {
         if (ID.HasValue)
         {
-            Pipeline = await Http.GetFromJsonAsync<PipelineView>($"/pipeline/{ID}") ?? new PipelineView();
+            Pipeline = await Http.GetFromJsonAsync<Pipeline>($"/pipeline/{ID}") ?? new Pipeline();
         }
     }
 
@@ -43,7 +43,14 @@
             {
                 using var response = await Http.PostAsJsonAsync("/pipeline", Pipeline);
                 response.EnsureSuccessStatusCode();
-                var responseData = await response.Content.ReadFromJsonAsync<PipelineView>();
+                var responseData = await response.Content.ReadFromJsonAsync<Pipeline>();
+
+                if (responseData == null)
+                {
+                    // TODO: toaster this
+                    return;
+                }
+                
                 ToastService.AddSuccess("Saved");
                 Nav.NavigateTo($"/pipeline/{responseData.Id}");
             }

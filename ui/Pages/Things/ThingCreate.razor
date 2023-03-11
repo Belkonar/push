@@ -1,5 +1,6 @@
 @page "/organization/{Id:guid}/create-app"
 @using shared.UpdateModels
+@using shared.Models
 @inject HttpClient http
 @inject ToastService Toaster
 @inject NavigationManager Nav
@@ -40,7 +41,7 @@
             using var response = await http.PostAsJsonAsync($"/thing", request);
             response.EnsureSuccessStatusCode();
 
-            var responseThing = await response.Content.ReadFromJsonAsync<ThingView>();
+            var responseThing = await response.Content.ReadFromJsonAsync<Thing>();
             
             Toaster.AddSuccess("Thing Created");
             Nav.NavigateTo($"/thing/{responseThing.Id}");

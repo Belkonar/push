@@ -60,8 +60,6 @@ builder.Services.AddScoped<UserService>();
 
 //builder.Services.AddHttpClient<UserService>();
 
-builder.Services.AddDbContext<MainContext>();
-
 builder.Services.AddCors(p => p.AddPolicy("main", b =>
 {
     b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();

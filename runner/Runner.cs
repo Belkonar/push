@@ -99,7 +99,7 @@ public class Runner
         {
             BucketName = _configuration.GetValue<string>("BucketName"),
             Key = job.Id.ToString(),
-            FilePath = endingLocation.FilePath,
+            FilePath = endingLocation.FilePath
         };
 
         await s3Client.PutObjectAsync(uploadRequest);

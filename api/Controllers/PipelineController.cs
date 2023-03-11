@@ -1,5 +1,6 @@
 using api.Logic;
 using Microsoft.AspNetCore.Mvc;
+using shared.Models.Pipeline;
 using shared.View;
 
 namespace api.Controllers;
@@ -17,14 +18,14 @@ public class PipelineController
     
     // Get pipelines, optionally by org
     [HttpGet]
-    public async Task<List<PipelineView>> GetPipelines([FromQuery] Guid? org)
+    public async Task<List<Pipeline>> GetPipelines([FromQuery] Guid? org)
     {
         return await _pipelineLogic.GetPipelines(org);
     }
     
     // Get a single pipeline
     [HttpGet("{id}")]
-    public async Task<PipelineView> GetPipeline([FromRoute]Guid id)
+    public async Task<Pipeline> GetPipeline([FromRoute]Guid id)
     {
         return await _pipelineLogic.GetPipeline(id);
     }
@@ -48,21 +49,21 @@ public class PipelineController
     
     // Get the most recent version that satisfies the constraint
     [HttpGet("{id}/version/{constraint}")]
-    public async Task<PipelineVersionView> GetVersionByConstraint([FromRoute] Guid id, [FromRoute] string constraint)
+    public async Task<PipelineVersion> GetVersionByConstraint([FromRoute] Guid id, [FromRoute] string constraint)
     {
         return await _pipelineLogic.GetVersionByConstraint(id, constraint);
     }
     
     // Create a new pipeline
     [HttpPost]
-    public async Task<PipelineView> CreatePipeline([FromBody] PipelineView data)
+    public async Task<Pipeline> CreatePipeline([FromBody] Pipeline data)
     {
         return await _pipelineLogic.CreatePipeline(data);
     }
     
     // Update a pipeline
     [HttpPut("{id}")]
-    public async Task<PipelineView> UpdatePipeline([FromRoute] Guid id, [FromBody] PipelineView data)
+    public async Task<Pipeline> UpdatePipeline([FromRoute] Guid id, [FromBody] Pipeline data)
     {
         return await _pipelineLogic.UpdatePipeline(id, data);
     }
@@ -71,7 +72,7 @@ public class PipelineController
     // This is technically an upsert but only if the version is a dev version
     // TODO: If it's a non-major change, check the params don't change, since the last version
     [HttpPost("{id}/version/{key}")]
-    public async Task<PipelineVersionView> UpdatePipelineVersion([FromRoute] Guid id, [FromRoute] string key, [FromBody] PipelineVersionView data)
+    public async Task<PipelineVersion> UpdatePipelineVersion([FromRoute] Guid id, [FromRoute] string key, [FromBody] PipelineVersion data)
     {
         return await _pipelineLogic.UpdatePipelineVersion(id, key, data);
     }

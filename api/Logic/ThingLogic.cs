@@ -1,76 +1,79 @@
 using AutoMapper;
-using data;
-using data.ORM;
-using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using shared.Models;
 using shared.Models.Job;
 using shared.Models.Pipeline;
 using shared.UpdateModels;
-using shared.View;
 
 namespace api.Logic;
 
 public class ThingLogic
 {
-    private readonly IMapper _mapper;
-    private readonly MainContext _mainContext;
     private readonly PipelineLogic _pipelineLogic;
-    private readonly MongoClient _mongoClient;
+    private readonly IMongoDatabase _database;
+    private readonly IMapper _mapper;
 
-    public ThingLogic(IMapper mapper, MainContext mainContext, PipelineLogic pipelineLogic, MongoClient mongoClient)
+    public ThingLogic(PipelineLogic pipelineLogic, IMongoDatabase database, IMapper mapper)
     {
-        _mapper = mapper;
-        _mainContext = mainContext;
         _pipelineLogic = pipelineLogic;
-        _mongoClient = mongoClient;
+        _database = database;
+        _mapper = mapper;
     }
     
-    public async Task<List<ThingView>> GetThings()
+    public async Task<List<Thing>> GetThings()
     {
-        return (await _mainContext.Things.ToListAsync())
-            .Select(x => _mapper.Map<ThingDto, ThingView>(x))
-            .ToList();
+        var collection = _database.GetCollection<Thing>("things");
+        
+        return await collection.Find(new BsonDocument()).ToListAsync();
     }
     
-    public async Task<ThingView> GetThing(Guid id)
+    public async Task<Thing> GetThing(Guid id)
     {
-        var thing = await _mainContext.Things.FindAsync(id);
-        
-        if (thing == null)
-        {
-            throw new FileNotFoundException();
-        }
-        
-        return _mapper.Map<ThingDto, ThingView>(thing);
-    }
+        var collection = _database.GetCollection<Thing>("things");
 
-    public async Task<ThingView> CreateThing(UpdateThing thingView)
-    {
-        var request = _mapper.Map<UpdateThing, ThingDto>(thingView);
-        request.Id = Guid.NewGuid();
-        request.Contents = new Thing();
+        var filter = Builders<Thing>.Filter
+            .Eq(x => x.Id, id);
 
-        await _mainContext.AddAsync(request);
-        await _mainContext.SaveChangesAsync();
+        var thing = await collection.Find(filter).FirstOrDefaultAsync();
 
-        return _mapper.Map<ThingDto, ThingView>(request);
-    }
-
-    public async Task<ThingView> UpdateThing(Guid id, ThingView thingView)
-    {
-        var thing = await _mainContext.Things.FindAsync(id);
-        
         if (thing == null)
         {
             throw new FileNotFoundException();
         }
 
-        _mapper.Map(thingView, thing);
-        await _mainContext.SaveChangesAsync();
+        return thing;
+    }
+
+    public async Task<Thing> CreateThing(UpdateThing thingView)
+    {
+        var collection = _database.GetCollection<Thing>("things");
         
-        return _mapper.Map<ThingDto, ThingView>(thing);
+        var thing = new Thing()
+        {
+            Id = Guid.NewGuid(),
+            Name = thingView.Name,
+            OrganizationId = thingView.OrganizationId
+        };
+
+        await collection.InsertOneAsync(thing);
+
+        return thing;
+    }
+
+    public async Task<Thing> UpdateThing(Guid id, Thing thingView)
+    {
+        var collection = _database.GetCollection<Thing>("things");
+        
+        var filter = Builders<Thing>.Filter
+            .Eq(x => x.Id, id);
+
+        var update = Builders<Thing>.Update
+            .Set(x => x.Name, thingView.Name);
+
+        await collection.UpdateOneAsync(filter, update);
+
+        return await GetThing(id);
     }
 
     /// <summary>
@@ -79,45 +82,38 @@ public class ThingLogic
     /// <param name="id">id of the thing (not the deployable)</param>
     /// <param name="deployableView">deployable model</param>
     /// <returns></returns>
-    public async Task<DeployableView> UpdateDeployable(Guid id, DeployableView deployableView)
+    public async Task<Deployable> UpdateDeployable(Guid id, Deployable deployableView)
     {
-        var deployable = await _mainContext.Deployables.FirstOrDefaultAsync(x => x.ThingId == id);
+        var collection = _database.GetCollection<Thing>("things");
+        
+        var filter = Builders<Thing>.Filter
+            .Eq(x => x.Id, id);
 
-        if (deployable == null)
-        {
-            deployable = _mapper.Map<DeployableView, DeployableDto>(deployableView);
-            deployable.Id = Guid.NewGuid();
-            await _mainContext.AddAsync(deployable);
-        }
-        else
-        {
-            _mapper.Map(deployableView, deployable);
-            // TODO: This may not be needed
-            _mainContext.Check(deployable);
-            _mainContext.Mark(deployable);
-        }
+        var update = Builders<Thing>.Update
+            .Set(x => x.Deployable, deployableView);
 
-        await _mainContext.SaveChangesAsync();
+        await collection.UpdateOneAsync(filter, update);
 
-        return _mapper.Map<DeployableDto, DeployableView>(deployable);
+        return deployableView;
     }
 
-    public async Task<DeployableView> GetDeployable(Guid id)
+    public async Task<Deployable> GetDeployable(Guid id)
     {
-        var deployable = await _mainContext.Deployables.FirstOrDefaultAsync(x => x.ThingId == id);
+        var collection = _database.GetCollection<Thing>("things");
+        
+        var filter = Builders<Thing>.Filter
+            .Eq(x => x.Id, id);
 
-        if (deployable == null)
+        var deployable = await collection.Find(filter)
+            .Project(x => x.Deployable)
+            .FirstOrDefaultAsync();
+
+        if (deployable != null)
         {
-            return new DeployableView()
-            {
-                Contents = new Deployable(),
-                ThingId = id
-            };
+            return deployable;
         }
-        else
-        {
-            return _mapper.Map<DeployableDto, DeployableView>(deployable);
-        }
+
+        return new Deployable();
     }
 
     /// <summary>
@@ -128,53 +124,52 @@ public class ThingLogic
     /// TODO: Add the job viewmodel and DTO stuff here
     public async Task<Job> StartDeployment(Guid id, string reference)
     {
-        var thing = await _mainContext.Things.FindAsync(id);
-
+        var thing = await GetThing(id);
+        
         if (thing == null)
         {
             throw new FileNotFoundException("Thing not found");
         }
 
-        var deployable = await _mainContext.Deployables.FirstOrDefaultAsync(x => x.ThingId == id);
-
+        var deployable = thing.Deployable;
+        
         if (deployable == null)
         {
             throw new FileLoadException("deployable not found");
         }
-
-        if (!deployable.Contents.PipelineId.HasValue)
+        
+        if (!deployable.PipelineId.HasValue)
         {
             throw new Exception("Pipeline not selected");
         }
         
         // Don't need to handle the null because that's caught in the method here
-        var pipeline = await _pipelineLogic.GetVersionByConstraint(deployable.Contents.PipelineId.Value, deployable.Contents.PipelineConstraint);
-        var pipelineCode = pipeline.Contents.PipelineCode;
-
+        var pipeline = await _pipelineLogic.GetVersionByConstraint(deployable.PipelineId.Value, deployable.PipelineConstraint);
+        var pipelineCode = pipeline.PipelineCode;
+        
         var job = new Job()
         {
             Id = Guid.NewGuid(),
             ThingId = id
         };
-
-        job.SourceControlUri = deployable.Contents.SourceControlUri;
+        
+        job.SourceControlUri = deployable.SourceControlUri;
         job.SourceReference = reference;
-        job.PipelineId = pipeline.PipelineId;
-        job.PipelineVersion = pipeline.Version;
-
-        foreach (var globalParameter in pipeline.Contents.PipelineCode.Parameters)
+        job.PipelineVersion = pipeline.Id;
+        
+        foreach (var globalParameter in pipeline.PipelineCode.Parameters)
         {
             var param = _mapper.Map<StepParameter, JobStepParameter>(globalParameter);
             param.Name = $"root.{globalParameter.Name}";
             
-            if (deployable.Contents.Variables.ContainsKey(param.Name))
+            if (deployable.Variables.ContainsKey(param.Name))
             {
-                param.Value = deployable.Contents.Variables[param.Name];
+                param.Value = deployable.Variables[param.Name];
             }
             
             job.Parameters.Add(param);
         }
-
+        
         var ordinal = 0;
         foreach (var stage in pipelineCode.Stages)
         {
@@ -182,7 +177,7 @@ public class ThingLogic
             {
                 Name = stage.Name
             });
-
+        
             foreach (var step in stage.Steps)
             {
                 var jobStep = new JobStep()
@@ -193,7 +188,7 @@ public class ThingLogic
                 };
                 
                 var stepCode = pipelineCode.Steps.FirstOrDefault(x => x.Name == step.Step);
-
+        
                 if (stepCode == null)
                 {
                     // In here are built-in steps. So a special kind
@@ -210,7 +205,7 @@ public class ThingLogic
                 else
                 {
                     // Here we reverse the loop to only pull stuff we actually need.
-
+        
                     foreach (var parameter in stepCode.Parameters)
                     {
                         var newParameter = _mapper.Map<StepParameter, JobStepParameter>(parameter);
@@ -223,9 +218,9 @@ public class ThingLogic
                         {
                             var paramKey = $"{stage.Name}.{step.Name}.{parameter.Name}";
                             
-                            if (deployable.Contents.Variables.ContainsKey(paramKey))
+                            if (deployable.Variables.ContainsKey(paramKey))
                             {
-                                newParameter.Value = deployable.Contents.Variables[paramKey];
+                                newParameter.Value = deployable.Variables[paramKey];
                             }
                             else
                             {
@@ -238,17 +233,17 @@ public class ThingLogic
                         
                         jobStep.Parameters.Add(newParameter);
                     }
-
+        
                     jobStep.StepInfo = _mapper.Map<Step, JobStepInfo>(stepCode);
                 }
                 
                 job.Steps.Add(jobStep);
             }
         }
-
+        
         // TODO: Save Job
-        var collection = _mongoClient.GetDatabase("push").GetCollection<Job>("jobs");
-
+        var collection = _database.GetCollection<Job>("jobs");
+        
         await collection.InsertOneAsync(job);
         
         return job;

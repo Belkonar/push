@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace shared.View;
 
-public class PipelineView : BaseView
+public class Pipeline
 {
     [JsonPropertyName("id")]
     public Guid Id { get; set; }

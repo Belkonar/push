@@ -1,149 +1,132 @@
 using api.Services;
 using AutoMapper;
-using data;
+using MongoDB.Bson;
 using shared.Models;
-using data.ORM;
-using Microsoft.AspNetCore.Mvc;
 using shared.UpdateModels;
-using shared.View;
-using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
 
 namespace api.Logic;
 
 public class OrganizationLogic
 {
-    private readonly MainContext _mainContext;
-    private readonly IMapper _mapper;
     private readonly PermissionService _permissionService;
+    private readonly IMongoDatabase _mongoDatabase;
 
-    public OrganizationLogic(MainContext mainContext, IMapper mapper, PermissionService permissionService)
+    public OrganizationLogic(PermissionService permissionService, IMongoDatabase mongoDatabase)
     {
-        _mainContext = mainContext;
-        _mapper = mapper;
         _permissionService = permissionService;
+        _mongoDatabase = mongoDatabase;
     }
     
-    public async Task<List<OrganizationView>> GetAll()
+    public async Task<List<Organization>> GetAll()
     {
-        return (await _mainContext.Organizations.ToListAsync())
-            .Select(x => _mapper.Map<OrganizationView>(x))
-            .ToList();
+        var collection = _mongoDatabase.GetCollection<Organization>("organizations");
+
+        return await collection.Find(new BsonDocument()).ToListAsync();
     }
 
-    public async Task<OrganizationView> Update(Guid id, UpdateOrganization body)
+    public async Task<Organization> Update(Guid id, UpdateOrganization body)
     {
-        var permissions =  await _permissionService.GetPermissions(new PermissionQuery());
+        var collection = _mongoDatabase.GetCollection<Organization>("organizations");
+        
+        var filter = Builders<Organization>.Filter
+            .Eq(x => x.Id, id);
 
-        if (permissions.IsMissing("global.org.manage"))
+        var update = Builders<Organization>.Update
+            .Set(x => x.Name, body.Name);
+
+        await collection.UpdateOneAsync(filter, update);
+        
+        return await Get(id);
+    }
+
+    public async Task<Organization> UpdateMetadata(Guid id, Dictionary<string, string> body)
+    {
+        var collection = _mongoDatabase.GetCollection<Organization>("organizations");
+        
+        var filter = Builders<Organization>.Filter
+            .Eq(x => x.Id, id);
+
+        var update = Builders<Organization>.Update
+            .Set(x => x.Metadata, body);
+
+        await collection.UpdateOneAsync(filter, update);
+
+        return await Get(id);
+    }
+
+    public async Task<Organization> UpdatePrivateMetadata(Guid id, Dictionary<string, string> body)
+    {
+        var collection = _mongoDatabase.GetCollection<Organization>("organizations");
+        
+        var filter = Builders<Organization>.Filter
+            .Eq(x => x.Id, id);
+
+        var update = Builders<Organization>.Update
+            .Set(x => x.PrivateMetadata, body);
+
+        await collection.UpdateOneAsync(filter, update);
+        
+        return await Get(id);
+    }
+
+    public async Task<Organization> UpdatePolicy(Guid id, string body)
+    {
+        var collection = _mongoDatabase.GetCollection<Organization>("organizations");
+        
+        var filter = Builders<Organization>.Filter
+            .Eq(x => x.Id, id);
+
+        var update = Builders<Organization>.Update
+            .Set(x => x.Policy, body);
+
+        await collection.UpdateOneAsync(filter, update);
+        
+        return await Get(id);
+    }
+
+    public async Task<Organization> Create(UpdateOrganization body)
+    {
+        var collection = _mongoDatabase.GetCollection<Organization>("organizations");
+
+        var org = new Organization
         {
-            throw new UnauthorizedAccessException("Fam what are you doing");
-        }
-        
-        var dto = await _mainContext.Organizations.FindAsync(id);
+            Id = Guid.NewGuid(),
+            Name = body.Name
+        };
 
-        _mapper.Map(body, dto);
+        await collection.InsertOneAsync(org);
 
-        await _mainContext.SaveChangesAsync();
-
-        return _mapper.Map<OrganizationView>(dto);
+        return org;
     }
 
-    public async Task<OrganizationView> UpdateMetadata(Guid id, Dictionary<string, string> body)
+    public async Task<Organization> Get(Guid id)
     {
-        var permissions =  await _permissionService.GetPermissions(new PermissionQuery()
-        {
-            Organization = id
-        });
-
-        if (permissions.IsMissing("org.manage"))
-        {
-            throw new UnauthorizedAccessException("Fam what are you doing");
-        }
+        var collection = _mongoDatabase.GetCollection<Organization>("organizations");
         
-        var dto = await _mainContext.Organizations.FindAsync(id);
-
-        dto!.Contents.Metadata = body;
+        var filter = Builders<Organization>.Filter
+            .Eq(x => x.Id, id);
         
-        _mainContext.Mark(dto);
+        var organization = await collection.Find(filter).FirstOrDefaultAsync();
 
-        await _mainContext.SaveChangesAsync();
-
-        return _mapper.Map<OrganizationView>(dto);
-    }
-
-    public async Task<OrganizationView> UpdatePrivateMetadata(Guid id, Dictionary<string, string> body)
-    {
-        var permissions =  await _permissionService.GetPermissions(new PermissionQuery());
-        
-        permissions.Check("global.org.update.private_metadata");
-        
-        var dto = await _mainContext.Organizations.FindAsync(id);
-
-        dto!.Contents.PrivateMetadata = body;
-        
-        _mainContext.Mark(dto);
-
-        await _mainContext.SaveChangesAsync();
-
-        return _mapper.Map<OrganizationView>(dto);
-    }
-
-    public async Task<OrganizationView> UpdatePolicy(Guid id, string body)
-    {
-        var permissions =  await _permissionService.GetPermissions(new PermissionQuery()
-        {
-            Organization = id
-        });
-
-        if (permissions.IsMissing("org.update.policy"))
-        {
-            throw new UnauthorizedAccessException("Fam what are you doing");
-        }
-        
-        var dto = await _mainContext.Organizations.FindAsync(id);
-
-        dto!.Contents.Policy = body;
-        
-        _mainContext.Mark(dto);
-
-        await _mainContext.SaveChangesAsync();
-
-        return _mapper.Map<OrganizationView>(dto);
-    }
-
-    public async Task<OrganizationView> Create(UpdateOrganization body)
-    {
-        var permissions =  await _permissionService.GetPermissions(new PermissionQuery());
-
-        permissions.Check("global.org.manage");
-        
-        var dto = _mapper.Map<OrganizationDto>(body);
-        
-        dto.Id = Guid.NewGuid();
-        dto.Contents = new Organization();
-
-        await _mainContext.AddAsync(dto);
-        await _mainContext.SaveChangesAsync();
-
-        return _mapper.Map<OrganizationView>(dto);
-    }
-
-    public async Task<OrganizationView> Get(Guid id)
-    {
-        return _mapper.Map<OrganizationView>(await _mainContext.Organizations.FindAsync(id));
-    }
-
-    public async Task UpdateVariable(Guid id, UpdateOrganizationVariable variable)
-    {
-        var org = await _mainContext.Organizations.FindAsync(id);
-        if (org == null)
+        if (organization == null)
         {
             throw new FileNotFoundException();
         }
 
-        org.Contents.Variables[variable.Key] = variable.Value;
-        _mainContext.Mark(org);
+        return organization;
+    }
 
-        await _mainContext.SaveChangesAsync();
+    public async Task UpdateVariable(Guid id, UpdateOrganizationVariable variable)
+    {
+        var collection = _mongoDatabase.GetCollection<Organization>("organizations");
+        
+        var filter = Builders<Organization>.Filter
+            .Eq(x => x.Id, id);
+
+        var update = Builders<Organization>.Update
+            .Set(x => x.Variables[variable.Key], variable.Value);
+
+        await collection.UpdateOneAsync(filter, update);
     }
 }

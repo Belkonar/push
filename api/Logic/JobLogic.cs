@@ -1,11 +1,7 @@
 using AutoMapper;
-using data;
-using data.ORM;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using MongoDB.Driver.Linq;
 using shared.Models.Job;
 using shared.UpdateModels;
 using shared.View;
@@ -14,15 +10,11 @@ namespace api.Logic;
 
 public class JobLogic
 {
-    private readonly MainContext _context;
-    private readonly IMapper _mapper;
     private readonly IDistributedCache _cache;
     private readonly IMongoDatabase _mongoDatabase;
 
-    public JobLogic(MainContext context, IMapper mapper, IDistributedCache cache, IMongoDatabase mongoDatabase)
+    public JobLogic(IDistributedCache cache, IMongoDatabase mongoDatabase)
     {
-        _context = context;
-        _mapper = mapper;
         _cache = cache;
         _mongoDatabase = mongoDatabase;
     }

@@ -1,5 +1,6 @@
 @page "/pipelines"
 @page "/thing/{Id:guid}/select-pipeline"
+@using shared.Models
 
 @inject HttpClient http
 @inject ToastService Toaster
@@ -13,8 +14,6 @@
     <Table>
         <THead>
         <th>Name</th>
-        <th>Created</th>
-        <th>Updated</th>
         @if (Id.HasValue)
         {
             <th>Actions</th>
@@ -25,8 +24,6 @@
         {
             <tr>
                 <td><a href="/pipeline/@pipeline.Id">@pipeline.Name</a></td>
-                <td>@pipeline.Created</td>
-                <td>@pipeline.Updated</td>
                 @if (Id.HasValue)
                 {
                     <td><button @onclick="async () => await SelectPipeline(pipeline.Id)" class="btn btn-primary btn-sm">Select</button></td>
@@ -43,19 +40,19 @@
     
     const string Title = "Pipeline List";
 
-    private List<PipelineView> Pipelines { get; set; } = new List<PipelineView>();
+    private List<Pipeline> Pipelines { get; set; } = new List<Pipeline>();
 
     protected override async Task OnInitializedAsync()
     {
-        Pipelines = await http.GetFromJsonAsync<List<PipelineView>>("/pipeline") ?? new List<PipelineView>();
+        Pipelines = await http.GetFromJsonAsync<List<Pipeline>>("/pipeline") ?? new List<Pipeline>();
     }
 
     private async Task SelectPipeline(Guid pipelineId)
     {
         Console.WriteLine("wot");
-        var deployment = (await http.GetFromJsonAsync<DeployableView>($"/thing/{Id}/deployable"))!;
-        deployment.Contents.PipelineId = pipelineId;
-        deployment.Contents.PipelineConstraint =
+        var deployment = (await http.GetFromJsonAsync<Deployable>($"/thing/{Id}/deployable"))!;
+        deployment.PipelineId = pipelineId;
+        deployment.PipelineConstraint =
             (await http.GetFromJsonAsync<SimpleValue>($"/pipeline/{pipelineId}/latest"))?.Value ?? "";
         
         using var response = await http.PutAsJsonAsync($"/Thing/{Id}/deployable", deployment);

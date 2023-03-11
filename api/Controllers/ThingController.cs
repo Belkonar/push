@@ -1,5 +1,6 @@
 using api.Logic;
 using Microsoft.AspNetCore.Mvc;
+using shared.Models;
 using shared.Models.Job;
 using shared.UpdateModels;
 using shared.View;
@@ -21,37 +22,37 @@ public class ThingController : ControllerBase
     // TODO: Maybe add a method to get stuff by org, but for now it's not needed
     // TODO: Add query string to filter list, maybe even paging stuff
     [HttpGet]
-    public async Task<List<ThingView>> GetThings()
+    public async Task<List<Thing>> GetThings()
     {
         return await _thingLogic.GetThings();
     }
     
     [HttpGet("{id}")]
-    public async Task<ThingView> GetThing([FromRoute] Guid id)
+    public async Task<Thing> GetThing([FromRoute] Guid id)
     {
         return await _thingLogic.GetThing(id);
     }
 
     [HttpPost]
-    public async Task<ThingView> CreateThing([FromBody] UpdateThing thingView)
+    public async Task<Thing> CreateThing([FromBody] UpdateThing thingView)
     {
         return await _thingLogic.CreateThing(thingView);
     }
     
     [HttpPut("{id}")]
-    public async Task<ThingView> UpdateThing([FromRoute] Guid id, [FromBody] ThingView thingView)
+    public async Task<Thing> UpdateThing([FromRoute] Guid id, [FromBody] Thing thingView)
     {
         return await _thingLogic.UpdateThing(id, thingView);
     }
 
     [HttpGet("{id}/deployable")]
-    public async Task<DeployableView> GetDeployable([FromRoute] Guid id)
+    public async Task<Deployable> GetDeployable([FromRoute] Guid id)
     {
         return await _thingLogic.GetDeployable(id);
     }
 
     [HttpPut("{id}/deployable")]
-    public async Task<DeployableView> UpdateDeployable([FromRoute] Guid id, DeployableView deployableView)
+    public async Task<Deployable> UpdateDeployable([FromRoute] Guid id, Deployable deployableView)
     {
         return await _thingLogic.UpdateDeployable(id, deployableView);
     }

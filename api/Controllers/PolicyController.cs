@@ -1,7 +1,7 @@
 using api.Logic;
-using data.ORM;
 using shared.UpdateModels;
 using Microsoft.AspNetCore.Mvc;
+using shared.View;
 
 namespace api.Controllers;
 
@@ -16,7 +16,7 @@ public class PolicyController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<List<PolicyDto>> GetAll()
+    public async Task<List<Policy>> GetAll()
     {
         return await _policyLogic.GetAll();
     }
@@ -29,7 +29,7 @@ public class PolicyController : ControllerBase
     /// <param name="policy"></param>
     /// <returns></returns>
     [HttpPut("{key}")]
-    public async Task<PolicyDto> Update([FromRoute] string key, [FromBody] UpdatePolicy policy)
+    public async Task<Policy> Update([FromRoute] string key, [FromBody] UpdatePolicy policy)
     {
         return await _policyLogic.Update(key, policy);
     }
@@ -41,7 +41,7 @@ public class PolicyController : ControllerBase
     /// <param name="key"></param>
     /// <returns></returns>
     [HttpPost("{key}")]
-    public async Task<PolicyDto> Create([FromRoute] string key)
+    public async Task<Policy> Create([FromRoute] string key)
     {
         return await _policyLogic.Create(key);
     }

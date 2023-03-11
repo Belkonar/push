@@ -1,12 +1,14 @@
 using System.Text.Json.Serialization;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace shared.View;
 
-public class PolicyView : BaseView
+public class Policy
 {
+    [BsonId]
     [JsonPropertyName("key")]
     public string Key { get; set; }
     
     [JsonPropertyName("policy")]
-    public string Policy { get; set; }
+    public string PolicyText { get; set; }
 }

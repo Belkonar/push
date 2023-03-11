@@ -1,9 +1,7 @@
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using api.Services;
-using data;
-using data.ORM;
+using api.Logic;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
+using shared.View;
 
 namespace api.Controllers;
 
@@ -11,40 +9,45 @@ namespace api.Controllers;
 [Route("[controller]")]
 public class UtilController : ControllerBase
 {
-    private readonly MainContext _context;
-    private readonly OpaService _opaService;
+    private readonly IMongoDatabase _database;
+    private readonly PipelineLogic _pipelineLogic;
 
-    public UtilController(MainContext context, OpaService opaService)
+    public UtilController(IMongoDatabase database, PipelineLogic pipelineLogic)
     {
-        _context = context;
-        _opaService = opaService;
+        _database = database;
+        _pipelineLogic = pipelineLogic;
     }
     
     [HttpGet("fill")]
     public async Task<IActionResult> Fill()
     {
-        var global = await _context.Policies.FindAsync("global");
         const string policy = @"package main
 
 global_admin { true }";
         
-        if (global == null)
-        {
-            await _context.AddAsync(new PolicyDto()
-            {
-                Key = "global",
-                Policy = policy
-            });
-        }
-        else
-        {
-            // TODO: Remove this prior to go live
-            global.Policy = policy;
-        }
-        
-        // bcb885d2-b0dd-4cad-85a8-14de0b67d012
+        var pipelineId = Guid.Parse("bcb885d2-b0dd-4cad-85a8-14de0b67d012");
 
-        var nestjsPipeline = await _context.Pipelines.FindAsync(Guid.Parse("bcb885d2-b0dd-4cad-85a8-14de0b67d012"));
+        var pipelineCollection = _database.GetCollection<Pipeline>("pipelines");
+
+        var filter = Builders<Pipeline>.Filter
+            .Eq(x => x.Id, pipelineId);
+
+        var pipeline = await pipelineCollection.Find(filter).FirstOrDefaultAsync();
+
+        if (pipeline == null)
+        {
+            pipeline = new Pipeline()
+            {
+                Id = pipelineId,
+                Description = "basic pipeline for testing purposes",
+                Name = "nestjs"
+            };
+
+            await pipelineCollection.InsertOneAsync(pipeline);
+        }
+
+        /*
+         * var nestjsPipeline = await _context.Pipelines.FindAsync(Guid.Parse("bcb885d2-b0dd-4cad-85a8-14de0b67d012"));
         if (nestjsPipeline == null)
         {
             await _context.AddAsync(new PipelineDTO()
@@ -54,8 +57,7 @@ global_admin { true }";
                 Name = "nestjs"
             });
         }
-
-        await _context.SaveChangesAsync();
+         */
 
         return Ok("filled basic info");
     }
@@ -68,20 +70,7 @@ global_admin { true }";
     [HttpGet("reset")]
     public async Task<IActionResult> Reset()
     {
-        var global = await _context.Policies.FindAsync("global");
-
-        if (global == null)
-        {
-            return NotFound();
-        }
-
-        global.Policy = @"package main
-
-global_admin { true }";
-
-        await _context.SaveChangesAsync();
-
-        return Ok();
+        throw new NotImplementedException();
     }
 
     [HttpGet()]

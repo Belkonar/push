@@ -1,5 +1,4 @@
 using AutoMapper;
-using data.ORM;
 using shared.Models.Job;
 using shared.Models.Pipeline;
 using shared.UpdateModels;
@@ -11,25 +10,10 @@ public class DataProfile : Profile
 {
     public DataProfile()
     {
-        CreateMap<OrganizationView, OrganizationDto>()
-            .Setup();
-
-        CreateMap<ThingView, ThingDto>()
-            .Setup();
-        
-        CreateMap<PipelineView, PipelineDTO>()
-            .Setup();
-        
-        CreateMap<PipelineVersionView, PipelineVersionDTO>()
-            .Setup();
-        
-        CreateMap<DeployableView, DeployableDto>()
-            .Setup();
-
         // For updates with smaller surfaces
-        CreateMap<UpdateOrganization, OrganizationDto>();
-        CreateMap<UpdatePolicy, PolicyDto>();
-        CreateMap<UpdateThing, ThingDto>();
+        // CreateMap<UpdateOrganization, OrganizationDto>();
+        // CreateMap<UpdatePolicy, PolicyDto>();
+        // CreateMap<UpdateThing, ThingDto>();
 
         CreateMap<StepParameter, JobStepParameter>();
         CreateMap<Step, JobStepInfo>();

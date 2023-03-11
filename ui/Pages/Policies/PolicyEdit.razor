@@ -13,7 +13,7 @@
         {
             <div class="mb-3">
                 <label class="form-label" for="policy-input">Policy</label>
-                <textarea rows="15" id="policy-input" class="form-control" @bind="Policy.Policy"></textarea>
+                <textarea rows="15" id="policy-input" class="form-control" @bind="Policy.PolicyText"></textarea>
                 @if (Key == "global")
                 {
                     <div class="text-danger">You are editing the global policy.</div>
@@ -33,11 +33,11 @@
     [Parameter]
     public string Key { get; set; }
     
-    private PolicyView? Policy { get; set; }
+    private Policy? Policy { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        Policy = (await Web.Get<List<PolicyView>>($"/policy"))
+        Policy = (await Web.Get<List<Policy>>($"/policy"))
             .FirstOrDefault(x => x.Key == Key);
     }
 
@@ -45,7 +45,7 @@
     {
         var update = new UpdatePolicy()
         {
-            Policy = Policy?.Policy ?? ""
+            Policy = Policy?.PolicyText ?? ""
         };
         await Web.Put<UpdatePolicy, object>($"/policy/{Key}", update);
         ToastService.AddSuccess("Saved");

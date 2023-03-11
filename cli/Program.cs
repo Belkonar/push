@@ -72,7 +72,7 @@ if (!File.Exists(infoLocation))
     return;
 }
 
-var pipeline = await JsonHelper.GetFile<PipelineVersion>(pipelineLocation);
+var pipeline = await JsonHelper.GetFile<PipelineVersionCode>(pipelineLocation);
 var info = await JsonHelper.GetFile<Info>(infoLocation);
 
 // if (!JsonHelper.IsValid(pipeline))
@@ -84,19 +84,20 @@ var files = new Dictionary<string, string>();
 
 // TODO: Files
 
-var body = new PipelineVersionView
+var body = new PipelineVersion
 {
-    Version = "v1.0.0",
-    PipelineId = info.Id,
-    Contents = new PipelineVersionContents
+    Id = new PipelineVersionKey()
     {
-        PipelineCode = pipeline,
-        Files = files
-    }
+        Version = "v1.0.0",
+        PipelineId = info.Id,
+    },
+    
+    PipelineCode = pipeline,
+    Files = files
 };
 
 using var http = new HttpClient();
-using var response = await http.PostAsJsonAsync($"http://localhost:5183/pipeline/{info.Id}/version/{body.Version}", body);
+using var response = await http.PostAsJsonAsync($"http://localhost:5183/pipeline/{info.Id}/version/{body.Id.Version}", body);
 
 try
 {

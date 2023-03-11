@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 // use this with `using Pipeline = shared.Models.Pipeline;` to handle collisions and make it cleaner
 namespace shared.Models.Pipeline;
 
-public class PipelineVersion
+public class PipelineVersionCode
 {
     [MinLength(1)]
     [JsonPropertyName("stages")]
