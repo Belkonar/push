@@ -3,9 +3,9 @@ using System.Net.Http.Json;
 using Amazon.S3;
 using Amazon.S3.Model;
 using shared;
+using shared.Models;
 using shared.Models.Job;
 using shared.UpdateModels;
-using shared.View;
 
 namespace runner;
 

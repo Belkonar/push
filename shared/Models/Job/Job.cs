@@ -14,16 +14,23 @@ namespace shared.Models.Job;
 
 public class Job
 {
-    [Column("id")]
+    [JsonPropertyName("id")]
     public Guid Id { get; set; }
+    
+    [JsonPropertyName("created")]
+    public DateTime Created { get; set; }
 
-    [Column("thing")]
+    [JsonPropertyName("thing")]
     public Guid ThingId { get; set; }
+    
+    // To prevent needing a join (this however means it can get out of date)
+    [JsonPropertyName("thingName")]
+    public string ThingName { get; set; }
 
-    [Column("status")]
+    [JsonPropertyName("status")]
     public string Status { get; set; } = "pending";
     
-    [Column("statusReason")]
+    [JsonPropertyName("statusReason")]
     public string StatusReason { get; set; } = "";
     
     [JsonPropertyName("stages")]
@@ -83,6 +90,9 @@ public class JobStep
 
     [JsonPropertyName("step")]
     public string Step { get; set; }
+
+    [JsonPropertyName("stage")]
+    public string Stage { get; set; }
 }
 
 public class JobStepInfo

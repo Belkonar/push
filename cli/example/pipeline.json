@@ -15,6 +15,11 @@
           "parameters": {
             "person": "a"
           }
+        },
+        {
+          "name": "checker",
+          "step": "check",
+          "parameters": {}
         }
       ]
     }
@@ -30,8 +35,15 @@
         }
       ],
       "commands": [
-        "echo {parameter.person} > me.txt",
-        "cat me.txt"
+        "npm i"
+      ]
+    },
+    {
+      "name": "check",
+      "docker": "node:16",
+      "parameters": [],
+      "commands": [
+        "ls node_modules"
       ]
     }
   ]

@@ -1,0 +1,46 @@
+@page "/jobs"
+@using shared.Models.Job
+
+@inject HttpClient Http
+
+<h3>Job List</h3>
+
+<PageTitle>Job List</PageTitle>
+
+<Card>
+    <Table>
+        <THead>
+        <th>Id</th>
+        <th>Thing</th>
+        <th>Created</th>
+        <th>Status</th>
+        </THead>
+        <TBody>
+        @foreach (var job in Jobs)
+        {
+            <tr>
+                <td><a href="/job/@job.Id">@job.Id</a></td>
+                <td>@job.ThingName</td>
+                <td>@job.Created</td>
+                <td>
+                    @job.Status
+                    @if (!string.IsNullOrWhiteSpace(job.StatusReason))
+                    {
+                        <span>(@job.StatusReason)</span>
+                    }
+                </td>
+            </tr>
+        }
+        </TBody>
+    </Table>
+</Card>
+
+@code {
+    private List<Job> Jobs { get; set; } = new ();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Jobs = await Http.GetFromJsonAsync<List<Job>>("/job/safe") ?? new List<Job>();
+    }
+
+}

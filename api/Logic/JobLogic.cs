@@ -1,11 +1,10 @@
-using AutoMapper;
 using Microsoft.Extensions.Caching.Distributed;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using shared;
+using shared.Models;
 using shared.Models.Job;
 using shared.UpdateModels;
-using shared.View;
 
 namespace api.Logic;
 
@@ -51,10 +50,32 @@ public class JobLogic
     {
         var collection = _mongoDatabase.GetCollection<Job>("Safe Jobs");
         
+        var filter = Builders<Job>.Filter
+            .Eq("_id", id);
+
+        return await collection.Find(filter).FirstOrDefaultAsync();
+    }
+    
+    public async Task<List<Job>> GetSafeJobs(Guid? id)
+    {
+        var collection = _mongoDatabase.GetCollection<Job>("Safe Jobs");
+
+        FilterDefinition<Job> filter;
+
+        if (id.HasValue)
+        {
+            filter = Builders<Job>.Filter
+                .Eq(x => x.ThingId, id);
+        }
+        else
+        {
+            filter = Builders<Job>.Filter.Empty;
+        }
+
         // var filter = Builders<BsonDocument>.Filter
         //     .Eq("_id", id);
 
-        return await collection.Find(new BsonDocument()).FirstOrDefaultAsync();
+        return await collection.Find(filter).ToListAsync();
     }
 
     public async Task UpdateStepOutput(Guid id, int ordinal, SimpleValue output)

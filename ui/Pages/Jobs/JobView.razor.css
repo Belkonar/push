@@ -1,0 +1,7 @@
+.col-md-2 {
+    cursor: pointer;
+}
+
+.border-running {
+    border-color: #0a58ca !important;
+}

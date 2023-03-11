@@ -1,9 +1,11 @@
 @using System.Net
 @using shared.Models
+@using shared.Models.Job
 @using shared.Models.Pipeline
 @using shared.UpdateModels
 @inject HttpClient Http;
 @inject ToastService Toaster
+@inject NavigationManager Nav
 
 @if (View != null)
 {
@@ -53,6 +55,7 @@
             }
             
             <button @onclick="Save" class="btn btn-primary">Save</button>
+            <button @onclick="Deploy" class="btn btn-warning">Deploy</button>
         </div>
     }
 }
@@ -88,6 +91,29 @@
                     await Http.GetFromJsonAsync<PipelineVersion>($"/pipeline/{View.PipelineId}/version/{View.PipelineConstraint}");
                 ResetParameters();
             }
+        }
+    }
+
+    private async Task Deploy()
+    {
+        // http://localhost:5183/thing/206ebaf4-2e2e-492a-8271-dfd8b543cb81/deployable/start/main
+        if (Thing == null)
+        {
+            return;
+        }
+
+        var response = await Http.PostAsync($"/thing/{Thing.Id}/deployable/start/main", null);
+
+        try
+        {
+            response.EnsureSuccessStatusCode();
+
+            var job = await response.Content.ReadFromJsonAsync<Job>();
+            Nav.NavigateTo($"/job/{job!.Id}");
+        }
+        catch (Exception e)
+        {
+            Toaster.AddError(e);
         }
     }
 

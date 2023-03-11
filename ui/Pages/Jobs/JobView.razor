@@ -1,0 +1,81 @@
+@page "/job/{Id:guid}"
+@using shared.Models.Job
+@using ui.Models
+@implements IDisposable
+
+@inject HttpClient Http
+
+<h3>Job View</h3>
+
+@if (Job == null)
+{
+    return;
+}
+
+<h5>Job Status: <span class="text-@Job.Status">@Job.Status</span></h5>
+
+@foreach (var stage in Stages)
+{
+    <div class="row" style="padding: 0.5rem">
+        @stage.Name
+        <hr/>
+        @foreach (var step in stage.Steps)
+        {
+            <div class="col-md-2 border border-3 rounded border-@step.Status">
+                @step.Name
+            </div>
+        }
+    </div>
+}
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+    
+    private System.Timers.Timer _timer = new ();
+    private Job? Job { get; set; }
+    private List<ViewStage> Stages { get; set; } = new List<ViewStage>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Job = (await Http.GetFromJsonAsync<Job>($"/job/{Id}/safe"))!;
+        UpdateStages(Job);
+
+        if (Job.Status != "success" && Job.Status != "error")
+        {
+            _timer.Interval = 5000;
+            _timer.Elapsed += async (_, _) =>
+            {
+                await UpdatePage();
+                await InvokeAsync(StateHasChanged);
+            };
+            _timer.Enabled = true;
+        }
+    }
+
+    private void UpdateStages(Job job)
+    {
+        Stages = job.Stages.Select(stage => new ViewStage()
+        {
+            Name = stage.Name, 
+            Steps = job.Steps.Where(x => x.Stage == stage.Name).ToList()
+        }).ToList();
+    }
+
+    private async Task UpdatePage()
+    {
+        Job = (await Http.GetFromJsonAsync<Job>($"/job/{Id}/safe"))!;
+        UpdateStages(Job);
+
+        if (Job.Status == "success" || Job.Status == "error")
+        {
+            _timer.Enabled = false;
+        }
+    }
+
+    // I don't need memory leaks
+    public void Dispose()
+    {
+        _timer.Dispose();
+    }
+}

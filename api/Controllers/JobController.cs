@@ -1,10 +1,9 @@
 using api.Logic;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
 using shared;
+using shared.Models;
 using shared.Models.Job;
 using shared.UpdateModels;
-using shared.View;
 
 namespace api.Controllers;
 
@@ -23,6 +22,12 @@ public class JobController : ControllerBase
     public async Task<List<Job>> GetJobByStatus([FromQuery] string status)
     {
         return await _logic.GetJobByStatus(status);
+    }
+
+    [HttpGet("safe")]
+    public async Task<List<Job>> GetSafeJobs([FromQuery] Guid? id)
+    {
+        return await _logic.GetSafeJobs(id);
     }
 
     [HttpGet("{id}")]

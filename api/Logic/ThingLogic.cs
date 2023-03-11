@@ -13,12 +13,14 @@ public class ThingLogic
     private readonly PipelineLogic _pipelineLogic;
     private readonly IMongoDatabase _database;
     private readonly IMapper _mapper;
+    private readonly JobLogic _jobLogic;
 
-    public ThingLogic(PipelineLogic pipelineLogic, IMongoDatabase database, IMapper mapper)
+    public ThingLogic(PipelineLogic pipelineLogic, IMongoDatabase database, IMapper mapper, JobLogic jobLogic)
     {
         _pipelineLogic = pipelineLogic;
         _database = database;
         _mapper = mapper;
+        _jobLogic = jobLogic;
     }
     
     public async Task<List<Thing>> GetThings()
@@ -150,7 +152,9 @@ public class ThingLogic
         var job = new Job()
         {
             Id = Guid.NewGuid(),
-            ThingId = id
+            ThingId = id,
+            ThingName = thing.Name,
+            Created = DateTime.Now
         };
         
         job.SourceControlUri = deployable.SourceControlUri;
@@ -184,6 +188,7 @@ public class ThingLogic
                 {
                     Name = $"{stage.Name} - {step.Name}",
                     Step = step.Step,
+                    Stage = stage.Name,
                     Ordinal = ordinal++,
                 };
                 
@@ -245,7 +250,7 @@ public class ThingLogic
         var collection = _database.GetCollection<Job>("jobs");
         
         await collection.InsertOneAsync(job);
-        
-        return job;
+
+        return await _jobLogic.GetSafeJob(job.Id);
     }
 }
