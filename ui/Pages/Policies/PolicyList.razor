@@ -1,5 +1,5 @@
 @page "/policies"
-@inject WebClient Web
+@inject HttpClient Http
 
 <PageTitle>Policy List</PageTitle>
 
@@ -30,6 +30,6 @@
     
     protected override async Task OnInitializedAsync()
     {
-        Policies = await Web.Get<List<Policy>>("/policy");
+        Policies = await Http.GetFromJsonAsync<List<Policy>>("/policy") ?? new List<Policy>();
     }
 }

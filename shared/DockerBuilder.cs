@@ -73,6 +73,7 @@ public class DockerBuilder
         // build the bash script
         var commandBuilder = new StringBuilder();
         commandBuilder.AppendLine("#!/usr/bin/env bash");
+        commandBuilder.AppendLine("set -e");
         commandBuilder.AppendLine(command);
         
         File.WriteAllText(scriptLocation, commandBuilder.ToString());

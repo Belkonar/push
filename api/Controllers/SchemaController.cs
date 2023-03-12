@@ -16,7 +16,7 @@ public class SchemaController : ControllerBase
     {
         var builder = new JsonSchemaBuilder();
 
-        var schema = builder.FromType<PipelineVersion>().Build();
+        var schema = builder.FromType<PipelineVersionCode>().Build();
 
         Console.WriteLine();
 

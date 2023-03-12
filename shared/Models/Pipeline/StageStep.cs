@@ -13,7 +13,7 @@ public class StageStep
     [Required]
     [JsonPropertyName("step")]
     public string Step { get; set; }
-    
+
     [JsonPropertyName("parameters")]
-    public Dictionary<string, string> Parameters { get; set; }
+    public Dictionary<string, string> Parameters { get; set; } = new Dictionary<string, string>();
 }

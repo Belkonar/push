@@ -1,5 +1,5 @@
 {
-  "$schema": "http://localhost:5183/schema/PipelineVersion?2",
+  "$schema": "http://localhost:5183/schema/PipelineVersion?3",
   "parameters": [
     {
       "name": "dude"
@@ -35,7 +35,8 @@
       "commands": [
         "echo {parameters.person}",
         "echo {root.dude}",
-        "echo {parameters.howy}"
+        "echo {parameters.howy}",
+        "cat cater.text"
       ]
     },
     {
@@ -45,6 +46,12 @@
       "commands": [
         "ls node_modules"
       ]
+    }
+  ],
+  "files": [
+    {
+      "key": "cater",
+      "location": "cater.text"
     }
   ]
 }

@@ -1,6 +1,7 @@
 using api.Logic;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
+using shared.Models;
 using shared.View;
 
 namespace api.Controllers;
@@ -76,6 +77,19 @@ global_admin { true }";
     [HttpGet()]
     public async Task<IActionResult> Test()
     {
+        var collection = _database.GetCollection<Configs>("configs");
+
+        var config = new Configs()
+        {
+            Id = "babbers",
+            Data = new Dictionary<string, string>()
+            {
+                { "test", "value" },
+            }
+        };
+
+        await collection.InsertOneAsync(config);
+        
         return Ok();
     }
 

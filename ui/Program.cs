@@ -19,7 +19,6 @@ builder.Services.AddHttpClient("Api", client =>
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>()
     .CreateClient("Api"));
 
-builder.Services.AddTransient<WebClient>();
 builder.Services.AddSingleton<ToastService>();
 builder.Services.AddScoped<OrganizationService>();
 

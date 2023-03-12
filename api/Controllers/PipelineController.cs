@@ -55,6 +55,13 @@ public class PipelineController
         return await _pipelineLogic.GetVersionByConstraint(id, constraint);
     }
     
+    // Get the most recent version that satisfies the constraint
+    [HttpGet("{id}/files/{version}")]
+    public async Task<Dictionary<string,string>> GetFiles([FromRoute] Guid id, [FromRoute] string version)
+    {
+        return await _pipelineLogic.GetFiles(id, version);
+    }
+    
     // Create a new pipeline
     [HttpPost]
     public async Task<Pipeline> CreatePipeline([FromBody] Pipeline data)

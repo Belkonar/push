@@ -22,7 +22,7 @@ public class PolicyController : ControllerBase
     }
 
     /// <summary>
-    /// Update an existing policy
+    /// Update an existing policy (make this an upsert)
     /// </summary>
     /// <requires>(G).global_policy_manage</requires>
     /// <param name="key"></param>

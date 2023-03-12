@@ -27,16 +27,23 @@ public class JobLogic
     
     public async Task HandlePendingJobs()
     {
-        var response = await _client.GetFromJsonAsync<List<Job>>("/job?status=pending");
-
-        if (response == null || response.Count == 0)
+        try
         {
-            return;
+            var response = await _client.GetFromJsonAsync<List<Job>>("/job?status=pending");
+            
+            if (response == null || response.Count == 0)
+            {
+                return;
+            }
+
+            foreach (var job in response)
+            {
+                await HandlePendingJob(job);
+            }
         }
-
-        foreach (var job in response)
+        catch (Exception e)
         {
-            await HandlePendingJob(job);
+            Console.WriteLine("can't hit API");
         }
     }
 
@@ -64,11 +71,29 @@ public class JobLogic
         var actualDestinationFolder = Directory.GetDirectories(destinationFolder.Dir)[0];
         
         // TODO: File adds/replacements
+        var files = await _client.GetFromJsonAsync<Dictionary<string, string>>($"/pipeline/{job.PipelineVersion.PipelineId}/files/{job.PipelineVersion.Version}")
+            ?? new Dictionary<string, string>(); // just to cover the nullable
+
+        foreach (var file in job.Files)
+        {
+            var filePath = Path.Join(actualDestinationFolder, file.Location);
+
+            if ((!File.Exists(filePath) || file.IsFixed) && files.ContainsKey(file.Key))
+            {
+                await File.WriteAllBytesAsync(filePath, Convert.FromBase64String(files[file.Key]));
+
+                if (!file.IsBinary)
+                {
+                    // do the replacements on text files
+                    var data = await File.ReadAllTextAsync(filePath);
+                    data = ProcessTemplate(job.Parameters, data);
+                    await File.WriteAllTextAsync(filePath, data);
+                }
+            }
+        }
         
         ZipFile.CreateFromDirectory(actualDestinationFolder, finalArtifactLocation.FilePath);
         
-        // We now have an artifact YAY!
-
         using IAmazonS3 s3Client = new AmazonS3Client(Amazon.RegionEndpoint.USEast2);
         
         // aws s3 rm s3://{bucket-name} --recursive # to clean stuff up
@@ -94,16 +119,23 @@ public class JobLogic
 
     public async Task HandleReadyJobs()
     {
-        var response = await _client.GetFromJsonAsync<List<Job>>("/job?status=ready");
-
-        if (response == null || response.Count == 0)
+        try
         {
-            return;
+            var response = await _client.GetFromJsonAsync<List<Job>>("/job?status=ready");
+
+            if (response == null || response.Count == 0)
+            {
+                return;
+            }
+
+            foreach (var job in response)
+            {
+                await HandleReadyJob(job);
+            }
         }
-
-        foreach (var job in response)
+        catch (Exception e)
         {
-            await HandleReadyJob(job);
+            Console.WriteLine("can't hit API");
         }
     }
 
@@ -160,5 +192,17 @@ public class JobLogic
         });
 
         response.EnsureSuccessStatusCode();
+    }
+    
+    static string ProcessTemplate(List<JobStepParameter> localParameters, string s)
+    {
+        var local = s;
+
+        foreach (var parameter in localParameters)
+        {
+            local = local.Replace($"{{{parameter.Name}}}", parameter.Value);
+        }
+        
+        return local;
     }
 }

@@ -5,3 +5,7 @@
 .border-running {
     border-color: #0a58ca !important;
 }
+
+.border-error {
+    border-color: #dc3545 !important;
+}

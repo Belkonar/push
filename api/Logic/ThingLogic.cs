@@ -160,6 +160,7 @@ public class ThingLogic
         job.SourceControlUri = deployable.SourceControlUri;
         job.SourceReference = reference;
         job.PipelineVersion = pipeline.Id;
+        job.Files = pipeline.PipelineCode.Files;
         
         foreach (var globalParameter in pipeline.PipelineCode.Parameters)
         {
@@ -264,20 +265,15 @@ public class ThingLogic
         return await _jobLogic.GetSafeJob(job.Id);
     }
 
-    internal static string ProcessTemplate(List<JobStepParameter> localParameters, string s)
+    public static string ProcessTemplate(List<JobStepParameter> localParameters, string s)
     {
         var local = s;
 
         foreach (var parameter in localParameters)
         {
-            Console.WriteLine(parameter.Name);
             local = local.Replace($"{{{parameter.Name}}}", parameter.Value);
         }
         
-        Console.WriteLine(local);
-        
-        
-
         return local;
     }
 }

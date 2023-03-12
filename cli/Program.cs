@@ -2,43 +2,13 @@
 
 using System.Net.Http.Json;
 using cli;
-using shared;
 using shared.Models.Pipeline;
-using shared.View;
 
-// use this to test
-// dotnet run && docker build . -t tester && docker run tester
-
-// using var temp = new TempFolder(false);
-// var dockerfile = new DockerBuilder(temp);
+// var jsonText = File.ReadAllText("jsonTest.json");
+// var request = JsonSerializer.Deserialize<PolicyEngineRequest<SimpleValue>>(jsonText);
+// var outputText = JsonSerializer.Serialize(request);
 //
-// dockerfile.From("node:16");
-// dockerfile.SetupScript(new List<string>()
-// {
-//     "echo 1;sleep 3",
-//     "echo 2;sleep 3",
-//     "echo 3;sleep 3",
-//     "echo 4;sleep 3",
-//     "echo 5;sleep 3",
-//     "echo 6;sleep 3",
-//     "echo 7;sleep 3",
-//     "echo 8;sleep 3",
-//     "echo 9;sleep 3",
-// });
-// dockerfile.WorkDirVolume("/Users/dotson/tester", "/app");
-//
-// dockerfile.CreateFile();
-//
-// Executor.Execute(dockerfile.GetBuildConfig());
-//
-// var r = Executor.Execute(dockerfile.GetRunConfig(), async s =>
-// {
-//     Console.WriteLine("======= START =======");
-//     Console.WriteLine(s);
-//     Console.WriteLine("======== END ========");
-// });
-//
-// //Console.WriteLine(r.Shared);
+// Console.WriteLine(outputText);
 //
 // return;
 
@@ -75,14 +45,18 @@ if (!File.Exists(infoLocation))
 var pipeline = await JsonHelper.GetFile<PipelineVersionCode>(pipelineLocation);
 var info = await JsonHelper.GetFile<Info>(infoLocation);
 
-// if (!JsonHelper.IsValid(pipeline))
-// {
-//     return;
-// }
-
 var files = new Dictionary<string, string>();
 
-// TODO: Files
+foreach (var file in info.Files)
+{
+    var path = Path.Join(target, file.Value);
+    if (!File.Exists(path))
+    {
+        throw new FileNotFoundException($"file {file.Value} doesn't exist lol");
+    }
+    
+    files[file.Key] = Convert.ToBase64String(File.ReadAllBytes(path));
+}
 
 var body = new PipelineVersion
 {
@@ -91,7 +65,6 @@ var body = new PipelineVersion
         Version = "v1.0.0",
         PipelineId = info.Id,
     },
-    
     PipelineCode = pipeline,
     Files = files
 };

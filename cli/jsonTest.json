@@ -1,0 +1,14 @@
+{
+  "data": {
+    "value": "hi"
+  },
+  "policies": [
+    {
+      "rules": [
+        {
+          "op": 1
+        }
+      ]
+    }
+  ]
+}

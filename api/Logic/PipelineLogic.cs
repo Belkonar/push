@@ -98,24 +98,8 @@ public class PipelineLogic
         {
             throw new FileNotFoundException("no version matching constraint");
         }
-        
-        var collection = _database.GetCollection<PipelineVersion>("pipeline_versions");
-        
-        var filter = Builders<PipelineVersion>.Filter
-            .Eq(x => x.Id, new PipelineVersionKey()
-            {
-                PipelineId = id,
-                Version = filtered
-            });
 
-        var version = await collection.Find(filter).FirstOrDefaultAsync();
-
-        if (version == null)
-        {
-            throw new Exception("wot in the fucj");
-        }
-
-        return version;
+        return await GetVersion(id, filtered);
     }
     
     public async Task<Pipeline> CreatePipeline(Pipeline data)
@@ -201,5 +185,42 @@ public class PipelineLogic
         }
         
         return parameters;
+    }
+
+    public async Task<PipelineVersion> GetVersion(Guid id, string versionValue)
+    {
+        var collection = _database.GetCollection<PipelineVersion>("pipeline_versions");
+        
+        var filter = Builders<PipelineVersion>.Filter
+            .Eq(x => x.Id, new PipelineVersionKey()
+            {
+                PipelineId = id,
+                Version = versionValue
+            });
+
+        var version = await collection.Find(filter).FirstOrDefaultAsync();
+
+        if (version == null)
+        {
+            throw new Exception("wot in the fucj");
+        }
+
+        return version;
+    }
+
+    public async Task<Dictionary<string,string>> GetFiles(Guid id, string version)
+    {
+        var collection = _database.GetCollection<PipelineVersion>("pipeline_versions");
+        
+        var filter = Builders<PipelineVersion>.Filter
+            .Eq(x => x.Id, new PipelineVersionKey()
+            {
+                PipelineId = id,
+                Version = version
+            });
+
+        return await collection.Find(filter)
+            .Project(x => x.Files)
+            .FirstOrDefaultAsync() ?? new Dictionary<string, string>();
     }
 }
