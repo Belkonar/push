@@ -1,6 +1,7 @@
 @page "/job/{Id:guid}"
 @using shared.Models.Job
 @using ui.Models
+@using shared.Models
 @implements IDisposable
 
 @inject HttpClient Http
@@ -14,6 +15,13 @@
 
 <h5>Job Status: <span class="text-@Job.Status">@Job.Status</span></h5>
 
+@if (SelectedOrdinal.HasValue)
+{
+    <Card>
+        <pre style="display: flex; flex-direction: column-reverse; max-height: 250px; overflow-y: scroll">@Output</pre>
+    </Card>
+}
+
 @foreach (var stage in Stages)
 {
     <div class="row" style="padding: 0.5rem">
@@ -21,7 +29,8 @@
         <hr/>
         @foreach (var step in stage.Steps)
         {
-            <div class="col-md-2 border border-3 rounded border-@step.Status">
+            <div @onclick="async () => await SelectOrdinal(step.Ordinal)" 
+                 class="col-md-2 border border-3 rounded border-@step.Status">
                 @step.Name
             </div>
         }
@@ -31,6 +40,9 @@
 @code {
     [Parameter]
     public Guid Id { get; set; }
+    
+    private int? SelectedOrdinal { get; set; }
+    private string Output { get; set; } = "";
     
     private System.Timers.Timer _timer = new ();
     private Job? Job { get; set; }
@@ -47,6 +59,7 @@
             _timer.Elapsed += async (_, _) =>
             {
                 await UpdatePage();
+                await UpdateOutput();
                 await InvokeAsync(StateHasChanged);
             };
             _timer.Enabled = true;
@@ -61,6 +74,33 @@
             Steps = job.Steps.Where(x => x.Stage == stage.Name).ToList()
         }).ToList();
     }
+
+    private async Task SelectOrdinal(int i)
+    {
+        if (SelectedOrdinal == i)
+        {
+            // Toggle it
+            SelectedOrdinal = null;
+            return;
+        }
+        
+        SelectedOrdinal = i;
+        await UpdateOutput();
+    }
+
+    private async Task UpdateOutput()
+    {
+        if (!SelectedOrdinal.HasValue)
+        {
+            return;
+        }
+        
+        var output = await Http.GetFromJsonAsync<SimpleValue>($"/job/{Job!.Id}/step/{SelectedOrdinal}/output");
+        if (output != null)
+        {
+            Output = output.Value;
+        }
+    } 
 
     private async Task UpdatePage()
     {

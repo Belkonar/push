@@ -7,19 +7,14 @@
   ],
   "stages": [
     {
-      "name": "build",
+      "name": "building",
       "steps": [
         {
-          "name": "build",
+          "name": "builder",
           "step": "build",
           "parameters": {
             "person": "a"
           }
-        },
-        {
-          "name": "checker",
-          "step": "check",
-          "parameters": {}
         }
       ]
     }
@@ -32,10 +27,15 @@
         {
           "name": "person",
           "local": false
+        },
+        {
+          "name": "howy"
         }
       ],
       "commands": [
-        "npm i"
+        "echo {parameters.person}",
+        "echo {root.dude}",
+        "echo {parameters.howy}"
       ]
     },
     {

@@ -192,7 +192,7 @@ public class PipelineLogic
                     {
                         // Need to add this to the options since it's not filled out
                         var newStepParameter = stepParameter.Clone();
-                        newStepParameter.Name = $"{step.Name}.{stepParameter.Name}";
+                        newStepParameter.Name = $"{stage.Name}.{step.Name}.{stepParameter.Name}";
                         
                         parameters.Add(newStepParameter);
                     }

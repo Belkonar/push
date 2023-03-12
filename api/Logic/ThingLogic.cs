@@ -166,9 +166,9 @@ public class ThingLogic
             var param = _mapper.Map<StepParameter, JobStepParameter>(globalParameter);
             param.Name = $"root.{globalParameter.Name}";
             
-            if (deployable.Variables.ContainsKey(param.Name))
+            if (deployable.Variables.ContainsKey(globalParameter.Name))
             {
-                param.Value = deployable.Variables[param.Name];
+                param.Value = deployable.Variables[globalParameter.Name];
             }
             
             job.Parameters.Add(param);
@@ -210,10 +210,13 @@ public class ThingLogic
                 else
                 {
                     // Here we reverse the loop to only pull stuff we actually need.
+
+                    var localParameters = job.Parameters.ToList();
         
                     foreach (var parameter in stepCode.Parameters)
                     {
                         var newParameter = _mapper.Map<StepParameter, JobStepParameter>(parameter);
+
                         // TODO: template stuff for param
                         if (step.Parameters.ContainsKey(parameter.Name))
                         {
@@ -236,10 +239,17 @@ public class ThingLogic
                             }
                         }
                         
+                        // Reset the name so I can use it for replacements
+                        newParameter.Name = $"parameters.{parameter.Name}";
+                        
+                        localParameters.Add(newParameter);
                         jobStep.Parameters.Add(newParameter);
                     }
         
                     jobStep.StepInfo = _mapper.Map<Step, JobStepInfo>(stepCode);
+
+                    jobStep.StepInfo.Commands = jobStep.StepInfo.Commands
+                        .Select(x => ProcessTemplate(localParameters, x)).ToList();
                 }
                 
                 job.Steps.Add(jobStep);
@@ -252,5 +262,22 @@ public class ThingLogic
         await collection.InsertOneAsync(job);
 
         return await _jobLogic.GetSafeJob(job.Id);
+    }
+
+    internal static string ProcessTemplate(List<JobStepParameter> localParameters, string s)
+    {
+        var local = s;
+
+        foreach (var parameter in localParameters)
+        {
+            Console.WriteLine(parameter.Name);
+            local = local.Replace($"{{{parameter.Name}}}", parameter.Value);
+        }
+        
+        Console.WriteLine(local);
+        
+        
+
+        return local;
     }
 }
