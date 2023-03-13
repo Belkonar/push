@@ -186,6 +186,23 @@ public class JobLogic
             await UpdateJobStepStatus(job, step.Ordinal, "approval");
             return;
         }
+
+        if (step.StepInfo == null)
+        {
+            await UpdateJobStatus(job, "ready");
+            await UpdateJobStepStatus(job, step.Ordinal, "success");
+
+            if (step.Step == "sod")
+            {
+                // send the sod feature
+                await _client.PostAsJsonAsync($"/job/{job.Id}/feature", new JobFeature()
+                {
+                    Name = "sod"
+                });
+            }
+            
+            return;
+        }
         
         // I got everything I need for nomad!
         var request = new NomadJobRequest();
@@ -246,5 +263,40 @@ public class JobLogic
         }
         
         return local;
+    }
+
+    public async Task HandleApprovalJobs()
+    {
+        try
+        {
+            var jobs = await GetJobsByStatus("approval");
+            foreach (var job in jobs)
+            {
+                await HandleApprovalJob(job);
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    private async Task HandleApprovalJob(Job job)
+    {
+        var step = job.Steps.FirstOrDefault(x => x.Status == "approval");
+
+        if (step == null)
+        {
+            // racing to ready
+            await UpdateJobStatus(job, "ready");
+            return;
+        }
+
+        if (step.Approvals.Count >= step.RequiredApprovals)
+        {
+            await UpdateJobStatus(job, "ready");
+            await UpdateJobStepStatus(job, step.Ordinal, "pending");
+        }
     }
 }

@@ -24,6 +24,7 @@ public class Worker : BackgroundService
                 var logic = scope.ServiceProvider.GetRequiredService<JobLogic>();
                 await logic.HandlePendingJobs();
                 await logic.HandleReadyJobs(); // This basically just drops jobs on nomad if a step is ready
+                await logic.HandleApprovalJobs();
             }
             
             _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);

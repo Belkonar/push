@@ -22,6 +22,16 @@
     </Card>
 }
 
+@if (ShowApproval)
+{
+    <Card>
+        This step requires approval!
+        <div>
+            <button @onclick="ApproveSelectedOrdinal" class="btn btn-primary">Approve</button>
+        </div>
+    </Card>
+}
+
 @foreach (var stage in Stages)
 {
     <div class="row" style="padding: 0.5rem">
@@ -47,6 +57,8 @@
     private System.Timers.Timer _timer = new ();
     private Job? Job { get; set; }
     private List<ViewStage> Stages { get; set; } = new List<ViewStage>();
+
+    private bool ShowApproval { get; set; } = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -81,10 +93,16 @@
         {
             // Toggle it
             SelectedOrdinal = null;
+            ShowApproval = false;
             return;
         }
         
         SelectedOrdinal = i;
+
+        var step = Job!.Steps.First(x => x.Ordinal == i);
+
+        ShowApproval = step.Status == "approval";
+        
         await UpdateOutput();
     }
 
@@ -110,6 +128,22 @@
         if (Job.Status == "success" || Job.Status == "error")
         {
             _timer.Enabled = false;
+        }
+    }
+
+    private async Task ApproveSelectedOrdinal()
+    {
+        try
+        {
+            using var response = await Http.PostAsync($"/job/{Id}/approve/{SelectedOrdinal}", null);
+            response.EnsureSuccessStatusCode();
+
+            await SelectOrdinal(SelectedOrdinal!.Value);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
         }
     }
 

@@ -66,9 +66,21 @@ public class JobController : ControllerBase
         await _logic.UpdateStepOutput(id, ordinal, output);
     }
 
+    [HttpPost("{id}/approve/{ordinal}")]
+    public async Task ApproveStep([FromRoute] Guid id, [FromRoute] int ordinal)
+    {
+        await _logic.ApproveStep(id, ordinal);
+    }
+
     [HttpPost("{id}/step/{ordinal}/finalize")]
     public async Task FinalizeStep([FromRoute] Guid id, [FromRoute] int ordinal, [FromBody] ExecutorResponse response)
     {
         await _logic.FinalizeStep(id, ordinal, response);
+    }
+
+    [HttpPost("{id}/feature")]
+    public async Task AddFeature(Guid id, JobFeature feature)
+    {
+        await _logic.AddFeature(id, feature);
     }
 }

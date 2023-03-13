@@ -187,7 +187,7 @@ public class ThingLogic
             {
                 var jobStep = new JobStep()
                 {
-                    Name = $"{stage.Name} - {step.Name}",
+                    Name = $"{step.Name}",
                     Step = step.Step,
                     Stage = stage.Name,
                     Ordinal = ordinal++,

@@ -25,6 +25,7 @@ builder.Services.AddTransient<JobLogic>();
 
 // TODO: Properly handle distributed cache
 builder.Services.AddDistributedMemoryCache();
+builder.Services.AddMemoryCache();
 
 // Services
 builder.Services.AddTransient<OpaService>();

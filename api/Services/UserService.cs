@@ -39,12 +39,14 @@ public class UserService
         var profile = JsonSerializer.Deserialize<JsonDocument>(profileJson);
         
         Subject = profile.RootElement.GetString("sub");
+        // Console.WriteLine(Subject);
+        // Console.WriteLine(profileJson);
         var scopes = profile.RootElement.GetString("scope");
         
         if (scopes.Contains("profile"))
         {
             // TODO: Find out thwy the issuer is missing from the token
-            profile = await _auth0Service.GetProfile(authHeader);
+            profile = await _auth0Service.GetProfile(Subject, authHeader);
         }
         
         Profile = profile;

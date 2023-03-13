@@ -1,4 +1,6 @@
 using System.Text.Json;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace api.Services;
 
@@ -9,27 +11,32 @@ namespace api.Services;
 public class Auth0Service
 {
     private readonly HttpClient _client;
+    private readonly IMemoryCache _cache;
 
-    public Auth0Service(HttpClient client)
+    public Auth0Service(HttpClient client, IMemoryCache cache)
     {
         _client = client;
+        _cache = cache;
     }
 
-    public async Task<JsonDocument> GetProfile(string authToken)
+    public async Task<JsonDocument?> GetProfile(string subject, string authToken)
     {
-        const string issuer = "https://dev-sl9gv5xa.us.auth0.com";
-        const string profileEndpoint = $"{issuer}/userinfo";
-        
-        using var request = new HttpRequestMessage()
+        return await _cache.GetOrCreateAsync($"profile.{subject}", async entry =>
         {
-            RequestUri = new Uri(profileEndpoint),
-            Method = HttpMethod.Get
-        };
-            
-        request.Headers.Add("Authorization", authToken);
-        
-        using var response = await _client.SendAsync(request);
-        
-        return (await response.Content.ReadFromJsonAsync<JsonDocument>())!;
+            const string issuer = "https://dev-sl9gv5xa.us.auth0.com";
+            const string profileEndpoint = $"{issuer}/userinfo";
+
+            using var request = new HttpRequestMessage()
+            {
+                RequestUri = new Uri(profileEndpoint),
+                Method = HttpMethod.Get
+            };
+
+            request.Headers.Add("Authorization", authToken);
+
+            using var response = await _client.SendAsync(request);
+
+            return (await response.Content.ReadFromJsonAsync<JsonDocument>())!;
+        });
     }
 }

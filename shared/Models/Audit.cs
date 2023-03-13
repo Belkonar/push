@@ -1,3 +1,4 @@
+using System.Text.Json;
 using MongoDB.Bson;
 
 namespace shared.Models;
@@ -18,4 +19,6 @@ public class Audit
     public string Subject { get; set; }
 
     public DateTime Created { get; set; } = DateTime.Now;
+    
+    public BsonDocument Profile { get; set; }
 }

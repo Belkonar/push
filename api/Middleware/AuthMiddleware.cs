@@ -13,8 +13,6 @@ public class AuthMiddleware
     public async Task InvokeAsync(HttpContext context, UserService userService)
     {
         await userService.SetupUser(context.Request.Headers.Authorization);
-        userService.Subject = "wtg;";
-        Console.WriteLine("setup lol");
         await _next.Invoke(context);
     }
 }

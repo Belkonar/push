@@ -1,3 +1,5 @@
+using System.Text.Json;
+using api.Services;
 using Microsoft.Extensions.Caching.Distributed;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -12,11 +14,13 @@ public class JobLogic
 {
     private readonly IDistributedCache _cache;
     private readonly IMongoDatabase _mongoDatabase;
+    private readonly UserService _userService;
 
-    public JobLogic(IDistributedCache cache, IMongoDatabase mongoDatabase)
+    public JobLogic(IDistributedCache cache, IMongoDatabase mongoDatabase, UserService userService)
     {
         _cache = cache;
         _mongoDatabase = mongoDatabase;
+        _userService = userService;
     }
     
     public async Task<List<Job>> GetJobByStatus(string status)
@@ -142,6 +146,48 @@ public class JobLogic
         });
     }
 
+    public async Task ApproveStep(Guid id, int ordinal)
+    {
+        var collection = _mongoDatabase.GetCollection<Job>("jobs");
+
+        var filter = Builders<Job>.Filter
+            .Eq(x => x.Id, id);
+
+        var update = Builders<Job>.Update
+            .Push("Steps.$[s].Approvals", _userService.Subject);
+        
+        Console.WriteLine(_userService.Subject);
+        Console.WriteLine(JsonSerializer.Serialize(_userService.Profile));
+        
+        var arrayFilters = new[]
+        {
+            new BsonDocumentArrayFilterDefinition<BsonDocument>(new BsonDocument("s.Ordinal", ordinal)),
+        };
+
+        await collection.UpdateOneAsync(filter, update, new UpdateOptions()
+        {
+            ArrayFilters = arrayFilters
+        });
+
+        await LogAudit(id);
+    }
+
+    private async Task LogAudit(Guid id)
+    {
+        var audit = new Audit()
+        {
+            Action = "sod-approval",
+            ResourceType = "job",
+            ResourceId = id.ToString(),
+            Subject = _userService.Subject,
+            Profile = BsonDocument.Parse(JsonSerializer.Serialize(_userService.Profile))
+        };
+        
+        var collection = _mongoDatabase.GetCollection<Audit>("audit");
+        
+        await collection.InsertOneAsync(audit);
+    }
+
     public async Task FinalizeStep(Guid id, int ordinal, ExecutorResponse response)
     {
         var collection = _mongoDatabase.GetCollection<Job>("jobs");
@@ -190,6 +236,19 @@ public class JobLogic
                 StatusReason = ""
             });
         }
+    }
+
+    public async Task AddFeature(Guid id, JobFeature feature)
+    {
+        var collection = _mongoDatabase.GetCollection<Job>("jobs");
+
+        var filter = Builders<Job>.Filter
+            .Eq(x => x.Id, id);
+
+        var update = Builders<Job>.Update
+            .Push("Features", feature);
+
+        await collection.UpdateOneAsync(filter, update);
     }
 
     /// <summary>
