@@ -11,6 +11,10 @@
       "name": "building",
       "steps": [
         {
+          "name": "sod",
+          "step": "sod"
+        },
+        {
           "name": "builder",
           "step": "build",
           "parameters": {

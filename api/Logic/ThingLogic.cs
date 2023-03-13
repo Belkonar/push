@@ -207,6 +207,11 @@ public class ThingLogic
                             Kind = "managed"
                         });
                     }
+
+                    if (step.Step == "sod")
+                    {
+                        jobStep.RequiredApprovals = 2;
+                    }
                 }
                 else
                 {

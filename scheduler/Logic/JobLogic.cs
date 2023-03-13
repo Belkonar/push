@@ -49,6 +49,26 @@ public class JobLogic
         }
     }
 
+    public async Task<List<Job>> GetJobsByStatus(string status)
+    {
+        try
+        {
+            var response = await _client.GetFromJsonAsync<List<Job>>($"/job?status={status}");
+            
+            if (response == null || response.Count == 0)
+            {
+                return new List<Job>();
+            }
+
+            return response;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return new List<Job>();
+        }
+    }
+
     public async Task HandlePendingJob(Job job)
     {
         if (string.IsNullOrWhiteSpace(job.SourceControlUri) ||
@@ -159,6 +179,13 @@ public class JobLogic
         }
 
         var step = steps.First();
+
+        if (step.RequiredApprovals > 0 && step.Approvals.Count < step.RequiredApprovals)
+        {
+            await UpdateJobStatus(job, "approval");
+            await UpdateJobStepStatus(job, step.Ordinal, "approval");
+            return;
+        }
         
         // I got everything I need for nomad!
         var request = new NomadJobRequest();
@@ -196,6 +223,18 @@ public class JobLogic
 
         response.EnsureSuccessStatusCode();
     }
+    
+    private async Task UpdateJobStepStatus(Job job, int ordinal, string status)
+    {
+        using var response = await _client.PostAsJsonAsync($"/job/{job.Id}/step/{ordinal}/status", new UpdateStatus()
+        {
+            Status = status
+        });
+
+        response.EnsureSuccessStatusCode();
+    }
+    
+    // job/{job.Id}/step/{ordinal}/status
     
     static string ProcessTemplate(List<JobStepParameter> localParameters, string s)
     {

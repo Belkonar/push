@@ -48,17 +48,23 @@ public class JobLogic
 
     public async Task<Job> GetSafeJob(Guid id)
     {
-        var collection = _mongoDatabase.GetCollection<Job>("Safe Jobs");
+        var collection = _mongoDatabase.GetCollection<Job>("jobs");
         
         var filter = Builders<Job>.Filter
             .Eq("_id", id);
+        
+        var projection = Builders<Job>.Projection
+            .Exclude(x => x.Parameters)
+            .Exclude(x => x.Files)
+            .Exclude("Steps.Parameters")
+            .Exclude("Steps.StepInfo");
 
-        return await collection.Find(filter).FirstOrDefaultAsync();
+        return await collection.Find(filter).Project<Job>(projection).FirstOrDefaultAsync();
     }
     
     public async Task<List<Job>> GetSafeJobs(Guid? id)
     {
-        var collection = _mongoDatabase.GetCollection<Job>("Safe Jobs");
+        var collection = _mongoDatabase.GetCollection<Job>("jobs");
 
         FilterDefinition<Job> filter;
 
@@ -72,10 +78,20 @@ public class JobLogic
             filter = Builders<Job>.Filter.Empty;
         }
 
+        var projection = Builders<Job>.Projection
+            .Exclude(x => x.Parameters)
+            .Exclude(x => x.Files)
+            .Exclude("Steps.Parameters")
+            .Exclude("Steps.StepInfo");
+
         // var filter = Builders<BsonDocument>.Filter
         //     .Eq("_id", id);
 
-        return await collection.Find(filter).ToListAsync();
+        return await collection.Find(filter)
+            .SortByDescending(x => x.Created)
+            .Limit(10)
+            .Project<Job>(projection)
+            .ToListAsync();
     }
 
     public async Task UpdateStepOutput(Guid id, int ordinal, SimpleValue output)

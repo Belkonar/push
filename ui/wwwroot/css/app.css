@@ -47,6 +47,13 @@ textarea.form-control {
     color: #dc3545 !important;
 }
 
+.border-approval {
+    border-color: #6f42c1 !important;
+}
+
+.text-approval {
+    color: #6f42c1 !important;
+}
 
 /* My stuff goes here */
 

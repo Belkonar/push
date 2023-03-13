@@ -1,8 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
 using shared.Models.Pipeline;
 
 namespace shared.Models.Job;
@@ -14,116 +9,35 @@ namespace shared.Models.Job;
 
 public class Job
 {
-    [JsonPropertyName("id")]
     public Guid Id { get; set; }
     
-    [JsonPropertyName("created")]
     public DateTime Created { get; set; }
-
-    [JsonPropertyName("thing")]
+    
     public Guid ThingId { get; set; }
     
     // To prevent needing a join (this however means it can get out of date)
-    [JsonPropertyName("thingName")]
     public string ThingName { get; set; }
 
-    [JsonPropertyName("status")]
     public string Status { get; set; } = "pending";
     
-    [JsonPropertyName("statusReason")]
     public string StatusReason { get; set; } = "";
     
-    [JsonPropertyName("stages")]
     public List<JobStage> Stages { get; set; } = new();
 
-    [JsonPropertyName("steps")]
     public List<JobStep> Steps { get; set; } = new();
     
     /// <summary>
     /// This field is solely used right now for file replacements
     /// </summary>
-    [JsonPropertyName("parameters")]
     public List<JobStepParameter> Parameters { get; set; } = new();
     
-    [JsonPropertyName("sourceControlUri")]
     public string SourceControlUri { get; set; }
     
-    [JsonPropertyName("sourceReference")]
     public string SourceReference { get; set; }
     
-    [JsonPropertyName("files")]
     public List<PipelineFile> Files { get; set; } = new();
 
-    [JsonPropertyName("pipeline")]
     public PipelineVersionKey PipelineVersion { get; set; }
-}
 
-/// <summary>
-/// Stages for this model are pretty much just for display purposes
-/// </summary>
-public class JobStage
-{
-    [JsonPropertyName("name")]
-    public string Name { get; set; }
-}
-
-public class JobStep
-{
-    [JsonPropertyName("ordinal")]
-    public int Ordinal { get; set; }
-
-    [JsonPropertyName("status")]
-    public string Status { get; set; } = "pending";
-
-    [JsonPropertyName("statusReason")]
-    public string StatusReason { get; set; } = "";
-    
-    [Required]
-    [JsonPropertyName("name")]
-    public string Name { get; set; }
-    
-    [JsonPropertyName("parameters")]
-    public List<JobStepParameter> Parameters { get; set; } = new();
-
-    [JsonPropertyName("stepInfo")]
-    public JobStepInfo? StepInfo { get; set; } = null;
-
-    [JsonPropertyName("step")]
-    public string Step { get; set; }
-
-    [JsonPropertyName("stage")]
-    public string Stage { get; set; }
-}
-
-public class JobStepInfo
-{
-    [JsonPropertyName("docker")]
-    public string Docker { get; set; }
-   
-    [JsonPropertyName("remote")]
-    public bool Remote { get; set; } = true;
-
-    [JsonPropertyName("persist")]
-    public bool Persist { get; set; } = true;
-    
-    [JsonPropertyName("commands")]
-    public List<string> Commands { get; set; } = new();
-    
-    [JsonPropertyName("output")]
-    public ExecutorResponse? Output { get; set; } = null;
-}
-
-public class JobStepParameter
-{
-    [JsonPropertyName("name")]
-    public string Name { get; set; }
-    
-    [JsonPropertyName("kind")]
-    public string Kind { get; set; } = "string";
-    
-    [JsonPropertyName("subKind")]
-    public string SubKind { get; set; } = "";
-    
-    [JsonPropertyName("value")]
-    public string Value { get; set; }
+    public List<JobFeature> Features { get; set; } = new();
 }

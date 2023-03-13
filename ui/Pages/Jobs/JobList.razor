@@ -12,6 +12,8 @@
         <THead>
         <th>Id</th>
         <th>Thing</th>
+        <th>Pipeline</th>
+        <th>Version</th>
         <th>Created</th>
         <th>Status</th>
         </THead>
@@ -19,8 +21,12 @@
         @foreach (var job in Jobs)
         {
             <tr>
-                <td><a href="/job/@job.Id">@job.Id</a></td>
-                <td>@job.ThingName</td>
+                <td><a href="/job/@job.Id">View Job</a></td>
+                <td><a href="/thing/@job.ThingId">@job.ThingName</a></td>
+                <td>
+                    <a href="/pipeline/@job.PipelineVersion.PipelineId">@(Pipelines.GetValueOrDefault(job.PipelineVersion.PipelineId))</a>
+                </td>
+                <td>@job.PipelineVersion.Version</td>
                 <td>@job.Created</td>
                 <td class="text-@job.Status">
                     @job.Status
@@ -37,10 +43,17 @@
 
 @code {
     private List<Job> Jobs { get; set; } = new ();
+    private Dictionary<Guid, string> Pipelines { get; set; } = new ();
 
     protected override async Task OnInitializedAsync()
     {
         Jobs = await Http.GetFromJsonAsync<List<Job>>("/job/safe") ?? new List<Job>();
+        var pipelines = (await Http.GetFromJsonAsync<List<Pipeline>>("/pipeline") ?? new List<Pipeline>());
+
+        foreach (var pipeline in pipelines)
+        {
+            Pipelines.Add(pipeline.Id, pipeline.Name);
+        }
     }
 
 }

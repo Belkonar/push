@@ -169,7 +169,14 @@ public class PipelineLogic
         {
             foreach (var step in stage.Steps)
             {
-                var actualStep = version.Steps.First(x => x.Name == step.Step);
+                var actualStep = version.Steps.FirstOrDefault(x => x.Name == step.Step);
+
+                if (actualStep == null)
+                {
+                    // Managed step
+                    continue;
+                }
+                
                 foreach (var stepParameter in actualStep.Parameters)
                 {
                     if (!step.Parameters.ContainsKey(stepParameter.Name))
