@@ -43,6 +43,8 @@ public class JobLogic
         }
         catch (Exception e)
         {
+            Console.WriteLine(e.Message);
+            Console.WriteLine(e.StackTrace);
             Console.WriteLine("can't hit API");
         }
     }
@@ -135,6 +137,7 @@ public class JobLogic
         }
         catch (Exception e)
         {
+            Console.WriteLine(e.Message);
             Console.WriteLine("can't hit API");
         }
     }

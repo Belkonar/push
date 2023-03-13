@@ -22,11 +22,11 @@
                 <td><a href="/job/@job.Id">@job.Id</a></td>
                 <td>@job.ThingName</td>
                 <td>@job.Created</td>
-                <td>
+                <td class="text-@job.Status">
                     @job.Status
                     @if (!string.IsNullOrWhiteSpace(job.StatusReason))
                     {
-                        <span>(@job.StatusReason)</span>
+                        <span>&nbsp;(@job.StatusReason)</span>
                     }
                 </td>
             </tr>

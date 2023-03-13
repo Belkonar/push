@@ -1,11 +1,3 @@
 .col-md-2 {
     cursor: pointer;
 }
-
-.border-running {
-    border-color: #0a58ca !important;
-}
-
-.border-error {
-    border-color: #dc3545 !important;
-}

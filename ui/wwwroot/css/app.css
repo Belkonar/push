@@ -30,6 +30,24 @@ textarea.form-control {
 .toast {
     margin-bottom: 1rem;
 }
+
+.border-running {
+    border-color: #0a58ca !important;
+}
+
+.text-running {
+    color: #0a58ca !important;
+}
+
+.border-error {
+    border-color: #dc3545 !important;
+}
+
+.text-error {
+    color: #dc3545 !important;
+}
+
+
 /* My stuff goes here */
 
 html, body {

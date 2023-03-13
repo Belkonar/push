@@ -1,3 +1,4 @@
+using System.Net.Http.Json;
 using scheduler.Models;
 
 namespace scheduler.Services;
@@ -37,10 +38,14 @@ public class Github
 
         var tokenResponse = await GetTokenResponse(tokenUrl, token);
 
+        string actualReference = await GetActualReference(reference, tokenResponse?.Token ?? "", org, repo);
+        
+        Console.WriteLine($"ref: {actualReference}");
+
         using var client = new HttpClient();
         using var request = new HttpRequestMessage()
         {
-            RequestUri = new Uri($"{githubRoot}/repos/{org}/{repo}/zipball/{reference}"),
+            RequestUri = new Uri($"{githubRoot}/repos/{org}/{repo}/zipball/{actualReference}"),
             Headers =
             {
                 Authorization = new AuthenticationHeaderValue("token", tokenResponse.Token),
@@ -51,6 +56,29 @@ public class Github
         using var response = await client.SendAsync(request);
         
         return await response.Content.ReadAsByteArrayAsync();
+    }
+
+    private async Task<string> GetActualReference(string reference, string token, string owner, string repo)
+    {
+        using var client = new HttpClient();
+        using var request = new HttpRequestMessage()
+        {
+            RequestUri = new Uri($"{_configuration["githubApiRoot"]}/repos/{owner}/{repo}/commits/{reference}"),
+            Method = HttpMethod.Get,
+            Headers =
+            {
+                Accept = {new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json")},
+                Authorization = new AuthenticationHeaderValue("token", token),
+                UserAgent = {new ProductInfoHeaderValue("Deployer", "1.0")}
+            }
+        };
+
+        using var response = await client.SendAsync(request);
+        response.EnsureSuccessStatusCode();
+
+        var responseData = await response.Content.ReadFromJsonAsync<JsonDocument>();
+
+        return responseData?.RootElement.GetProperty("sha").GetString() ?? "";
     }
 
     private async Task<GithubToken?> GetTokenResponse(string? tokenUrl, string token)

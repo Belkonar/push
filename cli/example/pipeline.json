@@ -2,7 +2,8 @@
   "$schema": "http://localhost:5183/schema/PipelineVersion?3",
   "parameters": [
     {
-      "name": "dude"
+      "name": "dude",
+      "local": false
     }
   ],
   "stages": [
@@ -29,7 +30,8 @@
           "local": false
         },
         {
-          "name": "howy"
+          "name": "howy",
+          "local": false
         }
       ],
       "commands": [
