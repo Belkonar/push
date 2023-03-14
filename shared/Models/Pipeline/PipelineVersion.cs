@@ -6,6 +6,8 @@ namespace shared.Models.Pipeline;
 
 public class PipelineVersionCode
 {
+    public bool CreateDeployment { get; set; } = true;
+    
     [MinLength(1)]
     [JsonPropertyName("stages")]
     public List<Stage> Stages { get; set; } = new ();

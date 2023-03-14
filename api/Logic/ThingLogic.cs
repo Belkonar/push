@@ -261,7 +261,25 @@ public class ThingLogic
                 job.Steps.Add(jobStep);
             }
         }
+
+        if (pipelineCode.CreateDeployment)
+        {
+            job.Stages.Add(new JobStage()
+            {
+                Name = "Post Deployment"
+            });
         
+            var deploymentStep = new JobStep()
+            {
+                Name = "deployment",
+                Step = "deployment",
+                Stage = "Post Deployment",
+                Ordinal = ordinal,
+            };
+        
+            job.Steps.Add(deploymentStep);
+        }
+
         // TODO: Save Job
         var collection = _database.GetCollection<Job>("jobs");
         
