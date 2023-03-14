@@ -62,4 +62,10 @@ public class ThingController : ControllerBase
     {
         return await _thingLogic.StartDeployment(id, reference);
     }
+
+    [HttpPut("{id}/data/{key}")]
+    public async Task UpdateInternalData([FromRoute] Guid id, [FromRoute] string key, [FromBody] SimpleValue value)
+    {
+        await _thingLogic.UpdateInternalData(id, key, value.Value);
+    }
 }

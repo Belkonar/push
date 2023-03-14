@@ -42,13 +42,22 @@ public class DockerBuilder
 
     public void Copy(string from, string to)
     {
-        _builder.AppendLine($"COPY {from} {to}");
+        _builder.AppendLine($"COPY {from} \"{to}\"");
     }
     
     public void Copy(string relativeTo, string from, string to)
     {
         var relativePath = Path.GetRelativePath(relativeTo, from);
-        _builder.AppendLine($"COPY {relativePath} {to}");
+        _builder.AppendLine($"COPY {relativePath} \"{to}\"");
+    }
+    
+    public void CopyData(string path, string content)
+    {
+        var filePath = _folder.GetFile();
+        
+        File.WriteAllText(filePath, content);
+        
+        Copy(_folder.Dir, filePath, path);
     }
 
     public void Run(string command)
@@ -110,7 +119,7 @@ public class DockerBuilder
         
         File.WriteAllBytes(keyLocation, key);
         
-        const string finalKeyLocation = "/command";
+        const string finalKeyLocation = "/ssh-key";
         const string finalSshConfigLocation = "$HOME/.ssh/config";
         
         // TODO: pull my config from other computer

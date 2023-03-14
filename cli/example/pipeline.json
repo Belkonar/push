@@ -20,6 +20,10 @@
           "parameters": {
             "person": "a"
           }
+        },
+        {
+          "name": "deployment",
+          "step": "deployment"
         }
       ]
     }
@@ -36,13 +40,20 @@
         {
           "name": "howy",
           "local": false
+        },
+        {
+          "name": "kube",
+          "kind": "credential",
+          "subKind": "static"
         }
       ],
       "commands": [
         "echo {parameters.person}",
         "echo {root.dude}",
         "echo {parameters.howy}",
-        "cat cater.text"
+        "cat cater.text",
+        "echo $test",
+        "cat /k8s"
       ]
     },
     {

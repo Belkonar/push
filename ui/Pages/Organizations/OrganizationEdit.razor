@@ -43,14 +43,28 @@
     </div>
 
     <hr/>
-
-    <div class="form-group">
-        <label class="form-label" for="policy">Policy:</label>
-        <textarea class="form-control" @bind="Policy" id="policy"></textarea>
-    </div>
-    <div class="form-group">
-        <button @onclick="SavePolicy" class="btn btn-primary">Save Policy</button>
-    </div>
+</Card>
+<br/>
+<Card>
+    <h5>Credentials</h5>
+    <a href="/credential-create/@Id" class="btn btn-primary">Create</a>
+    <Table>
+        <THead>
+        <th>Name</th>
+        <th>Kind</th>
+        <th>Is Managed</th>
+        </THead>
+        <TBody>
+        @foreach (var credential in Credentials)
+        {
+            <tr>
+                <td><a href="/credential/@credential.Id">@credential.Name</a></td>
+                <td>@credential.Kind</td>
+                <td>@credential.IsManaged</td>
+            </tr>
+        }
+        </TBody>
+    </Table>
 </Card>
 
 @code {
@@ -60,9 +74,10 @@
     public Guid Id { get; set; }
 
     private string Name { get; set; } = "";
-    private string Policy { get; set; } = "";
     public List<KeyValue> Meta = new List<KeyValue>();
     public List<KeyValue> PrivateMeta = new List<KeyValue>();
+
+    private List<Credential> Credentials { get; set; } = new List<Credential>(); 
 
     protected override async Task OnInitializedAsync()
     {
@@ -75,13 +90,14 @@
         }
         
         Name = response.Name;
-        Policy = response.Policy;
 
         Title += Name;
 
         Meta.AddRange(response.Metadata.GetKVList());
         
         PrivateMeta.AddRange(response.PrivateMetadata.GetKVList());
+
+        Credentials = await Http.GetFromJsonAsync<List<Credential>>($"/organization/{Id}/credential") ?? new List<Credential>();
     }
 
     public async Task SaveBasics()
@@ -131,21 +147,6 @@
             response.EnsureSuccessStatusCode();
 
             Toaster.AddSuccess("Private Metadata Saved");
-        }
-        catch (Exception e)
-        {
-            Toaster.AddError(e);
-        }
-    }
-    
-    public async Task SavePolicy()
-    {
-        try
-        {
-            using var response = await Http.PutAsJsonAsync($"/organization/{Id}/policy", Policy);
-            response.EnsureSuccessStatusCode();
-
-            Toaster.AddSuccess("Policy Saved");
         }
         catch (Exception e)
         {

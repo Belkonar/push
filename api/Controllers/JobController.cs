@@ -83,4 +83,10 @@ public class JobController : ControllerBase
     {
         await _logic.AddFeature(id, feature);
     }
+
+    [HttpPost("deployment")]
+    public async Task AddDeployment([FromBody] DeploymentRecord deployment)
+    {
+        await _logic.AddDeployment(deployment);
+    }
 }

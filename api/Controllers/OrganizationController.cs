@@ -73,4 +73,34 @@ public class OrganizationController : ControllerBase
         
         return Ok();
     }
+    
+    [HttpGet("{id}/credential")]
+    public async Task<List<Credential>> GetCredentials([FromRoute] Guid id)
+    {
+        return await _organizationLogic.GetCredentials(id);
+    }
+
+    [HttpPost("{id}/credential")]
+    public async Task<Credential> CreateCredential([FromRoute] Guid id, [FromBody] Credential credential)
+    {
+        return await _organizationLogic.CreateCredential(id, credential);
+    }
+
+    [HttpGet("credential/{id}")]
+    public async Task<Credential> GetCredential([FromRoute] Guid id)
+    {
+        return await _organizationLogic.GetCredential(id);
+    }
+
+    [HttpGet("credential/{id}/bundle")]
+    public async Task<CredentialBundle> GetCredentialBundle([FromRoute] Guid id)
+    {
+        return await _organizationLogic.GetCredentialBundle(id);
+    }
+
+    [HttpPut("credential/{id}")]
+    public async Task UpdateCredentialData([FromRoute] Guid id, [FromBody] Dictionary<string, string> data)
+    {
+        await _organizationLogic.UpdateCredentialData(id, data);
+    }
 }

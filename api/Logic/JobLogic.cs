@@ -251,6 +251,14 @@ public class JobLogic
         await collection.UpdateOneAsync(filter, update);
     }
 
+    // Does this belong here? Probably not
+    public async Task AddDeployment(DeploymentRecord deployment)
+    {
+        var collection = _mongoDatabase.GetCollection<DeploymentRecord>("deployments");
+
+        await collection.InsertOneAsync(deployment);
+    }
+
     /// <summary>
     /// The purpose of this is to get the logs. Either the cached run logs
     /// or the output logs from the ran step. Which you get is dependant on

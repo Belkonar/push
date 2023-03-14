@@ -4,6 +4,7 @@ using Amazon.S3;
 using Amazon.S3.Model;
 using scheduler.Services;
 using shared;
+using shared.Models;
 using shared.Models.Job;
 using shared.Models.Nomad;
 using shared.UpdateModels;
@@ -198,6 +199,19 @@ public class JobLogic
                 await _client.PostAsJsonAsync($"/job/{job.Id}/feature", new JobFeature()
                 {
                     Name = "sod"
+                });
+            }
+            
+            if (step.Step == "deployment")
+            {
+                // send the sod feature
+                await _client.PostAsJsonAsync($"/job/deployment", new DeploymentRecord()
+                {
+                    SourceReference = job.SourceReference,
+                    ThingId = job.ThingId,
+                    JobId = job.Id,
+                    PipelineVersion = job.PipelineVersion,
+                    Features = job.Features
                 });
             }
             

@@ -2,7 +2,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\shared\shared.csproj" />
-    <ProjectReference Include="..\docker-builder\docker-builder.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

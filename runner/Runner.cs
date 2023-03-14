@@ -6,6 +6,7 @@ using shared;
 using shared.Models;
 using shared.Models.Job;
 using shared.UpdateModels;
+using shared.View;
 
 namespace runner;
 
@@ -82,6 +83,32 @@ public class Runner
         var dockerfile = new DockerBuilder(dockerSpace);
         
         dockerfile.From(step.StepInfo.Docker);
+        
+        dockerfile.Env("JOB_ID", job.Id.ToString());
+        dockerfile.Env("JOB_REF", job.SourceReference);
+
+        foreach (var param in step.Parameters)
+        {
+            if (param.Kind == "credential")
+            {
+                // http://localhost:5183/organization/credential/85821557-4844-414d-a4f6-5d21b9d07c21/bundle
+                
+                var bundle = await _client.GetFromJsonAsync<CredentialBundle>($"/organization/credential/{param.Value}/bundle");
+
+                if (bundle != null)
+                {
+                    foreach (var header in bundle.Headers)
+                    {
+                        dockerfile.Env(header.Key, header.Value);
+                    }
+
+                    foreach (var file in bundle.Files)
+                    {
+                        dockerfile.CopyData(file.Key, file.Value);
+                    }
+                }
+            }
+        }
         
         dockerfile.SetupScript(step.StepInfo.Commands);
 

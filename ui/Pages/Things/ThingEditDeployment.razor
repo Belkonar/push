@@ -44,11 +44,26 @@
                 <div class="form-group">
                     <label for="@parameter.Name">@parameter.Name</label>
                     <div class="input-group">
-                        <input @bind="Variables[parameter.Name]" type="text" class="form-control" id="@parameter.Name">
+                        @if (parameter.Kind == "string")
+                        {
+                            <input @bind="Variables[parameter.Name]" type="text" class="form-control" id="@parameter.Name">    
+                        }
                         
+                        @if (parameter.Kind == "credential")
+                        {
+                            <select class="form-control" @bind="Variables[parameter.Name]">
+                                <option value="">Please Select</option>
+                                @foreach (var cred in Credentials.Where(x => x.Kind == parameter.SubKind))
+                                {
+                                    <option value="@cred.Id.ToString()">@cred.Name</option>
+                                }
+                            </select>   
+                        }
+                        
+
                         @if (!parameter.Local)
                         {
-                            <button @onclick="async () => await UpdateOrgVariable(parameter)" class="btn btn-secondary">Update Org</button>                            
+                            <button @onclick="async () => await UpdateOrgVariable(parameter)" class="btn btn-secondary">Update Org</button>
                         }
                     </div>
                 </div>
@@ -71,6 +86,9 @@ else
     private Deployable? View { get; set; } = null;
     private Thing? Thing { get; set; } = null;
     private Organization? Organization { get; set; } = null;
+
+    private List<Credential> Credentials { get; set; } = new List<Credential>();
+    
     private Pipeline? Pipeline { get; set; } = null;
     private PipelineVersion? Version { get; set; } = null;
     private List<StepParameter> Parameters { get; set; } = new List<StepParameter>();
@@ -82,6 +100,10 @@ else
         View = (await Http.GetFromJsonAsync<Deployable>($"/thing/{Id}/deployable"))!;
         Thing = (await Http.GetFromJsonAsync<Thing>($"/thing/{Id}"))!;
         Organization = (await Http.GetFromJsonAsync<Organization>($"/organization/{Thing!.OrganizationId}"))!;
+
+        Credentials = await Http.GetFromJsonAsync<List<Credential>>($"/organization/{Thing!.OrganizationId}/credential") ?? new List<Credential>();
+        
+        Console.WriteLine(Credentials.Count);
         
         Variables = View.Variables;
 

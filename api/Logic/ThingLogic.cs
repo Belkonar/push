@@ -270,6 +270,19 @@ public class ThingLogic
         return await _jobLogic.GetSafeJob(job.Id);
     }
 
+    public async Task UpdateInternalData(Guid id, string key, string value)
+    {
+        var collection = _database.GetCollection<Thing>("things");
+        
+        var filter = Builders<Thing>.Filter
+            .Eq(x => x.Id, id);
+
+        var update = Builders<Thing>.Update
+            .Set(x => x.InternalData[key], value);
+
+        await collection.UpdateOneAsync(filter, update);
+    }
+
     public static string ProcessTemplate(List<JobStepParameter> localParameters, string s)
     {
         var local = s;

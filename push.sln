@@ -11,8 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "shared", "shared\shared.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cli", "cli\cli.csproj", "{2C13DCBC-28A9-4788-8F58-8298F01470B5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "docker-builder", "docker-builder\docker-builder.csproj", "{02C8CE34-89B4-47E7-BF6D-D14384293AC3}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "scheduler", "scheduler\scheduler.csproj", "{504245D9-ECFC-4FC1-94D8-7733B5C1075D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "runner", "runner\runner.csproj", "{C2D7F6BA-1A78-4B36-8F7E-B315A2C4D1EB}"
@@ -42,10 +40,6 @@ Global
 		{2C13DCBC-28A9-4788-8F58-8298F01470B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C13DCBC-28A9-4788-8F58-8298F01470B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C13DCBC-28A9-4788-8F58-8298F01470B5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{02C8CE34-89B4-47E7-BF6D-D14384293AC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{02C8CE34-89B4-47E7-BF6D-D14384293AC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{02C8CE34-89B4-47E7-BF6D-D14384293AC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{02C8CE34-89B4-47E7-BF6D-D14384293AC3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{504245D9-ECFC-4FC1-94D8-7733B5C1075D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{504245D9-ECFC-4FC1-94D8-7733B5C1075D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{504245D9-ECFC-4FC1-94D8-7733B5C1075D}.Release|Any CPU.ActiveCfg = Release|Any CPU
