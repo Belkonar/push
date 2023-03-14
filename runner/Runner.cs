@@ -110,6 +110,12 @@ public class Runner
             }
         }
         
+        // /etc/ssh/ssh_config
+        if (step.StepInfo.Remote)
+        {
+            // dockerfile.SetupRemoteDocker();
+        }
+        
         dockerfile.SetupScript(step.StepInfo.Commands);
 
         dockerfile.WorkDirVolume(volumeDir.Dir, "/app");

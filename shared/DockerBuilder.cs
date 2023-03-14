@@ -120,7 +120,7 @@ public class DockerBuilder
         File.WriteAllBytes(keyLocation, key);
         
         const string finalKeyLocation = "/ssh-key";
-        const string finalSshConfigLocation = "$HOME/.ssh/config";
+        const string finalSshConfigLocation = "/etc/ssh/ssh_config";
         
         // TODO: pull my config from other computer
         

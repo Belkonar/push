@@ -11,19 +11,11 @@
       "name": "building",
       "steps": [
         {
-          "name": "sod",
-          "step": "sod"
-        },
-        {
           "name": "builder",
           "step": "build",
           "parameters": {
             "person": "a"
           }
-        },
-        {
-          "name": "deployment",
-          "step": "deployment"
         }
       ]
     }
