@@ -41,14 +41,11 @@ BsonDefaults.GuidRepresentationMode = GuidRepresentationMode.V3;
 
 BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
 
-builder.Services.AddTransient<MongoClient>(provider =>
+builder.Services.AddSingleton<IMongoDatabase>(provider =>
 {
     var connectionString = Environment.GetEnvironmentVariable("MongoUri");
-    return new MongoClient(connectionString);
+    return new MongoClient(connectionString).GetDatabase("push");
 });
-
-builder.Services.AddTransient<IMongoDatabase>(provider => provider.GetService<MongoClient>()
-    .GetDatabase("push"));
 
 builder.Services.AddAutoMapper(x => x.AddProfile<DataProfile>());
 
