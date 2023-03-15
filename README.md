@@ -13,3 +13,12 @@ If you do not supply a value for a parameter it will ask for the value in the UI
 Pipelines will be defined as JSON. This is primarily because there's no first party support for
 YAML in dotnet and the primary library that does support it isn't maintained to a point I would be comfortable using. My suggestion
 would be to manage pipelines with a pipeline. A basic pipeline for this purpose will be provided in JSON format (for copy/paste).
+
+## Dev
+
+
+
+```bash
+cp appsettings.Local.json api
+cp appsettings.Local.json scheduler
+```

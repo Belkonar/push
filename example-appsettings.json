@@ -1,0 +1,6 @@
+{
+  "githubApiRoot": "https://api.github.com",
+  "githubAppId": "",
+  "BucketName": "",
+  "MongoUri": ""
+}

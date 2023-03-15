@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Runner" type="CompoundRunConfigurationType">
+    <toRun name="api" type="LaunchSettings" />
+    <toRun name="scheduler" type="LaunchSettings" />
+    <method v="2" />
+  </configuration>
+</component>
