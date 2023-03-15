@@ -16,7 +16,7 @@ would be to manage pipelines with a pipeline. A basic pipeline for this purpose 
 
 ## Dev
 
-
+Copy `example-appsettings.json` to `appsettings.Local.json` and fill it out. Then run the below commands.
 
 ```bash
 cp appsettings.Local.json api

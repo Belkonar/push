@@ -1,1 +1,1 @@
-hi my guy "{root.dude}"
+hi my guy "{root|dude}"

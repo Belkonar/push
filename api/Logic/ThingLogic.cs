@@ -165,7 +165,7 @@ public class ThingLogic
         foreach (var globalParameter in pipeline.PipelineCode.Parameters)
         {
             var param = _mapper.Map<StepParameter, JobStepParameter>(globalParameter);
-            param.Name = $"root.{globalParameter.Name}";
+            param.Name = $"root|{globalParameter.Name}";
             
             if (deployable.Variables.ContainsKey(globalParameter.Name))
             {
@@ -230,7 +230,7 @@ public class ThingLogic
                         }
                         else
                         {
-                            var paramKey = $"{stage.Name}.{step.Name}.{parameter.Name}";
+                            var paramKey = $"{stage.Name}|{step.Name}|{parameter.Name}";
                             
                             if (deployable.Variables.ContainsKey(paramKey))
                             {
@@ -246,7 +246,7 @@ public class ThingLogic
                         }
                         
                         // Reset the name so I can use it for replacements
-                        newParameter.Name = $"parameters.{parameter.Name}";
+                        newParameter.Name = $"parameters|{parameter.Name}";
                         
                         localParameters.Add(newParameter);
                         jobStep.Parameters.Add(newParameter);

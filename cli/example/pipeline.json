@@ -1,5 +1,4 @@
 {
-  "$schema": "http://localhost:5183/schema/PipelineVersion?3",
   "parameters": [
     {
       "name": "dude",
@@ -40,12 +39,11 @@
         }
       ],
       "commands": [
-        "echo {parameters.person}",
-        "echo {root.dude}",
-        "echo {parameters.howy}",
+        "echo {parameters|person}",
+        "echo {root|dude}",
+        "echo {parameters|howy}",
         "cat cater.text",
-        "echo $test",
-        "cat /k8s"
+        "echo $test"
       ]
     },
     {
