@@ -22,3 +22,31 @@ Copy `example-appsettings.json` to `appsettings.Local.json` and fill it out. The
 cp appsettings.Local.json api
 cp appsettings.Local.json scheduler
 ```
+
+Run a dev nomad agent. with `nomad agent -dev run`
+
+Make a bash script in your `$PATH` called runner that references the runner project. Mine looks like this.
+
+```bash
+#!/usr/bin/env bash
+
+cd $PUSH_DIR/runner
+
+dotnet run $@
+```
+
+Run `mongod` with basic settings. If you are mac you will need to specify a data directory and with admin perms.
+The command I used was `sudo mongod --dbpath ~/mon`
+
+While you don't really need indexes for dev, depending on your environment you may or may not need them.
+The only ones I suggest are two indexes on the `jobs` collection.
+
+```
+{ Created: -1 }
+{ Status: 1 }
+```
+
+This will help the scheduler out. The jobs table will be the largest one and likely the most hit (once per second by default).
+Feel free to add any other indexes based on your data. Atlas will recommend them if you use it (which I recommend in prod environments).
+
+If you don't need the jobs to stick around, feel free to purge the table. There will be no side effects on the app running. 
