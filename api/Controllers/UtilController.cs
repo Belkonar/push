@@ -1,4 +1,6 @@
+using System.Text.Json;
 using api.Logic;
+using api.Services;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using shared.Models;
@@ -12,11 +14,13 @@ public class UtilController : ControllerBase
 {
     private readonly IMongoDatabase _database;
     private readonly PipelineLogic _pipelineLogic;
+    private readonly ConfigService _configService;
 
-    public UtilController(IMongoDatabase database, PipelineLogic pipelineLogic)
+    public UtilController(IMongoDatabase database, PipelineLogic pipelineLogic, ConfigService configService)
     {
         _database = database;
         _pipelineLogic = pipelineLogic;
+        _configService = configService;
     }
     
     [HttpGet("fill")]
@@ -77,23 +81,19 @@ global_admin { true }";
     [HttpGet()]
     public async Task<IActionResult> Test()
     {
-        var collection = _database.GetCollection<Configs>("configs");
-
-        var config = new Configs()
+        await _configService.Set("babbers", new Dictionary<string, string>()
         {
-            Id = "babbers",
-            Data = new Dictionary<string, string>()
-            {
-                { "test", "value" },
-            }
-        };
-
-        await collection.InsertOneAsync(config);
+            { "hello", "world" }
+        });
         
         return Ok();
     }
 
-    
+    [HttpGet("read")]
+    public async Task<Dictionary<string, string>> Reader()
+    {
+        return await _configService.Get<Dictionary<string, string>>("babbers");
+    }
 }
 
 // TODO: Move this lol

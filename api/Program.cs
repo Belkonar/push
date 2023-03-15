@@ -34,6 +34,8 @@ builder.Services.AddTransient<PermissionData>();
 
 builder.Services.AddHttpClient<Auth0Service>();
 
+builder.Services.AddSingleton<ConfigService>();
+
 #pragma warning disable 618
 //BsonDefaults.GuidRepresentation = GuidRepresentation.Standard;
 BsonDefaults.GuidRepresentationMode = GuidRepresentationMode.V3;
