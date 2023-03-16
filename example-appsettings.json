@@ -1,6 +1,10 @@
 {
-  "githubApiRoot": "https://api.github.com",
-  "githubAppId": "",
   "BucketName": "",
-  "MongoUri": ""
+  "MongoUri": "mongodb://localhost:27017",
+  "Github": {
+    "github.com": {
+      "AppId": "",
+      "ApiRoot": "https://api.github.com"
+    }
+  }
 }
