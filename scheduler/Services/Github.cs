@@ -11,9 +11,7 @@ using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
-// TODO: Refactor this.
-// It'll currently support multiple github's at the same time, but I need it cleaner
-// for the later integrations.
+// TODO: Support caching of tokens if it becomes a problem
 public class Github : IGithub
 {
     private readonly HttpClient _client;
@@ -24,17 +22,6 @@ public class Github : IGithub
         _configs = configuration.GetSection("Github").Get<Dictionary<string, GithubConfig>>()!;
         _client = factory.CreateClient("github");
     }
-
-    // public void Setup(string source)
-    // {
-    //     var uri = new Uri(source);
-    //     if (!_configs.ContainsKey(uri.Host))
-    //     {
-    //         throw new Exception($"missing `Github` key {uri.Host}");
-    //     }
-    //
-    //     _config = _configs[uri.Host];
-    // }
 
     private GithubConfig GetConfig(string source)
     {
@@ -145,6 +132,9 @@ public class Github : IGithub
         using var response = await _client.SendAsync(request);
 
         var stringContent = await response.Content.ReadAsStringAsync();
+        
+        Console.WriteLine(stringContent);
+        
         var tokenResponse = JsonSerializer.Deserialize<GithubToken>(stringContent);
         return tokenResponse;
     }

@@ -39,9 +39,9 @@
         }
       ],
       "commands": [
-        "echo {parameters|person}",
-        "echo {root|dude}",
-        "echo {parameters|howy}",
+        "echo {parameters>person}",
+        "echo {root>dude}",
+        "echo {parameters>howy}",
         "cat cater.text",
         "echo $test"
       ]
