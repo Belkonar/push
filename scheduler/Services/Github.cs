@@ -11,19 +11,35 @@ using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
-// lol so I yoinked this from my first (second?) POC.
+// TODO: Refactor this.
+// It'll currently support multiple github's at the same time, but I need it cleaner
+// for the later integrations.
 public class Github
 {
-    private readonly IConfiguration _configuration;
+    private readonly HttpClient _client;
+    private readonly Dictionary<string, GithubConfig> _configs;
+    private GithubConfig? _config;
 
-    public Github(IConfiguration configuration)
+    public Github(IConfiguration configuration, IHttpClientFactory factory)
     {
-        _configuration = configuration;
+        _configs = configuration.GetSection("Github").Get<Dictionary<string, GithubConfig>>()!;
+        _client = factory.CreateClient("github");
+    }
+
+    public void Setup(string source)
+    {
+        var uri = new Uri(source);
+        if (!_configs.ContainsKey(uri.Host))
+        {
+            throw new Exception($"missing `Github` key {uri.Host}");
+        }
+
+        _config = _configs[uri.Host];
     }
     
     public async Task<byte[]> GetReference(string source, string reference)
     {
-        var githubRoot = _configuration["githubApiRoot"] ?? "https://api.github.com";
+        var githubRoot = _config!.ApiRoot;
         var token = await GetToken();
 
         var org = "Troll-Cave";
@@ -42,7 +58,6 @@ public class Github
         
         Console.WriteLine($"ref: {actualReference}");
 
-        using var client = new HttpClient();
         using var request = new HttpRequestMessage()
         {
             RequestUri = new Uri($"{githubRoot}/repos/{org}/{repo}/zipball/{actualReference}"),
@@ -53,17 +68,16 @@ public class Github
             }
         };
 
-        using var response = await client.SendAsync(request);
+        using var response = await _client.SendAsync(request);
         
         return await response.Content.ReadAsByteArrayAsync();
     }
 
     private async Task<string> GetActualReference(string reference, string token, string owner, string repo)
     {
-        using var client = new HttpClient();
         using var request = new HttpRequestMessage()
         {
-            RequestUri = new Uri($"{_configuration["githubApiRoot"]}/repos/{owner}/{repo}/commits/{reference}"),
+            RequestUri = new Uri($"{_config!.ApiRoot}/repos/{owner}/{repo}/commits/{reference}"),
             Method = HttpMethod.Get,
             Headers =
             {
@@ -73,7 +87,7 @@ public class Github
             }
         };
 
-        using var response = await client.SendAsync(request);
+        using var response = await _client.SendAsync(request);
         response.EnsureSuccessStatusCode();
 
         var responseData = await response.Content.ReadFromJsonAsync<JsonDocument>();
@@ -83,7 +97,6 @@ public class Github
 
     private async Task<GithubToken?> GetTokenResponse(string? tokenUrl, string token)
     {
-        using var client = new HttpClient();
         using var request = new HttpRequestMessage()
         {
             RequestUri = new Uri(tokenUrl),
@@ -96,7 +109,7 @@ public class Github
             }
         };
 
-        using var response = await client.SendAsync(request);
+        using var response = await _client.SendAsync(request);
 
         var stringContent = await response.Content.ReadAsStringAsync();
         var tokenResponse = JsonSerializer.Deserialize<GithubToken>(stringContent);
@@ -105,10 +118,9 @@ public class Github
 
     private async Task<string?> GetTokenUrl(string token, string org)
     {
-        using var client = new HttpClient();
         using var request = new HttpRequestMessage()
         {
-            RequestUri = new Uri($"{_configuration["githubApiRoot"]}/app/installations"),
+            RequestUri = new Uri($"{_config!.ApiRoot}/app/installations"),
             Headers =
             {
                 Accept = {new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json")},
@@ -117,7 +129,7 @@ public class Github
             }
         };
 
-        using var response = await client.SendAsync(request);
+        using var response = await _client.SendAsync(request);
 
         var stringContent = await response.Content.ReadAsStringAsync();
         var installations = JsonSerializer.Deserialize<List<GithubInstallation>>(stringContent);
@@ -155,7 +167,7 @@ public class Github
         var unixTimeSeconds = new DateTimeOffset(now).ToUnixTimeSeconds();
 
         var jwt = new JwtSecurityToken(
-            issuer: _configuration["githubAppId"],
+            issuer: _config!.AppId,
             claims: new Claim[] {
                 new Claim(JwtRegisteredClaimNames.Iat, (unixTimeSeconds - 60).ToString(), ClaimValueTypes.Integer64),
             },

@@ -53,6 +53,8 @@ public class JobLogic
             catch (Exception e)
             {
                 await UpdateJobStatus(job, "error");
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
             }
         }
     }
@@ -66,6 +68,8 @@ public class JobLogic
         }
         
         Console.WriteLine(job.Id);
+        
+        _github.Setup(job.SourceControlUri);
         
         var code = await _github.GetReference(job.SourceControlUri, job.SourceReference);
 

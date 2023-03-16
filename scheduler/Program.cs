@@ -1,3 +1,4 @@
+using System.Net.Http.Headers;
 using scheduler;
 using scheduler.Logic;
 using scheduler.Services;
@@ -28,7 +29,11 @@ IHost host = Host.CreateDefaultBuilder(args)
         {
             client.BaseAddress = new Uri("http://localhost:4646");
         });
-        
+
+        services.AddHttpClient("github", client =>
+        {
+        });
+
     })
     .Build();
 
