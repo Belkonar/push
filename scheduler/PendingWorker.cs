@@ -2,13 +2,20 @@ using scheduler.Logic;
 
 namespace scheduler;
 
-public class Worker : BackgroundService
+/// <summary>
+/// This worker handles pending jobs.
+/// It's seperated out because pending jobs are expensive resource wise.
+///
+/// You can split these out and put this guy on a pretty high speed disk to help things out.
+/// Regardless you'll need a decent amount of space.
+/// </summary>
+public class PendingWorker : BackgroundService
 {
-    private readonly ILogger<Worker> _logger;
+    private readonly ILogger<PendingWorker> _logger;
     private readonly IServiceProvider _provider;
     private readonly IHostApplicationLifetime _hostApplicationLifetime;
 
-    public Worker(ILogger<Worker> logger, IServiceProvider provider, IHostApplicationLifetime hostApplicationLifetime)
+    public PendingWorker(ILogger<PendingWorker> logger, IServiceProvider provider, IHostApplicationLifetime hostApplicationLifetime)
     {
         _logger = logger;
         _provider = provider;
@@ -22,8 +29,7 @@ public class Worker : BackgroundService
             await using (var scope = _provider.CreateAsyncScope())
             {
                 var logic = scope.ServiceProvider.GetRequiredService<JobLogic>();
-                await logic.HandleReadyJobs(); // This basically just drops jobs on nomad if a step is ready
-                await logic.HandleApprovalJobs();
+                await logic.HandlePendingJobs();
             }
             
             _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);

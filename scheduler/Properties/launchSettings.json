@@ -4,7 +4,9 @@
       "commandName": "Project",
       "dotnetRunMessages": true,
       "environmentVariables": {
-        "DOTNET_ENVIRONMENT": "Local"
+        "DOTNET_ENVIRONMENT": "Local",
+        "WORKER": "true",
+        "PENDING_WORKER": "true"
       }
     }
   }

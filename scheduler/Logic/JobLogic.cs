@@ -28,45 +28,32 @@ public class JobLogic
     
     public async Task HandlePendingJobs()
     {
-        try
-        {
-            var response = await _client.GetFromJsonAsync<List<Job>>("/job?status=pending");
-            
-            if (response == null || response.Count == 0)
-            {
-                return;
-            }
-
-            foreach (var job in response)
-            {
-                await HandlePendingJob(job);
-            }
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e.Message);
-            Console.WriteLine(e.StackTrace);
-            Console.WriteLine("can't hit API");
-        }
+        await HandleJobTypes("pending", HandlePendingJob);
     }
 
-    public async Task<List<Job>> GetJobsByStatus(string status)
+    private async Task HandleJobTypes(string status, Func<Job, Task> handler)
     {
+        List<Job> jobs;
+
         try
         {
-            var response = await _client.GetFromJsonAsync<List<Job>>($"/job?status={status}");
-            
-            if (response == null || response.Count == 0)
-            {
-                return new List<Job>();
-            }
-
-            return response;
+            jobs = await _client.GetFromJsonAsync<List<Job>>($"/job?status={status}") ?? new List<Job>();
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
-            return new List<Job>();
+            return;
+        }
+
+        foreach (var job in jobs)
+        {
+            try
+            {
+                await handler(job);
+            }
+            catch (Exception e)
+            {
+                await UpdateJobStatus(job, "error");
+            }
         }
     }
 
@@ -142,25 +129,7 @@ public class JobLogic
 
     public async Task HandleReadyJobs()
     {
-        try
-        {
-            var response = await _client.GetFromJsonAsync<List<Job>>("/job?status=ready");
-
-            if (response == null || response.Count == 0)
-            {
-                return;
-            }
-
-            foreach (var job in response)
-            {
-                await HandleReadyJob(job);
-            }
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e.Message);
-            Console.WriteLine("can't hit API");
-        }
+        await HandleJobTypes("ready", HandleReadyJob);
     }
 
     private async Task HandleReadyJob(Job job)
@@ -281,19 +250,7 @@ public class JobLogic
 
     public async Task HandleApprovalJobs()
     {
-        try
-        {
-            var jobs = await GetJobsByStatus("approval");
-            foreach (var job in jobs)
-            {
-                await HandleApprovalJob(job);
-            }
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
+        await HandleJobTypes("approval", HandleApprovalJob);
     }
 
     private async Task HandleApprovalJob(Job job)

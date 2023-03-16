@@ -7,7 +7,17 @@ IHost host = Host.CreateDefaultBuilder(args)
     {
         services.AddTransient<Github>();
         services.AddTransient<JobLogic>();
-        services.AddHostedService<Worker>();
+
+        if (Environment.GetEnvironmentVariable("WORKER") == "true")
+        {
+            Console.WriteLine("Loading up worker");
+            services.AddHostedService<Worker>();
+        }
+
+        if (Environment.GetEnvironmentVariable("PENDING_WORKER") == "true")
+        {
+            services.AddHostedService<PendingWorker>();    
+        }
 
         services.AddHttpClient("api", client =>
         {
