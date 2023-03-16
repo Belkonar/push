@@ -14,11 +14,10 @@ using Microsoft.IdentityModel.Tokens;
 // TODO: Refactor this.
 // It'll currently support multiple github's at the same time, but I need it cleaner
 // for the later integrations.
-public class Github
+public class Github : IGithub
 {
     private readonly HttpClient _client;
     private readonly Dictionary<string, GithubConfig> _configs;
-    private GithubConfig? _config;
 
     public Github(IConfiguration configuration, IHttpClientFactory factory)
     {
@@ -26,7 +25,18 @@ public class Github
         _client = factory.CreateClient("github");
     }
 
-    public void Setup(string source)
+    // public void Setup(string source)
+    // {
+    //     var uri = new Uri(source);
+    //     if (!_configs.ContainsKey(uri.Host))
+    //     {
+    //         throw new Exception($"missing `Github` key {uri.Host}");
+    //     }
+    //
+    //     _config = _configs[uri.Host];
+    // }
+
+    private GithubConfig GetConfig(string source)
     {
         var uri = new Uri(source);
         if (!_configs.ContainsKey(uri.Host))
@@ -34,36 +44,27 @@ public class Github
             throw new Exception($"missing `Github` key {uri.Host}");
         }
 
-        _config = _configs[uri.Host];
+        return _configs[uri.Host];
     }
     
-    public async Task<byte[]> GetReference(string source, string reference)
+    public async Task<byte[]> GetZip(string source, string reference)
     {
-        var githubRoot = _config!.ApiRoot;
-        var token = await GetToken();
+        var githubConfig = GetConfig(source);
+        var githubRoot = githubConfig.ApiRoot;
 
-        var org = "Troll-Cave";
-        var repo = "";
-
-        var parts = source.Split("/");
-        var partsCount = parts.Length;
-        org = parts[partsCount - 2];
-        repo = parts[partsCount - 1];
+        var parsedSource = ParseSource(source);
         
-        var tokenUrl = await GetTokenUrl(token, org);
+        var org = parsedSource.Item1;
+        var repo = parsedSource.Item2;
 
-        var tokenResponse = await GetTokenResponse(tokenUrl, token);
-
-        string actualReference = await GetActualReference(reference, tokenResponse?.Token ?? "", org, repo);
-        
-        Console.WriteLine($"ref: {actualReference}");
+        var token = await GetToken(githubConfig, org);
 
         using var request = new HttpRequestMessage()
         {
-            RequestUri = new Uri($"{githubRoot}/repos/{org}/{repo}/zipball/{actualReference}"),
+            RequestUri = new Uri($"{githubRoot}/repos/{org}/{repo}/zipball/{reference}"),
             Headers =
             {
-                Authorization = new AuthenticationHeaderValue("token", tokenResponse.Token),
+                Authorization = new AuthenticationHeaderValue("token", token),
                 UserAgent = {new ProductInfoHeaderValue("Deployer", "1.0")}
             }
         };
@@ -73,11 +74,32 @@ public class Github
         return await response.Content.ReadAsByteArrayAsync();
     }
 
-    private async Task<string> GetActualReference(string reference, string token, string owner, string repo)
+    private Tuple<string, string> ParseSource(string source)
     {
+        var parts = source.Split("/");
+        var partsCount = parts.Length;
+
+        return new Tuple<string, string>(
+            parts[partsCount - 2],
+            parts[partsCount - 1]
+        );
+    }
+
+    public async Task<string> GetReference(string source, string reference)
+    {
+        var githubConfig = GetConfig(source);
+        var githubRoot = githubConfig.ApiRoot;
+
+        var parsedSource = ParseSource(source);
+        
+        var org = parsedSource.Item1;
+        var repo = parsedSource.Item2;
+
+        var token = await GetToken(githubConfig, org);
+        
         using var request = new HttpRequestMessage()
         {
-            RequestUri = new Uri($"{_config!.ApiRoot}/repos/{owner}/{repo}/commits/{reference}"),
+            RequestUri = new Uri($"{githubRoot}/repos/{org}/{repo}/commits/{reference}"),
             Method = HttpMethod.Get,
             Headers =
             {
@@ -86,16 +108,27 @@ public class Github
                 UserAgent = {new ProductInfoHeaderValue("Deployer", "1.0")}
             }
         };
-
+    
         using var response = await _client.SendAsync(request);
         response.EnsureSuccessStatusCode();
-
+    
         var responseData = await response.Content.ReadFromJsonAsync<JsonDocument>();
-
+    
         return responseData?.RootElement.GetProperty("sha").GetString() ?? "";
     }
 
-    private async Task<GithubToken?> GetTokenResponse(string? tokenUrl, string token)
+    private async Task<string> GetToken(GithubConfig config, string org)
+    {
+        var token = await GetJWT(config);
+        
+        var tokenUrl = await GetTokenUrl(config, token, org);
+
+        var tokenResponse = await GetTokenResponse(tokenUrl, token);
+
+        return tokenResponse!.Token;
+    }
+
+    private async Task<GithubToken?> GetTokenResponse(string tokenUrl, string token)
     {
         using var request = new HttpRequestMessage()
         {
@@ -116,11 +149,11 @@ public class Github
         return tokenResponse;
     }
 
-    private async Task<string?> GetTokenUrl(string token, string org)
+    private async Task<string> GetTokenUrl(GithubConfig config, string token, string org)
     {
         using var request = new HttpRequestMessage()
         {
-            RequestUri = new Uri($"{_config!.ApiRoot}/app/installations"),
+            RequestUri = new Uri($"{config.ApiRoot}/app/installations"),
             Headers =
             {
                 Accept = {new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json")},
@@ -150,7 +183,7 @@ public class Github
     /// ref https://vmsdurano.com/-net-core-3-1-signing-jwt-with-rsa/
     /// </summary>
     /// <returns></returns>
-    private async Task<string> GetToken()
+    private async Task<string> GetJWT(GithubConfig config)
     {
         var key = await ParsePem(Path.GetFullPath("github.pem"));
         
@@ -167,7 +200,7 @@ public class Github
         var unixTimeSeconds = new DateTimeOffset(now).ToUnixTimeSeconds();
 
         var jwt = new JwtSecurityToken(
-            issuer: _config!.AppId,
+            issuer: config.AppId,
             claims: new Claim[] {
                 new Claim(JwtRegisteredClaimNames.Iat, (unixTimeSeconds - 60).ToString(), ClaimValueTypes.Integer64),
             },

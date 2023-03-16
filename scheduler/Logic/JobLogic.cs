@@ -69,9 +69,7 @@ public class JobLogic
         
         Console.WriteLine(job.Id);
         
-        _github.Setup(job.SourceControlUri);
-        
-        var code = await _github.GetReference(job.SourceControlUri, job.SourceReference);
+        var code = await _github.GetZip(job.SourceControlUri, job.SourceReference);
 
         using var artifactLocation = new TempFile();
         using var finalArtifactLocation = new TempFile();
