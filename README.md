@@ -21,6 +21,7 @@ Copy `example-appsettings.json` to `appsettings.Local.json` and fill it out. The
 ```bash
 cp appsettings.Local.json api
 cp appsettings.Local.json scheduler
+cp appsettings.Local.json runner
 ```
 
 Run a dev nomad agent. with `nomad agent -dev run`
