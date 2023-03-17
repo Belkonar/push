@@ -1,11 +1,12 @@
 @page "/pipelines"
 @page "/thing/{Id:guid}/select-pipeline"
-@using shared.Models
 @using shared.Models.Pipeline
 
-@inject HttpClient Http
 @inject ToastService Toaster
 @inject NavigationManager Nav
+
+@inject IPipelineController PipelineService
+@inject IThingController ThingService
 
 <h3>@Title</h3>
 
@@ -45,27 +46,33 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Pipelines = await Http.GetFromJsonAsync<List<Pipeline>>("/pipeline") ?? new List<Pipeline>();
+        Pipelines = await PipelineService.GetPipelines(null);
     }
 
     private async Task SelectPipeline(Guid pipelineId)
     {
-        Console.WriteLine("wot");
-        var deployment = (await Http.GetFromJsonAsync<Deployable>($"/thing/{Id}/deployable"))!;
-        deployment.PipelineId = pipelineId;
-        deployment.PipelineConstraint =
-            (await Http.GetFromJsonAsync<SimpleValue>($"/pipeline/{pipelineId}/latest"))?.Value ?? "";
+        var deployment = await ThingService.GetDeployable(Id!.Value);
         
-        using var response = await Http.PutAsJsonAsync($"/Thing/{Id}/deployable", deployment);
+        deployment.PipelineId = pipelineId;
+
         try
         {
-            response.EnsureSuccessStatusCode();
+            deployment.PipelineConstraint = (await PipelineService.GetLatestMajor(pipelineId)).Value;
         }
         catch (Exception e)
         {
             Toaster.AddError(e);
-            return;
         }
+
+        try
+        {
+            await ThingService.UpdateDeployable(Id.Value, deployment);
+        }
+        catch (Exception e)
+        {
+            Toaster.AddError(e);
+        }
+        
         Toaster.AddSuccess("Saved Pipeline");
         Nav.NavigateTo($"/thing/{Id}");
     }

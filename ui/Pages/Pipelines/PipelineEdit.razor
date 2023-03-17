@@ -2,7 +2,8 @@
 @page "/pipeline/{id:guid}"
 @using shared.Models.Pipeline
 @using Microsoft.AspNetCore.Components
-@inject HttpClient Http
+
+@inject IPipelineController PipelineService
 @inject ToastService ToastService
 @inject NavigationManager Nav
 
@@ -27,13 +28,13 @@
     public Guid? Id { get; set; }
 
     // This defaults to an edit model but it'll be replaced if needed
-    public Pipeline Pipeline = new Pipeline();
+    private Pipeline Pipeline { get; set; } = new Pipeline();
 
     protected override async Task OnInitializedAsync()
     {
         if (Id.HasValue)
         {
-            Pipeline = await Http.GetFromJsonAsync<Pipeline>($"/pipeline/{Id}") ?? new Pipeline();
+            Pipeline = await PipelineService.GetPipeline(Id.Value);
         }
     }
 
@@ -43,18 +44,10 @@
         {
             try
             {
-                using var response = await Http.PostAsJsonAsync("/pipeline", Pipeline);
-                response.EnsureSuccessStatusCode();
-                var responseData = await response.Content.ReadFromJsonAsync<Pipeline>();
+                var response = await PipelineService.CreatePipeline(Pipeline);
 
-                if (responseData == null)
-                {
-                    // TODO: toaster this
-                    return;
-                }
-                
                 ToastService.AddSuccess("Saved");
-                Nav.NavigateTo($"/pipeline/{responseData.Id}");
+                Nav.NavigateTo($"/pipeline/{response.Id}");
             }
             catch (Exception)
             {
@@ -65,8 +58,8 @@
         {
             try
             {
-                using var response = await Http.PutAsJsonAsync($"/pipeline/{Id}", Pipeline);
-                response.EnsureSuccessStatusCode();
+                var response = await PipelineService.UpdatePipeline(Id.Value, Pipeline);
+                
                 ToastService.AddSuccess("Saved");
             }
             catch (Exception)

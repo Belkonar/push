@@ -1,9 +1,8 @@
 @page "/organization/{Id:guid}/create-app"
-@using shared.UpdateModels
-@using shared.Models
-@inject HttpClient Http
+
 @inject ToastService Toaster
 @inject NavigationManager Nav
+@inject IThingController ThingService
 
 <h3>Thing Create</h3>
 
@@ -37,19 +36,17 @@
                 OrganizationId = Id,
                 Name = Name
             };
-            
-            using var response = await Http.PostAsJsonAsync($"/thing", request);
-            response.EnsureSuccessStatusCode();
 
-            var responseThing = await response.Content.ReadFromJsonAsync<Thing>();
-
-            if (responseThing == null)
+            try
             {
-                throw new FileNotFoundException();
+                var response = await ThingService.CreateThing(request);
+                Toaster.AddSuccess("Thing Created");
+                Nav.NavigateTo($"/thing/{response.Id}");
             }
-            
-            Toaster.AddSuccess("Thing Created");
-            Nav.NavigateTo($"/thing/{responseThing.Id}");
+            catch (Exception e)
+            {
+                Toaster.AddError(e);
+            }
         }
         catch (Exception e)
         {
