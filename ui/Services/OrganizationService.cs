@@ -4,12 +4,12 @@ using shared.Models;
 namespace ui.Services;
 
 // This exists to make stuff simpler on pages where you need to access the org list.
-public class OrganizationService
+public class OrgService
 {
     private readonly HttpClient _client;
     private List<Organization>? _organizations;
 
-    public OrganizationService(HttpClient client)
+    public OrgService(HttpClient client)
     {
         _client = client;
     }

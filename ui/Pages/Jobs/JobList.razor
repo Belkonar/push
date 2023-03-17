@@ -2,7 +2,8 @@
 @using shared.Models.Job
 @using shared.Models.Pipeline
 
-@inject HttpClient Http
+@inject IJobController JobService
+@inject IPipelineController PipelineService
 
 <h3>Job List</h3>
 
@@ -48,8 +49,9 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Jobs = await Http.GetFromJsonAsync<List<Job>>("/job/safe") ?? new List<Job>();
-        var pipelines = (await Http.GetFromJsonAsync<List<Pipeline>>("/pipeline") ?? new List<Pipeline>());
+        Jobs = await JobService.GetSafeJobs(null);
+
+        var pipelines = await PipelineService.GetPipelines(null);
 
         foreach (var pipeline in pipelines)
         {

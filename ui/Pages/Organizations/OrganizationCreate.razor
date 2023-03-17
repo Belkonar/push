@@ -1,9 +1,9 @@
 @page "/organization-create"
-@using shared.UpdateModels
-@inject HttpClient Http
+
 @inject ToastService Toaster
 @inject NavigationManager Nav
-@inject OrganizationService OrgService
+@inject OrgService OrgService
+@inject IOrganizationController OrganizationService
 
 <PageTitle>@Title</PageTitle>
 
@@ -37,9 +37,8 @@
             {
                 Name = Name
             };
-            
-            using var response = await Http.PostAsJsonAsync($"/Organization", request);
-            response.EnsureSuccessStatusCode();
+
+            await OrganizationService.Create(request);
             
             Toaster.AddSuccess("Org Created");
             OrgService.Clear();

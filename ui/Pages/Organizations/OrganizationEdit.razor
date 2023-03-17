@@ -2,8 +2,8 @@
 @using ui.Models
 @using shared.UpdateModels
 @using shared.Models
-@inject HttpClient Http
 @inject ToastService Toaster
+@inject IOrganizationController OrganizationService
 
 <PageTitle>Organization Edit</PageTitle>
 
@@ -82,13 +82,8 @@
     protected override async Task OnInitializedAsync()
     {
         // TODO: Error handle this lol
-        var response = await Http.GetFromJsonAsync<Organization>($"/organization/{Id}");
+        var response = await OrganizationService.GetOrg(Id);
 
-        if (response == null)
-        {
-            return;
-        }
-        
         Name = response.Name;
 
         Title += Name;
@@ -96,8 +91,8 @@
         Meta.AddRange(response.Metadata.GetKvList());
         
         PrivateMeta.AddRange(response.PrivateMetadata.GetKvList());
-
-        Credentials = await Http.GetFromJsonAsync<List<Credential>>($"/organization/{Id}/credential") ?? new List<Credential>();
+        
+        Credentials = await OrganizationService.GetCredentials(Id);
     }
 
     public async Task SaveBasics()
@@ -109,8 +104,7 @@
 
         try
         {
-            using var response = await Http.PutAsJsonAsync($"/organization/{Id}", request);
-            response.EnsureSuccessStatusCode();
+            await OrganizationService.Update(Id, request);
             
             Toaster.AddSuccess("Basics Saved");
         }
@@ -126,8 +120,7 @@
 
         try
         {
-            using var response = await Http.PutAsJsonAsync($"/organization/{Id}/metadata", request);
-            response.EnsureSuccessStatusCode();
+            await OrganizationService.UpdateMetadata(Id, request);
 
             Toaster.AddSuccess("Metadata Saved");
         }
@@ -143,8 +136,7 @@
 
         try
         {
-            using var response = await Http.PutAsJsonAsync($"/organization/{Id}/private_metadata", request);
-            response.EnsureSuccessStatusCode();
+            await OrganizationService.UpdatePrivateMetadata(Id, request);
 
             Toaster.AddSuccess("Private Metadata Saved");
         }

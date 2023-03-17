@@ -2,10 +2,8 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using shared.Interfaces;
 using shared.services;
-using shared.Services;
 using ui;
 using ui.Services;
-using OrganizationService = ui.Services.OrganizationService;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
@@ -15,6 +13,10 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddTransient<ApiAuthorizationMessageHandler>();
 
 // ---- START Services ----
+builder.Services.AddTransient<IJobController, JobService>();
+builder.Services.AddTransient<IOrganizationController, OrganizationService>();
+builder.Services.AddTransient<IPipelineController, PipelineService>();
+builder.Services.AddTransient<IPolicyController, PolicyService>();
 builder.Services.AddTransient<IThingController, ThingService>();
 // ----- END Services -----
 
@@ -27,7 +29,7 @@ builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>()
     .CreateClient("api"));
 
 builder.Services.AddSingleton<ToastService>();
-builder.Services.AddScoped<OrganizationService>();
+builder.Services.AddScoped<OrgService>();
 
 builder.Services.AddOidcAuthentication(options =>
 {
