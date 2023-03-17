@@ -1,5 +1,7 @@
 @page "/pipeline-create"
 @page "/pipeline/{id:guid}"
+@using shared.Models.Pipeline
+@using Microsoft.AspNetCore.Components
 @inject HttpClient Http
 @inject ToastService ToastService
 @inject NavigationManager Nav
@@ -22,22 +24,22 @@
 
 @code {
     [Parameter]
-    public Guid? ID { get; set; }
+    public Guid? Id { get; set; }
 
     // This defaults to an edit model but it'll be replaced if needed
     public Pipeline Pipeline = new Pipeline();
 
     protected override async Task OnInitializedAsync()
     {
-        if (ID.HasValue)
+        if (Id.HasValue)
         {
-            Pipeline = await Http.GetFromJsonAsync<Pipeline>($"/pipeline/{ID}") ?? new Pipeline();
+            Pipeline = await Http.GetFromJsonAsync<Pipeline>($"/pipeline/{Id}") ?? new Pipeline();
         }
     }
 
     private async Task Save()
     {
-        if (!ID.HasValue)
+        if (!Id.HasValue)
         {
             try
             {
@@ -54,7 +56,7 @@
                 ToastService.AddSuccess("Saved");
                 Nav.NavigateTo($"/pipeline/{responseData.Id}");
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 ToastService.AddError("Error Creating Pipeline");
             }
@@ -63,11 +65,11 @@
         {
             try
             {
-                using var response = await Http.PutAsJsonAsync($"/pipeline/{ID}", Pipeline);
+                using var response = await Http.PutAsJsonAsync($"/pipeline/{Id}", Pipeline);
                 response.EnsureSuccessStatusCode();
                 ToastService.AddSuccess("Saved");
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 ToastService.AddError("Error Updating Pipeline");
             }

@@ -1,5 +1,4 @@
 using System.Text.Json;
-using api.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.IdentityModel.Tokens;
 
@@ -16,7 +15,7 @@ public class UserService
         _auth0Service = auth0Service;
     }
 
-    public async Task SetupUser(string authHeader)
+    public async Task SetupUser(string? authHeader)
     {
         Console.WriteLine($"auth token {authHeader}");
         /*
@@ -27,7 +26,7 @@ public class UserService
          */
 
         // TODO: Make this more robust
-        var profileBase64 = authHeader?.Split('.')?[1] ?? "";
+        var profileBase64 = authHeader?.Split('.')[1] ?? "";
         
         if (string.IsNullOrWhiteSpace(profileBase64))
         {
@@ -37,18 +36,23 @@ public class UserService
         
         var profileJson = Base64UrlEncoder.Decode(profileBase64);
         var profile = JsonSerializer.Deserialize<JsonDocument>(profileJson);
+
+        if (profile == null)
+        {
+            return;
+        }
         
-        Subject = profile.RootElement.GetString("sub");
+        Subject = profile.RootElement.GetString("sub")!;
         // Console.WriteLine(Subject);
         // Console.WriteLine(profileJson);
-        var scopes = profile.RootElement.GetString("scope");
+        var scopes = profile.RootElement.GetString("scope")!;
         
         if (scopes.Contains("profile"))
         {
             // TODO: Find out thwy the issuer is missing from the token
-            profile = await _auth0Service.GetProfile(Subject, authHeader);
+            profile = await _auth0Service.GetProfile(Subject, authHeader!);
         }
         
-        Profile = profile;
+        Profile = profile!;
     }
 }

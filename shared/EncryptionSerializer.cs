@@ -1,6 +1,4 @@
 using System.Text.Json;
-using Microsoft.Extensions.Configuration;
-using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 
@@ -28,6 +26,6 @@ public class EncryptionSerializer<T> : SerializerBase<T>
         
         context.Reader.ReadEndDocument();
         
-        return json;
+        return json!;
     }
 }

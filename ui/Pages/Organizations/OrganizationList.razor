@@ -27,9 +27,9 @@
 
 @code {
 
-    private List<Organization> Organizations = new ();
+    private List<Organization> Organizations { get; set; } = new ();
     
-    private string Title = "Organization List";
+    private string Title { get; set; } = "Organization List";
 
     protected override async Task OnInitializedAsync()
     {

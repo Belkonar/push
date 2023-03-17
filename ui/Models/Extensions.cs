@@ -2,7 +2,7 @@ namespace ui.Models;
 
 public static class Extensions
 {
-    public static IEnumerable<KeyValue> GetKVList(this Dictionary<string,string> kv)
+    public static IEnumerable<KeyValue> GetKvList(this Dictionary<string,string> kv)
     {
         return kv.Select(x => new KeyValue()
         {

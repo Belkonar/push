@@ -32,7 +32,7 @@ public class PendingWorker : BackgroundService
                 await logic.HandlePendingJobs();
             }
             
-            _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+            _logger.LogInformation("Worker running at: {Time}", DateTimeOffset.Now);
             
             Thread.Sleep(1000);
         }

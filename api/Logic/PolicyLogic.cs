@@ -1,6 +1,6 @@
 using MongoDB.Bson;
 using MongoDB.Driver;
-using shared.View;
+using shared.Models;
 using shared.UpdateModels;
 
 namespace api.Logic;

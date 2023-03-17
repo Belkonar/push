@@ -1,5 +1,5 @@
 @page "/policy-create"
-@inject HttpClient http
+@inject HttpClient Http
 @inject ToastService Toaster
 @inject NavigationManager Nav
 
@@ -17,7 +17,7 @@
 </Card>
 
 @code {
-    private string Title = "Policy Create";
+    private string Title { get; set; } = "Policy Create";
     
     private string Key { get; set; } = "";
 
@@ -31,7 +31,7 @@
         
         try
         {
-            using var response = await http.PostAsync($"/Policy/{Key}", null);
+            using var response = await Http.PostAsync($"/Policy/{Key}", null);
             response.EnsureSuccessStatusCode();
             
             Toaster.AddSuccess("Policy Created");

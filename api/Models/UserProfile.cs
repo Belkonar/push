@@ -9,5 +9,5 @@ public class UserProfile
     public List<string> Permissions { get; set; }
     
     [JsonPropertyName("user")]
-    public JsonDocument user { get; set; }
+    public JsonDocument User { get; set; }
 }

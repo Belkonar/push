@@ -1,10 +1,8 @@
 using AutoMapper;
 using shared.Models.Job;
 using shared.Models.Pipeline;
-using shared.UpdateModels;
-using shared.View;
 
-namespace data;
+namespace shared;
 
 public class DataProfile : Profile
 {

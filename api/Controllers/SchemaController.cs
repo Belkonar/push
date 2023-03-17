@@ -3,7 +3,6 @@ using Json.Schema;
 using Json.Schema.Generation;
 using Microsoft.AspNetCore.Mvc;
 using shared.Models.Pipeline;
-using shared.View;
 
 namespace api.Controllers;
 

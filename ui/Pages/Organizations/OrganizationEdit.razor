@@ -93,9 +93,9 @@
 
         Title += Name;
 
-        Meta.AddRange(response.Metadata.GetKVList());
+        Meta.AddRange(response.Metadata.GetKvList());
         
-        PrivateMeta.AddRange(response.PrivateMetadata.GetKVList());
+        PrivateMeta.AddRange(response.PrivateMetadata.GetKvList());
 
         Credentials = await Http.GetFromJsonAsync<List<Credential>>($"/organization/{Id}/credential") ?? new List<Credential>();
     }

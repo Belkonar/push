@@ -1,9 +1,7 @@
-using AutoMapper;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using shared;
 using shared.Models.Pipeline;
-using shared.View;
 
 namespace api.Logic;
 

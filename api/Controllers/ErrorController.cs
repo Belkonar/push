@@ -37,6 +37,7 @@ public class ErrorController : ControllerBase
                 _logger.LogWarning("{Message}", e.Message);
                 return StatusCode(403, new ErrorMessage(error.Message));
             
+            // ReSharper disable once UnusedVariable
             case FileNotFoundException err404: // even if I don't use the thing I need it so the match works
                 return StatusCode(404, new ErrorMessage("File Not Found"));
             

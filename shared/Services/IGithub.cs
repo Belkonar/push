@@ -1,4 +1,4 @@
-namespace scheduler.Services;
+namespace shared.Services;
 
 public interface IGithub
 {

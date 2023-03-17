@@ -9,7 +9,7 @@ public class TempFolder : IDisposable
 
     private readonly bool _shouldClear = true;
     
-    public TempFolder(bool shouldClear = true)
+    public TempFolder()
     {
         Dir = Path.Join(Path.GetTempPath(), Guid.NewGuid().ToString());
 

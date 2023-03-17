@@ -1,10 +1,7 @@
-using System.Text.Json;
-using api.Logic;
 using api.Services;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
-using shared.Models;
-using shared.View;
+using shared.Models.Pipeline;
 
 namespace api.Controllers;
 
@@ -13,23 +10,17 @@ namespace api.Controllers;
 public class UtilController : ControllerBase
 {
     private readonly IMongoDatabase _database;
-    private readonly PipelineLogic _pipelineLogic;
     private readonly ConfigService _configService;
 
-    public UtilController(IMongoDatabase database, PipelineLogic pipelineLogic, ConfigService configService)
+    public UtilController(IMongoDatabase database, ConfigService configService)
     {
         _database = database;
-        _pipelineLogic = pipelineLogic;
         _configService = configService;
     }
     
     [HttpGet("fill")]
     public async Task<IActionResult> Fill()
     {
-        const string policy = @"package main
-
-global_admin { true }";
-        
         var pipelineId = Guid.Parse("bcb885d2-b0dd-4cad-85a8-14de0b67d012");
 
         var pipelineCollection = _database.GetCollection<Pipeline>("pipelines");
@@ -65,17 +56,6 @@ global_admin { true }";
          */
 
         return Ok("filled basic info");
-    }
-    
-    /// <summary>
-    /// Reset the global policy to one that works.
-    /// TODO: Delete before live use
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet("reset")]
-    public async Task<IActionResult> Reset()
-    {
-        throw new NotImplementedException();
     }
 
     [HttpGet()]

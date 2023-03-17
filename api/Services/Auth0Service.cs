@@ -1,5 +1,4 @@
 using System.Text.Json;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace api.Services;
@@ -23,6 +22,8 @@ public class Auth0Service
     {
         return await _cache.GetOrCreateAsync($"profile.{subject}", async entry =>
         {
+            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
+            
             const string issuer = "https://dev-sl9gv5xa.us.auth0.com";
             const string profileEndpoint = $"{issuer}/userinfo";
 

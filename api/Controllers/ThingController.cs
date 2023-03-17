@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using shared.Models;
 using shared.Models.Job;
 using shared.UpdateModels;
-using shared.View;
 
 namespace api.Controllers;
 

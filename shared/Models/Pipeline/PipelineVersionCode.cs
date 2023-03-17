@@ -1,5 +1,3 @@
-using System.Text.Json.Serialization;
-
 namespace shared.Models.Pipeline;
 
 public class PipelineVersionCode

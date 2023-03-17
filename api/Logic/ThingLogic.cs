@@ -4,6 +4,7 @@ using MongoDB.Driver;
 using shared.Models;
 using shared.Models.Job;
 using shared.Models.Pipeline;
+using shared.Services;
 using shared.UpdateModels;
 
 namespace api.Logic;
@@ -14,13 +15,15 @@ public class ThingLogic
     private readonly IMongoDatabase _database;
     private readonly IMapper _mapper;
     private readonly JobLogic _jobLogic;
+    private readonly IGithub _github;
 
-    public ThingLogic(PipelineLogic pipelineLogic, IMongoDatabase database, IMapper mapper, JobLogic jobLogic)
+    public ThingLogic(PipelineLogic pipelineLogic, IMongoDatabase database, IMapper mapper, JobLogic jobLogic, IGithub github)
     {
         _pipelineLogic = pipelineLogic;
         _database = database;
         _mapper = mapper;
         _jobLogic = jobLogic;
+        _github = github;
     }
     
     public async Task<List<Thing>> GetThings()
@@ -128,6 +131,7 @@ public class ThingLogic
     {
         var thing = await GetThing(id);
         
+        
         if (thing == null)
         {
             throw new FileNotFoundException("Thing not found");
@@ -139,6 +143,8 @@ public class ThingLogic
         {
             throw new FileLoadException("deployable not found");
         }
+        
+        var commit = await _github.GetReference(thing.Deployable!.SourceControlUri, reference);
         
         if (!deployable.PipelineId.HasValue)
         {
@@ -158,7 +164,7 @@ public class ThingLogic
         };
         
         job.SourceControlUri = deployable.SourceControlUri;
-        job.SourceReference = reference;
+        job.SourceReference = commit;
         job.PipelineVersion = pipeline.Id;
         job.Files = pipeline.PipelineCode.Files;
         

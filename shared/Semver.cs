@@ -43,8 +43,10 @@ public class Semver : IComparable<Semver>
       return $"v{Major}.";
    }
 
-   public int CompareTo(Semver other)
+   public int CompareTo(Semver? other)
    {
+      if (other == null) throw new ArgumentNullException(nameof(other));
+      
       if (!IsValid || !other.IsValid)
       {
          // at least one of these is invalid

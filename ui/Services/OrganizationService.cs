@@ -1,6 +1,5 @@
 using System.Net.Http.Json;
 using shared.Models;
-using shared.View;
 
 namespace ui.Services;
 
@@ -8,7 +7,7 @@ namespace ui.Services;
 public class OrganizationService
 {
     private readonly HttpClient _client;
-    private List<Organization>? _organizations = null;
+    private List<Organization>? _organizations;
 
     public OrganizationService(HttpClient client)
     {

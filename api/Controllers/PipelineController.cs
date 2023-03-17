@@ -2,7 +2,6 @@ using api.Logic;
 using Microsoft.AspNetCore.Mvc;
 using shared.Models;
 using shared.Models.Pipeline;
-using shared.View;
 
 namespace api.Controllers;
 

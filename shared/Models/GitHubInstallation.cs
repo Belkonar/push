@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace scheduler.Models;
+namespace shared.Models;
 
 public class GithubInstallation
 {

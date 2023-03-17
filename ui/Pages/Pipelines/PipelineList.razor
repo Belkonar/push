@@ -1,8 +1,9 @@
 @page "/pipelines"
 @page "/thing/{Id:guid}/select-pipeline"
 @using shared.Models
+@using shared.Models.Pipeline
 
-@inject HttpClient http
+@inject HttpClient Http
 @inject ToastService Toaster
 @inject NavigationManager Nav
 
@@ -44,18 +45,18 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Pipelines = await http.GetFromJsonAsync<List<Pipeline>>("/pipeline") ?? new List<Pipeline>();
+        Pipelines = await Http.GetFromJsonAsync<List<Pipeline>>("/pipeline") ?? new List<Pipeline>();
     }
 
     private async Task SelectPipeline(Guid pipelineId)
     {
         Console.WriteLine("wot");
-        var deployment = (await http.GetFromJsonAsync<Deployable>($"/thing/{Id}/deployable"))!;
+        var deployment = (await Http.GetFromJsonAsync<Deployable>($"/thing/{Id}/deployable"))!;
         deployment.PipelineId = pipelineId;
         deployment.PipelineConstraint =
-            (await http.GetFromJsonAsync<SimpleValue>($"/pipeline/{pipelineId}/latest"))?.Value ?? "";
+            (await Http.GetFromJsonAsync<SimpleValue>($"/pipeline/{pipelineId}/latest"))?.Value ?? "";
         
-        using var response = await http.PutAsJsonAsync($"/Thing/{Id}/deployable", deployment);
+        using var response = await Http.PutAsJsonAsync($"/Thing/{Id}/deployable", deployment);
         try
         {
             response.EnsureSuccessStatusCode();

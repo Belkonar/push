@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using ui;
 using ui.Services;
@@ -13,7 +12,7 @@ builder.Services.AddTransient<ApiAuthorizationMessageHandler>();
 
 builder.Services.AddHttpClient("Api", client =>
 {
-    client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("ApiRoot"));
+    client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("ApiRoot")!);
 }).AddHttpMessageHandler<ApiAuthorizationMessageHandler>();
 
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>()

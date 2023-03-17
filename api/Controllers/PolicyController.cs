@@ -1,7 +1,7 @@
 using api.Logic;
 using shared.UpdateModels;
 using Microsoft.AspNetCore.Mvc;
-using shared.View;
+using shared.Models;
 
 namespace api.Controllers;
 

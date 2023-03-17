@@ -1,6 +1,3 @@
-using Amazon.Runtime.Internal.Transform;
-using api.Services;
-using AutoMapper;
 using MongoDB.Bson;
 using shared.Models;
 using shared.UpdateModels;
@@ -11,12 +8,10 @@ namespace api.Logic;
 
 public class OrganizationLogic
 {
-    private readonly PermissionService _permissionService;
     private readonly IMongoDatabase _mongoDatabase;
 
-    public OrganizationLogic(PermissionService permissionService, IMongoDatabase mongoDatabase)
+    public OrganizationLogic(IMongoDatabase mongoDatabase)
     {
-        _permissionService = permissionService;
         _mongoDatabase = mongoDatabase;
     }
     

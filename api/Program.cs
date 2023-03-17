@@ -1,12 +1,12 @@
-using api.Data;
 using api.Logic;
 using api.Middleware;
 using api.Services;
-using data;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
+using shared;
+using shared.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +22,7 @@ builder.Services.AddTransient<OrganizationLogic>();
 builder.Services.AddTransient<PipelineLogic>();
 builder.Services.AddTransient<ThingLogic>();
 builder.Services.AddTransient<JobLogic>();
+builder.Services.AddTransient<IGithub, Github>();
 
 // TODO: Properly handle distributed cache
 builder.Services.AddDistributedMemoryCache();
@@ -29,8 +30,6 @@ builder.Services.AddMemoryCache();
 
 // Services
 builder.Services.AddTransient<OpaService>();
-builder.Services.AddTransient<PermissionService>();
-builder.Services.AddTransient<PermissionData>();
 
 builder.Services.AddHttpClient<Auth0Service>();
 
@@ -43,7 +42,7 @@ BsonDefaults.GuidRepresentationMode = GuidRepresentationMode.V3;
 
 BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
 
-builder.Services.AddSingleton<IMongoDatabase>(provider => new MongoClient(
+builder.Services.AddSingleton<IMongoDatabase>(_ => new MongoClient(
         builder.Configuration.GetValue<string>("MongoUri")
         ).GetDatabase("push")
 );

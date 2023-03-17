@@ -1,6 +1,6 @@
 @page "/organization-create"
 @using shared.UpdateModels
-@inject HttpClient http
+@inject HttpClient Http
 @inject ToastService Toaster
 @inject NavigationManager Nav
 @inject OrganizationService OrgService
@@ -19,7 +19,7 @@
 </Card>
 
 @code {
-    private string Title = "Organization Create";
+    private string Title { get; set; } = "Organization Create";
     
     private string Name { get; set; } = "";
     
@@ -38,7 +38,7 @@
                 Name = Name
             };
             
-            using var response = await http.PostAsJsonAsync($"/Organization", request);
+            using var response = await Http.PostAsJsonAsync($"/Organization", request);
             response.EnsureSuccessStatusCode();
             
             Toaster.AddSuccess("Org Created");

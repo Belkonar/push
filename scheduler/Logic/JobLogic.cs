@@ -2,11 +2,11 @@ using System.IO.Compression;
 using System.Net.Http.Json;
 using Amazon.S3;
 using Amazon.S3.Model;
-using scheduler.Services;
 using shared;
 using shared.Models;
 using shared.Models.Job;
 using shared.Models.Nomad;
+using shared.Services;
 using shared.UpdateModels;
 
 namespace scheduler.Logic;
@@ -39,7 +39,7 @@ public class JobLogic
         {
             jobs = await _client.GetFromJsonAsync<List<Job>>($"/job?status={status}") ?? new List<Job>();
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return;
         }

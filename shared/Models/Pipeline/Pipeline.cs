@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace shared.View;
+namespace shared.Models.Pipeline;
 
 public class Pipeline
 {

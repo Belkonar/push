@@ -47,9 +47,7 @@ public class OpaService
 
         var r = JsonSerializer.Deserialize<OpaResponse>(response.Trim());
         
-        Console.WriteLine(r.Main.ExtensionData.Keys.First());
-
-        return r?.Main;
+        return r!.Main!;
     }
 
     public async Task<bool> HasPermission(string query, OpaInputDocument input, string permissionKey)

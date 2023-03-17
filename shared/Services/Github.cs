@@ -1,15 +1,14 @@
-using System.Net.Http.Json;
-using scheduler.Models;
-
-namespace scheduler.Services;
-
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using shared.Models;
+
+namespace shared.Services;
 
 // TODO: Support caching of tokens if it becomes a problem
 public class Github : IGithub
@@ -106,7 +105,7 @@ public class Github : IGithub
 
     private async Task<string> GetToken(GithubConfig config, string org)
     {
-        var token = await GetJWT(config);
+        var token = await GetJwt(config);
         
         var tokenUrl = await GetTokenUrl(config, token, org);
 
@@ -173,9 +172,9 @@ public class Github : IGithub
     /// ref https://vmsdurano.com/-net-core-3-1-signing-jwt-with-rsa/
     /// </summary>
     /// <returns></returns>
-    private async Task<string> GetJWT(GithubConfig config)
+    private async Task<string> GetJwt(GithubConfig config)
     {
-        var key = await ParsePem(Path.GetFullPath("github.pem"));
+        var key = await ParsePem(config.PemLocation ?? Path.GetFullPath("github.pem"));
         
         using RSA rsa = RSA.Create();
         
@@ -191,7 +190,7 @@ public class Github : IGithub
 
         var jwt = new JwtSecurityToken(
             issuer: config.AppId,
-            claims: new Claim[] {
+            claims: new [] {
                 new Claim(JwtRegisteredClaimNames.Iat, (unixTimeSeconds - 60).ToString(), ClaimValueTypes.Integer64),
             },
             expires: now.AddMinutes(10),
@@ -201,6 +200,7 @@ public class Github : IGithub
         return new JwtSecurityTokenHandler().WriteToken(jwt);
     }
 
+    // TODO: Accept AWS secrets manager to return the file
     private async Task<byte[]> ParsePem(string getFullPath)
     {
         var contents = await File.ReadAllTextAsync(getFullPath);

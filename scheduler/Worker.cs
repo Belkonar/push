@@ -26,7 +26,7 @@ public class Worker : BackgroundService
                 await logic.HandleApprovalJobs();
             }
             
-            _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+            _logger.LogInformation("Worker running at: {Time}", DateTimeOffset.Now);
             
             Thread.Sleep(1000);
         }

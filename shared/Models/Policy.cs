@@ -1,7 +1,6 @@
-using System.Text.Json.Serialization;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace shared.View;
+namespace shared.Models;
 
 public class Policy
 {

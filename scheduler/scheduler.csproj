@@ -7,8 +7,12 @@
     <UserSecretsId>dotnet-scheduler-05b16262-0737-4b1f-a652-7fbd670ae68e</UserSecretsId>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <NoWarn>1701;1702;IL2121;CS8618</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
-    
+    <Folder Include="Models" />
   </ItemGroup>
 
   <ItemGroup>
