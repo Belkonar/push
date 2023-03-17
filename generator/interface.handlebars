@@ -1,0 +1,12 @@
+{{#Namespaces}}
+using {{Value}};
+{{/Namespaces}}
+
+namespace shared.Interfaces;
+
+public interface I{{ Name }}
+{
+{{#Methods}}
+    public {{{FullType}}} {{Name}}({{#Parameters}}{{{FullType}}} {{Name}}{{#unless @last}}, {{/unless}}{{/Parameters}});
+{{/Methods}}
+}

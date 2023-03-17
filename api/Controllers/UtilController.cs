@@ -19,7 +19,7 @@ public class UtilController : ControllerBase
     }
     
     [HttpGet("fill")]
-    public async Task<IActionResult> Fill()
+    public async Task<string> Fill()
     {
         var pipelineId = Guid.Parse("bcb885d2-b0dd-4cad-85a8-14de0b67d012");
 
@@ -55,18 +55,18 @@ public class UtilController : ControllerBase
         }
          */
 
-        return Ok("filled basic info");
+        return "filled basic info";
     }
 
     [HttpGet()]
-    public async Task<IActionResult> Test()
+    public async Task<string> Test()
     {
         await _configService.Set("babbers", new Dictionary<string, string>()
         {
             { "hello", "world" }
         });
         
-        return Ok();
+        return "";
     }
 
     [HttpGet("read")]

@@ -67,11 +67,11 @@ public class OrganizationController : ControllerBase
     /// <param name="variable"></param>
     /// <returns></returns>
     [HttpPut("{id}/variable")]
-    public async Task<IActionResult> UpdateVariable([FromRoute] Guid id, [FromBody] UpdateOrganizationVariable variable)
+    public async Task<string> UpdateVariable([FromRoute] Guid id, [FromBody] UpdateOrganizationVariable variable)
     {
         await _organizationLogic.UpdateVariable(id, variable);
         
-        return Ok();
+        return "";
     }
     
     [HttpGet("{id}/credential")]
