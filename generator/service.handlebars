@@ -38,7 +38,7 @@ public class {{ ShortName }}Service : I{{ Name }}
         {{#if DefaultResponse}}
         return await response.Content.ReadFromJsonAsync<{{{ReturnType}}}>() ?? {{{DefaultResponse}}};
         {{else}}
-        return (await response.Content.ReadFromJsonAsync<{{{ReturnType}}}>())!
+        return (await response.Content.ReadFromJsonAsync<{{{ReturnType}}}>())!;
         {{/if}}
         {{/if}}
     }
