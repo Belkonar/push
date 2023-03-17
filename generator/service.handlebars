@@ -12,7 +12,7 @@ public class {{ ShortName }}Service : I{{ Name }}
     
     private const string Prefix = "/{{ShortName}}";
     
-    public ThingService(IHttpClientFactory factory)
+    public {{ ShortName }}Service(IHttpClientFactory factory)
     {
         _client = factory.CreateClient("api");
     }
