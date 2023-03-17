@@ -1,4 +1,4 @@
-namespace shared.Services;
+namespace shared.Interfaces;
 
 public interface IGithub
 {

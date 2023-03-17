@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using shared.Interfaces;
 using shared.Models;
 
 namespace shared.Services;

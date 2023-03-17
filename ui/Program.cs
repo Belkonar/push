@@ -1,22 +1,28 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using shared.Interfaces;
+using shared.Services;
 using ui;
 using ui.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
-Console.WriteLine(builder.HostEnvironment.BaseAddress);
+
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddTransient<ApiAuthorizationMessageHandler>();
 
-builder.Services.AddHttpClient("Api", client =>
+// ---- START Services ----
+builder.Services.AddTransient<IThingController, ThingService>();
+// ----- END Services -----
+
+builder.Services.AddHttpClient("api", client =>
 {
     client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("ApiRoot")!);
 }).AddHttpMessageHandler<ApiAuthorizationMessageHandler>();
 
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>()
-    .CreateClient("Api"));
+    .CreateClient("api"));
 
 builder.Services.AddSingleton<ToastService>();
 builder.Services.AddScoped<OrganizationService>();

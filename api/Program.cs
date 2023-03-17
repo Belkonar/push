@@ -6,6 +6,7 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 using shared;
+using shared.Interfaces;
 using shared.Services;
 
 var builder = WebApplication.CreateBuilder(args);

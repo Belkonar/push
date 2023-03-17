@@ -1,6 +1,7 @@
 using AutoMapper;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using shared.Interfaces;
 using shared.Models;
 using shared.Models.Job;
 using shared.Models.Pipeline;

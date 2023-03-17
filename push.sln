@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "scheduler", "scheduler\sche
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "runner", "runner\runner.csproj", "{C2D7F6BA-1A78-4B36-8F7E-B315A2C4D1EB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "generator", "generator\generator.csproj", "{D6228BF0-40AC-4261-B32B-E2739C1C8830}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,5 +50,9 @@ Global
 		{C2D7F6BA-1A78-4B36-8F7E-B315A2C4D1EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2D7F6BA-1A78-4B36-8F7E-B315A2C4D1EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C2D7F6BA-1A78-4B36-8F7E-B315A2C4D1EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6228BF0-40AC-4261-B32B-E2739C1C8830}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6228BF0-40AC-4261-B32B-E2739C1C8830}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6228BF0-40AC-4261-B32B-E2739C1C8830}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6228BF0-40AC-4261-B32B-E2739C1C8830}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

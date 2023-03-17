@@ -1,5 +1,6 @@
 using api.Logic;
 using Microsoft.AspNetCore.Mvc;
+using shared.Interfaces;
 using shared.Models;
 using shared.Models.Job;
 using shared.UpdateModels;
@@ -9,7 +10,7 @@ namespace api.Controllers;
 // TODO: Split this out into multiple methods like orgs so that private metadata can be properly handled
 [ApiController]
 [Route("[controller]")]
-public class ThingController : ControllerBase
+public class ThingController : ControllerBase, IThingController
 {
     private readonly ThingLogic _thingLogic;
 
