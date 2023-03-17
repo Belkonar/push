@@ -4,7 +4,9 @@ using System.Text;
 using api;
 using generator.Models;
 using HandlebarsDotNet;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
+using MongoDB.Driver.Linq;
 
 namespace generator;
 
@@ -16,12 +18,14 @@ public class Generation
 
         var assemblies = helper.GetTypes("api.Controllers");
         var interfaceTemplate = Handlebars.Compile(File.ReadAllText("interface.handlebars"));
+        var serviceTemplate = Handlebars.Compile(File.ReadAllText("service.handlebars"));
 
         foreach (var t in assemblies)
         {
             var controller = new ReflController()
             {
-                Name = t.Name
+                Name = t.Name,
+                ShortName = t.Name.Replace("Controller", "")
             };
 
             if (controller.Name == "ErrorController")
@@ -48,6 +52,26 @@ public class Generation
                 }
 
                 reflMethod.HttpMethod = MapMethod(getAttr.HttpMethods.First());
+                reflMethod.Route = getAttr.Template!;
+
+                var queries = method.GetParameters()
+                    .Where(x => x.GetCustomAttribute<FromQueryAttribute>() != null)
+                    .Select(x => $"{x.Name}={{{x.Name}}}")
+                    .ToList();
+
+                if (queries.Count > 0)
+                {
+                    reflMethod.Query = "?" + string.Join("&", queries);
+                }
+
+                var bodyType = method
+                    .GetParameters()
+                    .FirstOrDefault(x => x.GetCustomAttribute<FromBodyAttribute>() != null);
+
+                if (bodyType != null)
+                {
+                    reflMethod.BodyName = bodyType.Name!;
+                }
 
                 foreach (var parameter in method.GetParameters())
                 {
@@ -67,6 +91,7 @@ public class Generation
             controller.Namespaces.Remove("shared");
             
             File.WriteAllText($"../shared/interfaces/I{t.Name}.cs", interfaceTemplate(controller));
+            File.WriteAllText($"../shared/services/{controller.ShortName}Service", serviceTemplate(controller));
         }
     }
 

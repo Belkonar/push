@@ -20,6 +20,14 @@ public class ThingService : IThingController
     
     public async Task<List<Thing>> GetThings()
     {
+        var route = $"{Prefix}/";
+
+        using var response = await _client.GetAsync(route);
+
+        response.EnsureSuccessStatusCode();
+
+        return (await response.Content.ReadFromJsonAsync<List<Thing>>())!;
+        
         return await _client.GetFromJsonAsync<List<Thing>>(Prefix)
                ?? new List<Thing>();
     }
