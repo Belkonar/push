@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using shared.Interfaces;
+using shared.services;
 using shared.Services;
 using ui;
 using ui.Services;
+using OrganizationService = ui.Services.OrganizationService;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 

@@ -17,31 +17,31 @@ public class {{ ShortName }}Service : I{{ Name }}
         _client = factory.CreateClient("api");
     }
 
-{{#Methods}}
+    {{#Methods}}
     public async {{{FullType}}} {{Name}}({{#Parameters}}{{{FullType}}} {{Name}}{{#unless @last}}, {{/unless}}{{/Parameters}})
     {
         var route = $"{Prefix}/{{Route}}{{Query}}";
-    
+
         {{#if IsGet}}
-        var response = await _client.GetAsync(route);
+        var httpResponse = await _client.GetAsync(route);
         {{else}}
-        
+
         {{#if BodyName}}
-        var response = await _client.{{HttpMethod}}AsJsonAsync(route, {{BodyName}});
+        var httpResponse = await _client.{{HttpMethod}}AsJsonAsync(route, {{BodyName}});
         {{else}}
-        var response = await _client.{{HttpMethod}}Async(route, null);
+        var httpResponse = await _client.{{HttpMethod}}Async(route, null);
         {{/if}}
-            
+
         {{/if}}
-        response.EnsureSuccessStatusCode();
+        httpResponse.EnsureSuccessStatusCode();
         {{#if HasReturn}}
         {{#if DefaultResponse}}
-        return await response.Content.ReadFromJsonAsync<{{{ReturnType}}}>() ?? {{{DefaultResponse}}};
+        return await httpResponse.Content.ReadFromJsonAsync<{{{ReturnType}}}>() ?? {{{DefaultResponse}}};
         {{else}}
-        return (await response.Content.ReadFromJsonAsync<{{{ReturnType}}}>())!;
+        return (await httpResponse.Content.ReadFromJsonAsync<{{{ReturnType}}}>())!;
         {{/if}}
         {{/if}}
     }
-    
-{{/Methods}}
+
+    {{/Methods}}
 }
