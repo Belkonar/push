@@ -40,8 +40,6 @@ public class Generation
         
                 controller.Methods.Add(reflMethod);
         
-                Console.WriteLine("--" + method.Name);
-        
                 var getAttr = method.GetCustomAttribute<HttpMethodAttribute>();
 
                 if (getAttr == null)
@@ -53,8 +51,6 @@ public class Generation
 
                 foreach (var parameter in method.GetParameters())
                 {
-                    Console.WriteLine($"---- {parameter.Name} ({parameter.ParameterType.ToString()})");
-
                     var param = new ReflParam()
                     {
                         Name = parameter.Name,
@@ -71,11 +67,6 @@ public class Generation
             controller.Namespaces.Remove("shared");
             
             File.WriteAllText($"../shared/interfaces/I{t.Name}.cs", interfaceTemplate(controller));
-
-            // if (t.Name == "JobController")
-            // {
-            //     break;    
-            // }
         }
     }
 
