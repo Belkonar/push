@@ -4,7 +4,8 @@
   "Github": {
     "github.com": {
       "AppId": "",
-      "ApiRoot": "https://api.github.com"
+      "ApiRoot": "https://api.github.com",
+      "PemLocation": ""
     }
   }
 }
