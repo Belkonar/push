@@ -91,7 +91,11 @@ public class Generation
             controller.Namespaces.Remove("shared");
             
             File.WriteAllText($"../shared/interfaces/I{t.Name}.cs", interfaceTemplate(controller));
-            File.WriteAllText($"../shared/services/{controller.ShortName}Service", serviceTemplate(controller));
+            
+            controller.Namespaces.Add("shared.Interfaces");
+            controller.Namespaces.Add("System.Net.Http.Json");
+            
+            File.WriteAllText($"../shared/services/{controller.ShortName}Service.cs", serviceTemplate(controller));
         }
     }
 
