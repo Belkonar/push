@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using Amazon.S3;
 using Amazon.S3.Model;
 using shared;
+using shared.Interfaces;
 using shared.Models;
 using shared.Models.Job;
 using shared.UpdateModels;
@@ -14,11 +15,13 @@ public class Runner
 {
     private readonly HttpClient _client;
     private readonly IConfiguration _configuration;
+    private readonly IPipelineController _pipelineService;
 
-    public Runner(HttpClient client, IConfiguration configuration)
+    public Runner(HttpClient client, IConfiguration configuration, IPipelineController pipelineService)
     {
         _client = client;
         _configuration = configuration;
+        _pipelineService = pipelineService;
     }
     
     // TODO: commander
@@ -26,6 +29,8 @@ public class Runner
     {
         var id = Guid.Parse(args[0]);
         var ordinal = Convert.ToInt32(args[1]);
+
+        await _pipelineService.FinishedStep(id, ordinal);
 
         var job = await _client.GetFromJsonAsync<Job>($"/job/{id}");
 

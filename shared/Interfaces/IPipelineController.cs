@@ -17,4 +17,5 @@ public interface IPipelineController
     public Task<Pipeline> UpdatePipeline(Guid id, Pipeline data);
     public Task<PipelineVersion> UpdatePipelineVersion(Guid id, string key, PipelineVersion data);
     public Task ScheduledStep(Guid id, int ordinal);
+    public Task FinishedStep(Guid id, int ordinal);
 }

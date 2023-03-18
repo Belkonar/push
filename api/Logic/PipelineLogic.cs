@@ -1,3 +1,5 @@
+using System.Text.Json;
+using Microsoft.Extensions.Caching.Distributed;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using shared;
@@ -9,10 +11,12 @@ namespace api.Logic;
 public class PipelineLogic
 {
     private readonly IMongoDatabase _database;
+    private readonly IDistributedCache _cache;
 
-    public PipelineLogic(IMongoDatabase database)
+    public PipelineLogic(IMongoDatabase database, IDistributedCache cache)
     {
         _database = database;
+        _cache = cache;
     }
     
     public async Task<List<Pipeline>> GetPipelines(Guid? org)
@@ -200,6 +204,38 @@ public class PipelineLogic
         var stat = new Stat()
         {
             Kind = "scheduled-step"
+        };
+
+        await collection.InsertOneAsync(stat);
+
+        var json = JsonSerializer.Serialize(DateTime.UtcNow);
+
+        await _cache.SetStringAsync(key, json, new DistributedCacheEntryOptions()
+        {
+            // each call will reset this so the cache will really last 5 minutes
+            // after the step finishes execution
+            AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+        });
+    }
+    
+    public async Task FinishedStep(string key)
+    {
+        var json = await _cache.GetStringAsync(key);
+
+        if (json == null)
+        {
+            return;
+        }
+
+        var date = JsonSerializer.Deserialize<DateTime>(json);
+        var diff = DateTime.UtcNow - date;
+        
+        var collection = _database.GetCollection<Stat>("stats");
+
+        var stat = new Stat()
+        {
+            Kind = "finished-step",
+            Value = Convert.ToInt64(diff.TotalMilliseconds)
         };
 
         await collection.InsertOneAsync(stat);

@@ -115,4 +115,14 @@ public class PipelineService : IPipelineController
         httpResponse.EnsureSuccessStatusCode();
     }
 
+    public async Task FinishedStep(Guid id, int ordinal)
+    {
+        var route = $"{Prefix}/{id}/finished-step/{ordinal}";
+
+
+        var httpResponse = await _client.PostAsync(route, null);
+
+        httpResponse.EnsureSuccessStatusCode();
+    }
+
 }

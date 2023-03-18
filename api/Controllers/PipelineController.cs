@@ -89,4 +89,10 @@ public class PipelineController
     {
         await _pipelineLogic.ScheduledStep($"{id}-{ordinal}");
     }
+    
+    [HttpPost("{id}/finished-step/{ordinal}")]
+    public async Task FinishedStep([FromRoute] Guid id, [FromRoute] int ordinal)
+    {
+        await _pipelineLogic.FinishedStep($"{id}-{ordinal}");
+    }
 }

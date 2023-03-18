@@ -1,9 +1,12 @@
 using runner;
+using shared.Interfaces;
+using shared.services;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
     {
         services.AddTransient<Runner>();
+        services.AddTransient<IPipelineController, PipelineService>();
         
         services.AddHttpClient("api", client =>
         {
