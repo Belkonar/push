@@ -48,6 +48,18 @@ public class NomadTask
 
     [JsonPropertyName("Config")]
     public NomadTaskConfig Config { get; set; } = new();
+
+    // [JsonPropertyName("Resources")]
+    // public NomadResourceBlock Resources { get; set; } = new();
+}
+
+public class NomadResourceBlock
+{
+    [JsonPropertyName("CPU")]
+    public int Cpu { get; set; } = 110;
+    
+    [JsonPropertyName("MemoryMB")]
+    public int Memory { get; set; } = 300;
 }
 
 public class NomadTaskConfig

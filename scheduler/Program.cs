@@ -1,5 +1,7 @@
 using scheduler;
 using scheduler.Logic;
+using shared.Interfaces;
+using shared.services;
 using shared.Services;
 
 IHost host = Host.CreateDefaultBuilder(args)
@@ -7,6 +9,7 @@ IHost host = Host.CreateDefaultBuilder(args)
     {
         services.AddTransient<Github>();
         services.AddTransient<JobLogic>();
+        services.AddTransient<IPipelineController, PipelineService>();
 
         if (Environment.GetEnvironmentVariable("WORKER") == "true")
         {

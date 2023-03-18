@@ -105,4 +105,14 @@ public class PipelineService : IPipelineController
         return (await httpResponse.Content.ReadFromJsonAsync<PipelineVersion>())!;
     }
 
+    public async Task ScheduledStep(Guid id, int ordinal)
+    {
+        var route = $"{Prefix}/{id}/step-scheduled/{ordinal}";
+
+
+        var httpResponse = await _client.PostAsync(route, null);
+
+        httpResponse.EnsureSuccessStatusCode();
+    }
+
 }

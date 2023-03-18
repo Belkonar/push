@@ -1,6 +1,7 @@
 using MongoDB.Bson;
 using MongoDB.Driver;
 using shared;
+using shared.Models;
 using shared.Models.Pipeline;
 
 namespace api.Logic;
@@ -190,6 +191,18 @@ public class PipelineLogic
         }
         
         return parameters;
+    }
+
+    public async Task ScheduledStep(string key)
+    {
+        var collection = _database.GetCollection<Stat>("stats");
+
+        var stat = new Stat()
+        {
+            Kind = "scheduled-step"
+        };
+
+        await collection.InsertOneAsync(stat);
     }
 
     public async Task<PipelineVersion> GetVersion(Guid id, string versionValue)

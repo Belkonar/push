@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using Amazon.S3;
 using Amazon.S3.Model;
 using shared;
+using shared.Interfaces;
 using shared.Models;
 using shared.Models.Job;
 using shared.Models.Nomad;
@@ -15,13 +16,15 @@ public class JobLogic
 {
     private readonly Github _github;
     private readonly IConfiguration _configuration;
+    private readonly IPipelineController _pipelineService;
     private readonly HttpClient _client;
     private readonly HttpClient _nomadClient;
 
-    public JobLogic(Github github, IHttpClientFactory factory, IConfiguration configuration)
+    public JobLogic(Github github, IHttpClientFactory factory, IConfiguration configuration, IPipelineController pipelineService)
     {
         _github = github;
         _configuration = configuration;
+        _pipelineService = pipelineService;
         _client = factory.CreateClient("api");
         _nomadClient = factory.CreateClient("nomad");
     }
@@ -192,8 +195,8 @@ public class JobLogic
         // I got everything I need for nomad!
         var request = new NomadJobRequest();
 
-        request.Job.Id = job.Id.ToString();
-        request.Job.Name = job.Id.ToString();
+        request.Job.Id = $"{job.Id}-{step.Ordinal}";//job.Id.ToString();
+        request.Job.Name = $"{job.Id}-{step.Ordinal}";//job.Id.ToString();
         
         var taskGroup = new NomadJobTaskGroup();
         var task = new NomadTask
@@ -212,8 +215,17 @@ public class JobLogic
         taskGroup.Tasks.Add(task);
         request.Job.TaskGroups.Add(taskGroup);
 
-        var nomadRequest = await _nomadClient.PostAsJsonAsync($"/v1/job/{job.Id}", request);
+        var nomadRequest = await _nomadClient.PostAsJsonAsync($"/v1/job/{request.Job.Id}", request);
         nomadRequest.EnsureSuccessStatusCode();
+
+        try
+        {
+            await _pipelineService.ScheduledStep(job.Id, step.Ordinal);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
     }
 
     private async Task UpdateJobStatus(Job job, string status)
