@@ -156,9 +156,6 @@ public class JobLogic
         var update = Builders<Job>.Update
             .Push("Steps.$[s].Approvals", _userService.Subject);
         
-        Console.WriteLine(_userService.Subject);
-        Console.WriteLine(JsonSerializer.Serialize(_userService.Profile));
-        
         var arrayFilters = new[]
         {
             new BsonDocumentArrayFilterDefinition<BsonDocument>(new BsonDocument("s.Ordinal", ordinal)),

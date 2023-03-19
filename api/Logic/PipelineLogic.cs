@@ -199,15 +199,15 @@ public class PipelineLogic
 
     public async Task ScheduledStep(string key)
     {
-        var collection = _database.GetCollection<Stat>("stats");
-
-        var stat = new Stat()
-        {
-            Kind = "scheduled-step"
-        };
-
-        await collection.InsertOneAsync(stat);
-
+        // var collection = _database.GetCollection<Stat>("stats");
+        //
+        // var stat = new Stat()
+        // {
+        //     Kind = "scheduled-step"
+        // };
+        //
+        // await collection.InsertOneAsync(stat);
+        
         var json = JsonSerializer.Serialize(DateTime.UtcNow);
 
         await _cache.SetStringAsync(key, json, new DistributedCacheEntryOptions()
