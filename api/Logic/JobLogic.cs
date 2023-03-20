@@ -148,6 +148,13 @@ public class JobLogic
 
     public async Task ApproveStep(Guid id, int ordinal)
     {
+        var currentApprovals = await GetApprovals(id, ordinal);
+
+        if (currentApprovals.Contains(_userService.Subject))
+        {
+            //throw new Exception("lol no");
+        }
+        
         var collection = _mongoDatabase.GetCollection<Job>("jobs");
 
         var filter = Builders<Job>.Filter
@@ -167,6 +174,14 @@ public class JobLogic
         });
 
         await LogAudit(id);
+    }
+
+    private async Task<List<string>> GetApprovals(Guid id, int ordinal)
+    {
+        var job = await GetJob(id);
+        var step = job.Steps.First(x => x.Ordinal == ordinal);
+
+        return step.Approvals;
     }
 
     private async Task LogAudit(Guid id)

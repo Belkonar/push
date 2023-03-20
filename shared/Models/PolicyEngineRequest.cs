@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace cli;
+namespace shared.Models;
 
 public class PolicyEngineDocument
 {
@@ -15,13 +15,13 @@ public class PolicyEngineDocument
     public List<PolicyEnginePolicy> Policies { get; set; }
 }
 
-public class PolicyEngineRequest<T>
+public class PolicyEngineRequest
 {
     [JsonPropertyName("policies")]
     public List<PolicyEnginePolicy> Policies { get; set; }
     
     [JsonPropertyName("data")]
-    public T Data { get; set; }
+    public JsonElement Data { get; set; }
 }
 
 public class PolicyEnginePolicy

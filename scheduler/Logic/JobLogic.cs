@@ -278,7 +278,7 @@ public class JobLogic
             return;
         }
 
-        if (step.Approvals.Count >= step.RequiredApprovals)
+        if (step.Approvals/*.Distinct().ToList()*/.Count >= step.RequiredApprovals)
         {
             await UpdateJobStatus(job, "ready");
             await UpdateJobStepStatus(job, step.Ordinal, "pending");
