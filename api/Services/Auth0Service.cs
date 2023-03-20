@@ -18,14 +18,14 @@ public class Auth0Service
         _cache = cache;
     }
 
-    public async Task<JsonDocument?> GetProfile(string subject, string authToken)
+    public async Task<JsonDocument?> GetProfile(string subject, string authToken, string issuer)
     {
+        Console.WriteLine(issuer);
         return await _cache.GetOrCreateAsync($"profile.{subject}", async entry =>
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
             
-            const string issuer = "https://dev-sl9gv5xa.us.auth0.com";
-            const string profileEndpoint = $"{issuer}/userinfo";
+            var profileEndpoint = $"{issuer}userinfo";
 
             using var request = new HttpRequestMessage()
             {

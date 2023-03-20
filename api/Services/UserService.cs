@@ -43,6 +43,7 @@ public class UserService
         }
         
         Subject = profile.RootElement.GetString("sub")!;
+        var issuer = profile.RootElement.GetString("iss")!;
         // Console.WriteLine(Subject);
         // Console.WriteLine(profileJson);
         var scopes = profile.RootElement.GetString("scope")!;
@@ -50,7 +51,7 @@ public class UserService
         if (scopes.Contains("profile"))
         {
             // TODO: Find out thwy the issuer is missing from the token
-            profile = await _auth0Service.GetProfile(Subject, authHeader!);
+            profile = await _auth0Service.GetProfile(Subject, authHeader!, issuer);
         }
         
         Profile = profile!;
