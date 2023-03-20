@@ -22,10 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Components" />
-  </ItemGroup>
-
-  <ItemGroup>
     <_ContentIncludedByDefault Remove="Pages\Ref\Counter.razor" />
     <_ContentIncludedByDefault Remove="Pages\Ref\FetchData.razor" />
   </ItemGroup>

@@ -47,7 +47,7 @@ public class DockerBuilder
     public void Copy(string relativeTo, string from, string to)
     {
         var relativePath = Path.GetRelativePath(relativeTo, from);
-        _builder.AppendLine($"COPY {relativePath} \"{to}\"");
+        _builder.AppendLine($"COPY --chmod=775 {relativePath} \"{to}\"");
     }
     
     public void CopyData(string path, string content)
@@ -80,7 +80,7 @@ public class DockerBuilder
 
         // build the bash script
         var commandBuilder = new StringBuilder();
-        commandBuilder.AppendLine("#!/usr/bin/env bash");
+        commandBuilder.AppendLine("#!/usr/bin/env sh");
         commandBuilder.AppendLine("set -e");
         commandBuilder.AppendLine(command);
         
@@ -90,7 +90,7 @@ public class DockerBuilder
         Copy(_folder.Dir, scriptLocation, finalLocation);
         
         // get exec permissions
-        Run($"chmod +x {finalLocation}");
+        //Run($"chmod +x {finalLocation}");
         
         // set the entrypoint to our new scriptIf
         Entrypoint(finalLocation);
@@ -111,24 +111,28 @@ public class DockerBuilder
     /// </summary>
     /// <param name="key">The PEM key for accessing the server</param>
     /// <param name="host">The host of the server (including port)</param>
-    public void SetupRemoteDocker(byte[] key, string host)
+    public void SetupRemoteDocker(string keyLocation, string host)
     {
-        var keyLocation = _folder.GetFile();
+        Volume(keyLocation, "/rd");
+
         var sshConfigLocation = _folder.GetFile();
+
+        var config = @"Host *.us-east-2.compute.amazonaws.com
+        User ec2-user
+        StrictHostKeyChecking no
+        IdentityFile /rd
+";
+
+        File.WriteAllText(sshConfigLocation, config);
+        Console.WriteLine(sshConfigLocation);
         
-        File.WriteAllBytes(keyLocation, key);
-        
-        const string finalKeyLocation = "/ssh-key";
         const string finalSshConfigLocation = "/etc/ssh/ssh_config";
         
         // TODO: pull my config from other computer
         
-        Copy(keyLocation, finalKeyLocation);
-        Copy(sshConfigLocation, finalSshConfigLocation);
+        Copy(_folder.Dir, sshConfigLocation, finalSshConfigLocation);
         
         Env("DOCKER_HOST", host);
-        
-        throw new NotImplementedException();
     }
 
     public string GetDockerfile()
@@ -175,6 +179,11 @@ public class DockerBuilder
             args.Add("-v");
             args.Add($"{volume.Key}:{volume.Value}");
         }
+        
+        args.Add("-v");
+        args.Add($"/var/run/docker.sock:/var/run/docker.sock");
+        
+        // -v /var/run/docker.sock:/var/run/docker.sock
         
         args.Add(_containerName);
 

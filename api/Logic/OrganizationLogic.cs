@@ -1,3 +1,5 @@
+using Amazon;
+using Amazon.SecurityToken.Model;
 using MongoDB.Bson;
 using shared.Models;
 using shared.UpdateModels;
@@ -188,9 +190,37 @@ public class OrganizationLogic
         {
             return GetStaticBundle(credential);
         }
+        else if (credential.Kind == "aws")
+        {
+            return await GetAwsBundle(credential);
+        }
 
         // If it's a type I don't support return an empty bundle
         return new CredentialBundle();
+    }
+
+    private async Task<CredentialBundle> GetAwsBundle(Credential credential)
+    {
+        using var client = new Amazon.SecurityToken.AmazonSecurityTokenServiceClient(RegionEndpoint.USEast2);
+        
+        var assumeRoleReq = new AssumeRoleRequest()
+        {
+            RoleSessionName = Guid.NewGuid().ToString(),
+            RoleArn = credential.Data["role"]
+        };
+
+        var response = await client.AssumeRoleAsync(assumeRoleReq);
+
+        return new CredentialBundle()
+        {
+            Headers = new Dictionary<string, string>()
+            {
+                { "AWS_SESSION_TOKEN", response.Credentials.SessionToken },
+                { "AWS_ACCESS_KEY_ID", response.Credentials.AccessKeyId },
+                { "AWS_SECRET_ACCESS_KEY", response.Credentials.SecretAccessKey },
+                { "AWS_DEFAULT_REGION", "us-east-2" }
+            }
+        };
     }
 
     private CredentialBundle GetStaticBundle(Credential credential)

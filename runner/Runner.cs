@@ -91,6 +91,7 @@ public class Runner
         
         dockerfile.Env("JOB_ID", job.Id.ToString());
         dockerfile.Env("JOB_REF", job.SourceReference);
+        dockerfile.Env("UUID", Guid.NewGuid().ToString());
 
         foreach (var param in step.Parameters)
         {
@@ -125,9 +126,23 @@ public class Runner
 
         dockerfile.WorkDirVolume(volumeDir.Dir, "/app");
         
+
+        var dockerHost = _configuration.GetValue<string>("RemoteHost")!;
+        
+        
+        dockerfile.SetupRemoteDocker(_configuration.GetValue<string>("RemotePEM")!, $"ssh://{dockerHost}");
+        
         dockerfile.CreateFile();
         
-        Executor.Execute(dockerfile.GetBuildConfig());
+        var buildResponse = Executor.Execute(dockerfile.GetBuildConfig());
+
+        if (buildResponse.ResponseCode != 0)
+        {
+            using var fi = await _client.PostAsJsonAsync($"/job/{job.Id}/step/{step.Ordinal}/finalize", buildResponse);
+
+            fi.EnsureSuccessStatusCode();
+            return;
+        }
 
         var response = Executor.Execute(dockerfile.GetRunConfig(), async s =>
         {

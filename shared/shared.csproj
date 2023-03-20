@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="AWSSDK.S3" Version="3.7.103.31" />
+    <PackageReference Include="AWSSDK.SecurityToken" Version="3.7.101.29" />
     <PackageReference Include="MongoDB.Bson" Version="2.19.0" />
     <PackageReference Include="MongoDB.Driver" Version="2.19.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
