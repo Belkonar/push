@@ -1,5 +1,6 @@
 @page "/policies"
 @using shared.Models
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @inject HttpClient Http
 
 <PageTitle>Policy List</PageTitle>
@@ -31,6 +32,13 @@
     
     protected override async Task OnInitializedAsync()
     {
-        Policies = await Http.GetFromJsonAsync<List<Policy>>("/policy") ?? new List<Policy>();
+        try
+        {
+            Policies = await Http.GetFromJsonAsync<List<Policy>>("/policy") ?? new List<Policy>();
+        }
+        catch (AccessTokenNotAvailableException e)
+        {
+            e.Redirect();
+        }
     }
 }
