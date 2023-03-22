@@ -73,7 +73,7 @@ public class ThingService : IThingController
         var route = $"{Prefix}/{id}/deployable";
 
 
-        var httpResponse = await _client.PutAsync(route, null);
+        var httpResponse = await _client.PutAsJsonAsync(route, deployableView);
 
         httpResponse.EnsureSuccessStatusCode();
         return (await httpResponse.Content.ReadFromJsonAsync<Deployable>())!;

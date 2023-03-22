@@ -19,12 +19,19 @@ if (args.Length == 0)
 }
 
 // The last thing in the list is the target
-var target = args.Last();
+var target = args.First();
 
 if (!Directory.Exists(target))
 {
     Console.WriteLine("Directory supplied doesn't exist");
     return;
+}
+
+var version = "v1.0.0";
+
+if (args.Length > 1)
+{
+    version = args[1];
 }
 
 var pipelineLocation = Path.Join(target, "pipeline.json");
@@ -62,7 +69,7 @@ var body = new PipelineVersion
 {
     Id = new PipelineVersionKey()
     {
-        Version = "v1.0.0",
+        Version = version,
         PipelineId = info.Id,
     },
     PipelineCode = pipeline,

@@ -52,7 +52,7 @@ public class ThingController : ControllerBase, IThingController
     }
 
     [HttpPut("{id}/deployable")]
-    public async Task<Deployable> UpdateDeployable([FromRoute] Guid id, Deployable deployableView)
+    public async Task<Deployable> UpdateDeployable([FromRoute] Guid id, [FromBody] Deployable deployableView)
     {
         return await _thingLogic.UpdateDeployable(id, deployableView);
     }
