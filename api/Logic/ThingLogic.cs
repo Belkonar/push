@@ -169,6 +169,12 @@ public class ThingLogic
         job.PipelineVersion = pipeline.Id;
         job.Files = pipeline.PipelineCode.Files;
         
+        job.Parameters.Add(new JobStepParameter()
+        {
+            Name = "simple-name",
+            Value = thing.Name.ToLower().Replace(" ", "_")
+        });
+        
         foreach (var globalParameter in pipeline.PipelineCode.Parameters)
         {
             var param = _mapper.Map<StepParameter, JobStepParameter>(globalParameter);
