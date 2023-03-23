@@ -53,3 +53,11 @@ This will help the scheduler out. The jobs collection will be the largest one an
 Feel free to add any other indexes based on your data. Atlas will recommend them if you use it (which I recommend in prod environments).
 
 If you don't need the jobs to stick around, feel free to purge the table. There will be no side effects on the app running. 
+
+For the UI you can run it with this to be the least annoying.
+
+```bash
+ DOTNET_WATCH_RESTART_ON_RUDE_EDIT=1 dotnet watch
+```
+
+
