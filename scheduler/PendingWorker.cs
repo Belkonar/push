@@ -14,23 +14,21 @@ public class PendingWorker : BackgroundService
     private readonly ILogger<PendingWorker> _logger;
     private readonly IServiceProvider _provider;
     private readonly IHostApplicationLifetime _hostApplicationLifetime;
+    private readonly JobLogic _jobLogic;
 
-    public PendingWorker(ILogger<PendingWorker> logger, IServiceProvider provider, IHostApplicationLifetime hostApplicationLifetime)
+    public PendingWorker(ILogger<PendingWorker> logger, IServiceProvider provider, IHostApplicationLifetime hostApplicationLifetime, JobLogic jobLogic)
     {
         _logger = logger;
         _provider = provider;
         _hostApplicationLifetime = hostApplicationLifetime;
+        _jobLogic = jobLogic;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            await using (var scope = _provider.CreateAsyncScope())
-            {
-                var logic = scope.ServiceProvider.GetRequiredService<JobLogic>();
-                await logic.HandlePendingJobs();
-            }
+            await _jobLogic.HandlePendingJobs();
             
             _logger.LogInformation("Worker running at: {Time}", DateTimeOffset.Now);
             
