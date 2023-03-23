@@ -41,6 +41,20 @@ dotnet run $@
 Run `mongod` with basic settings. If you are mac you will need to specify a data directory.
 The command I used was `sudo mongod --dbpath ~/mon`. You don't need to use sudo
 
+To make these easier, copy the plist templates in the helpers directory and fill them out. Then run these to bootstrap them.
+
+```bash
+launchctl bootstrap gui/$(id -u) helpers/nomad.plist
+launchctl bootstrap gui/$(id -u) helpers/mongo.plist
+```
+
+This will ensure mongo and nomad are always running. If you need to make changes you can boot them out with
+
+```bash
+launchctl bootout gui/$(id -u)/com.push.nomad
+launchctl bootout gui/$(id -u)/com.push.mongo
+```
+
 While you don't really need indexes for dev, depending on your environment you may or may not need them.
 The only ones I suggest are two indexes on the `jobs` collection.
 

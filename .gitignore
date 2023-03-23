@@ -7,3 +7,4 @@ bin/
 *.pem
 appsettings.Local.json
 *dotSettings.user
+*.plist

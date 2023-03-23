@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+
+        <key>Label</key>
+        <string>com.push.nomad</string>
+
+        <key>RunAtLoad</key>
+        <true/>
+
+        <key>StandardErrorPath</key>
+        <string>{STDERR path}</string>
+
+        <key>StandardOutPath</key>
+        <string>{STDOUT path}</string>
+        
+        <key>ProgramArguments</key>
+        <array>
+            <string>{nomad path}</string>
+            <string>agent</string>
+            <string>-dev</string>
+            <string>run</string>
+        </array>
+
+    </dict>
+</plist>
