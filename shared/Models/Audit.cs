@@ -2,11 +2,14 @@ using MongoDB.Bson;
 
 namespace shared.Models;
 
+/// <summary>
+/// The Audit model for audit records lol
+/// </summary>
+/// <remarks>
+/// There's no ID because the intent is that you won't be able to `update` these.
+/// </remarks>
 public class Audit
 {
-    // I don't care about this one since it'll never be needed for updates
-    public ObjectId Id { get; set; } = ObjectId.GenerateNewId();
-    
     public string ResourceType { get; set; }
     
     public string? ResourceId { get; set; }
