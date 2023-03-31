@@ -34,6 +34,11 @@ builder.Services.AddTransient<OpaService>();
 
 builder.Services.AddHttpClient<Auth0Service>();
 
+builder.Services.AddHttpClient("policy", client =>
+{
+    client.BaseAddress = new Uri("http://localhost:3000");
+});
+
 builder.Services.AddSingleton<ConfigService>();
 
 #pragma warning disable 618

@@ -7,6 +7,7 @@ namespace shared.Interfaces;
 public interface IPolicyController
 {
     public Task<List<Policy>> GetAll();
-    public Task<Policy> Update(string key, Policy policy);
-    public Task<Policy> Create(string key);
+    public Task<Policy> GetOne(string key);
+    public Task<Policy> Update(Policy policy);
+    public Task Sync(List<Policy> policies);
 }

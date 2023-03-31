@@ -1,0 +1,11 @@
+permission: '*'
+rules:
+  - op: contains
+    src: $.global_roles
+    value: admin
+---
+permission: basic
+rules:
+  - op: 'true'
+---
+

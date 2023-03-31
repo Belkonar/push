@@ -1,0 +1,8 @@
+permission: 'policy.*'
+rules:
+  - op: contains
+    src: $.global_roles
+    value: policy-manager
+  - op: contains
+    src: $.permissions
+    value: '*'

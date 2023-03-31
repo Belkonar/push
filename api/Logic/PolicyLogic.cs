@@ -1,35 +1,39 @@
 using MongoDB.Bson;
 using MongoDB.Driver;
 using shared.Models;
-using shared.UpdateModels;
 
 namespace api.Logic;
 
 // TODO: Rewire this to use policy-engine
 public class PolicyLogic
 {
+    private readonly HttpClient _httpClient;
+    
+    public PolicyLogic(IHttpClientFactory httpClientFactory)
+    {
+        _httpClient = httpClientFactory.CreateClient("policy");
+    }
+    
     public async Task<List<Policy>> GetAll()
     {
         throw new NotImplementedException();
     }
 
-    public async Task<string> GetByName(string name)
+    public async Task<Policy> Update(Policy policy)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<Policy> Update(string key, Policy policy)
-    {
-        throw new NotImplementedException();
-    }
-    
-    public async Task<Policy> Create(string key)
+    public async Task<Policy> GetOne(string key)
     {
         throw new NotImplementedException();
     }
 
-    public async Task Delete(string key)
+    public async Task Sync(List<Policy> policies)
     {
-        throw new NotImplementedException();
+        Console.WriteLine(_httpClient.BaseAddress);
+        using var response = await _httpClient.PutAsJsonAsync("/sync", policies);
+
+        response.EnsureSuccessStatusCode();
     }
 }

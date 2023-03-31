@@ -15,6 +15,7 @@ var host = Host.CreateDefaultBuilder(args)
         });
 
         services.AddSingleton<IPipelineController, PipelineService>();
+        services.AddSingleton<IPolicyController, PolicyService>();
     })
     .Build();
 

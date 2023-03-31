@@ -26,9 +26,18 @@ public class PolicyService : IPolicyController
         return await httpResponse.Content.ReadFromJsonAsync<List<Policy>>() ?? new List<Policy>();
     }
 
-    public async Task<Policy> Update(string key, Policy policy)
+    public async Task<Policy> GetOne(string key)
     {
         var route = $"{Prefix}/{key}";
+
+        var httpResponse = await _client.GetAsync(route);
+        httpResponse.EnsureSuccessStatusCode();
+        return (await httpResponse.Content.ReadFromJsonAsync<Policy>())!;
+    }
+
+    public async Task<Policy> Update(Policy policy)
+    {
+        var route = $"{Prefix}/";
 
 
         var httpResponse = await _client.PutAsJsonAsync(route, policy);
@@ -37,15 +46,14 @@ public class PolicyService : IPolicyController
         return (await httpResponse.Content.ReadFromJsonAsync<Policy>())!;
     }
 
-    public async Task<Policy> Create(string key)
+    public async Task Sync(List<Policy> policies)
     {
-        var route = $"{Prefix}/{key}";
+        var route = $"{Prefix}/sync";
 
 
-        var httpResponse = await _client.PostAsync(route, null);
+        var httpResponse = await _client.PutAsJsonAsync(route, policies);
 
         httpResponse.EnsureSuccessStatusCode();
-        return (await httpResponse.Content.ReadFromJsonAsync<Policy>())!;
     }
 
 }

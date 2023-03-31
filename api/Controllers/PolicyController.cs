@@ -21,30 +21,23 @@ public class PolicyController : ControllerBase
         return await _policyLogic.GetAll();
     }
 
-    /// <summary>
-    /// Update an existing policy (make this an upsert)
-    /// </summary>
-    /// <requires>(G).global_policy_manage</requires>
-    /// <param name="key"></param>
-    /// <param name="policy"></param>
-    /// <returns></returns>
-    [HttpPut("{key}")]
-    public async Task<Policy> Update([FromRoute] string key, [FromBody] Policy policy)
+    [HttpGet("{key}")]
+    public async Task<Policy> GetOne([FromRoute] string key)
     {
-        return await _policyLogic.Update(key, policy);
+        return await _policyLogic.GetOne(key);
     }
     
-    /// <summary>
-    /// Create a new empty policy
-    /// </summary>
-    /// <requires>(G).global_policy_manage</requires>
-    /// <param name="key"></param>
-    /// <returns></returns>
-    [HttpPost("{key}")]
-    public async Task<Policy> Create([FromRoute] string key)
+    [HttpPut]
+    public async Task<Policy> Update([FromBody] Policy policy)
     {
-        return await _policyLogic.Create(key);
+        return await _policyLogic.Update(policy);
     }
-    
+
+    [HttpPut("sync")]
+    public async Task Sync([FromBody] List<Policy> policies)
+    {
+        await _policyLogic.Sync(policies);
+    }
+
     // TODO: Delete policy endpoint
 }
