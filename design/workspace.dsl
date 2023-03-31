@@ -34,7 +34,7 @@ workspace "Push" "A fun CI/CD tool" {
             }
             
             nomadClient = container "nomad client" {
-                technology "nomad agent"
+                technology "nomad agent + dotnet cli"
             }
             
             remoteDocker = container "remote docker" {
@@ -48,8 +48,9 @@ workspace "Push" "A fun CI/CD tool" {
             database = container "App Database" {
                 technology "MongoDB"
             }
-            
         }
+
+        vcs = softwareSystem VCS "Github Based Version Control"
         
         policyEngine = softwareSystem "Policy Engine" "Document Based Authorization" {
             policyContainer = container "policy-engine" {
@@ -80,6 +81,9 @@ workspace "Push" "A fun CI/CD tool" {
         apiContainer -> database "Uses"
         policyContainer -> policyDatabase "Uses"
         schedulerContainer -> apiContainer "Calls"
+
+        schedulerContainer -> vcs "Pulls From"
+
         schedulerContainer -> nomadHost "Schedules Jobs"
         nomadHost -> nomadClient "Places"
         nomadClient -> remoteDocker "Uses"
