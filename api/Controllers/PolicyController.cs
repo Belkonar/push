@@ -29,7 +29,7 @@ public class PolicyController : ControllerBase
     /// <param name="policy"></param>
     /// <returns></returns>
     [HttpPut("{key}")]
-    public async Task<Policy> Update([FromRoute] string key, [FromBody] UpdatePolicy policy)
+    public async Task<Policy> Update([FromRoute] string key, [FromBody] Policy policy)
     {
         return await _policyLogic.Update(key, policy);
     }

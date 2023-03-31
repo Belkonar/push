@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace cli;
+namespace push_cli;
 
 public class Info
 {

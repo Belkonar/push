@@ -9,13 +9,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ui", "ui\ui.csproj", "{63B1
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "shared", "shared\shared.csproj", "{70F68207-45FC-426C-AAA6-0E3C8E24372A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cli", "cli\cli.csproj", "{2C13DCBC-28A9-4788-8F58-8298F01470B5}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "scheduler", "scheduler\scheduler.csproj", "{504245D9-ECFC-4FC1-94D8-7733B5C1075D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "runner", "runner\runner.csproj", "{C2D7F6BA-1A78-4B36-8F7E-B315A2C4D1EB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "generator", "generator\generator.csproj", "{D6228BF0-40AC-4261-B32B-E2739C1C8830}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "push", "push-cli\push.csproj", "{D880A8DC-5604-417E-9897-14670C958F70}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,10 +38,6 @@ Global
 		{70F68207-45FC-426C-AAA6-0E3C8E24372A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{70F68207-45FC-426C-AAA6-0E3C8E24372A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{70F68207-45FC-426C-AAA6-0E3C8E24372A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2C13DCBC-28A9-4788-8F58-8298F01470B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2C13DCBC-28A9-4788-8F58-8298F01470B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2C13DCBC-28A9-4788-8F58-8298F01470B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2C13DCBC-28A9-4788-8F58-8298F01470B5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{504245D9-ECFC-4FC1-94D8-7733B5C1075D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{504245D9-ECFC-4FC1-94D8-7733B5C1075D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{504245D9-ECFC-4FC1-94D8-7733B5C1075D}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -54,5 +50,9 @@ Global
 		{D6228BF0-40AC-4261-B32B-E2739C1C8830}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6228BF0-40AC-4261-B32B-E2739C1C8830}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D6228BF0-40AC-4261-B32B-E2739C1C8830}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D880A8DC-5604-417E-9897-14670C958F70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D880A8DC-5604-417E-9897-14670C958F70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D880A8DC-5604-417E-9897-14670C958F70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D880A8DC-5604-417E-9897-14670C958F70}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
