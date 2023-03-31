@@ -1,11 +1,2 @@
 # Use postgres/example user/password credentials
-version: '3.1'
 
-services:
-  light:
-    image: "structurizr/lite"
-    restart: always
-    ports:
-      - "8080:8080"
-    volumes:
-      - "./design/:/usr/local/structurizr"
