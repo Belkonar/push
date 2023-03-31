@@ -26,10 +26,14 @@ workspace "Push" "A fun CI/CD tool" {
                 component "pending service"
                 component "other services"
 
+                tags "Requires Disk"
+
                 technology "dotnet worker"
             }
             
             nomadHost = container "nomad host" {
+                tags "Requires Disk"
+
                 technology "nomad agent"
             }
             
@@ -78,11 +82,19 @@ workspace "Push" "A fun CI/CD tool" {
         ui -> apiContainer "Uses" "Intranet"
         
         apiContainer -> policyContainer "Uses"
-        apiContainer -> database "Uses"
-        policyContainer -> policyDatabase "Uses"
-        schedulerContainer -> apiContainer "Calls"
 
-        schedulerContainer -> vcs "Pulls From"
+        apiContainer -> database "Uses" {
+            tags "logical"
+        }
+
+        policyContainer -> policyDatabase "Uses" {
+            tags "logical"
+        }
+
+        schedulerContainer -> apiContainer "Finds Jobs w/Statuses That Need Work"
+
+        schedulerContainer -> vcs "Pulls Code From"
+        apiContainer -> vcs "Queries References"
 
         schedulerContainer -> nomadHost "Schedules Jobs"
         nomadHost -> nomadClient "Places"
@@ -96,22 +108,10 @@ workspace "Push" "A fun CI/CD tool" {
             deploymentNode vpc {
                 tags = "Amazon Web Services - Virtual Private Cloud"
                 
-                atlas = deploymentNode "Atlas Privatelink" {
-                    tags = "Amazon Web Services - PrivateLink"
-                    
-                    containerInstance database {
-                        tags "Amazon Web Services - DocumentDB"
-                    }
-                    
-                    containerInstance policyDatabase {
-                        tags "Amazon Web Services - DocumentDB"
-                    }
-                }
-                
                 deploymentNode Fargate {
                     tags "Amazon Web Services - Fargate"
                     
-                    containerInstance policyContainer {
+                    policyInstance = containerInstance policyContainer {
                         tags "Amazon Web Services - Elastic Container Service Service"
                     }
                     
@@ -119,7 +119,7 @@ workspace "Push" "A fun CI/CD tool" {
                         tags "Amazon Web Services - Elastic Container Service Service"
                     }
                     
-                    containerInstance apiContainer {
+                    apiInstance = containerInstance apiContainer {
                         tags "Amazon Web Services - Elastic Container Service Service"
                     }
                     
@@ -130,19 +130,54 @@ workspace "Push" "A fun CI/CD tool" {
                 
                 deploymentNode EC2 {
                     tags "Amazon Web Services - EC2"
-                    containerInstance nomadClient {
-                        tags "Amazon Web Services - EC2 Instance"
+
+                    deploymentNode "Nomad Client ASG" {
+                        tags "Amazon Web Services - EC2 Auto Scaling"
+
+                        containerInstance nomadClient {
+                            tags "Amazon Web Services - EC2 Instance"
+                        }
+
+                        instances "3..N"
                     }
                     
-                    containerInstance remoteDocker {
-                        tags "Amazon Web Services - EC2 Instance"
+                    deploymentNode "Remote Docker ASG" {
+                        tags "Amazon Web Services - EC2 Auto Scaling"
+
+                        containerInstance remoteDocker {
+                            tags "Amazon Web Services - EC2 Instance"
+                        }
+
+                        instances "3..N"
                     }
+                }
+
+                atlas = infrastructureNode "Atlas Privatelink" {
+                    tags = "Amazon Web Services - PrivateLink"   
+                }
+            }
+
+            deploymentNode "Atlas VPC" {
+                tags "Amazon Web Services - Virtual Private Cloud"
+
+                atlasCluster = deploymentNode "Atlas Cluster" {
+                    databaseInstance = containerInstance database {
+                        tags "Amazon Web Services - DocumentDB"
+                    }
+                    
+                    policyDatabaseInstance = containerInstance policyDatabase {
+                        tags "Amazon Web Services - DocumentDB"
+                    }
+                }
+
+                atlasEndpoint = infrastructureNode "Atlas VPC Endpoint" {
+                    tags = "Amazon Web Services - VPC Endpoints"   
                 }
             }
             
             deploymentNode S3 {
                 tags "Amazon Web Services - Simple Storage Service"
-                
+
                 containerInstance ui {
                     tags "Amazon Web Services - Simple Storage Service Bucket"
                 }
@@ -151,12 +186,20 @@ workspace "Push" "A fun CI/CD tool" {
                     tags "Amazon Web Services - Simple Storage Service Bucket"
                 }
             }
+
+            policyInstance -> atlas "For Policy Database"
+            apiInstance -> atlas "For App Database"
+
+            atlas -> atlasEndpoint
+
+            atlasEndpoint -> atlasCluster
         }
     }
 
     views {
         deployment * Live {
             include *
+            exclude relationship.tag==logical
             autoLayout
         }
         
