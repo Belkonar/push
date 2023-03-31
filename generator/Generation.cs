@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 using api;
@@ -6,7 +5,6 @@ using generator.Models;
 using HandlebarsDotNet;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
-using MongoDB.Driver.Linq;
 
 namespace generator;
 
@@ -77,7 +75,7 @@ public class Generation
                 {
                     var param = new ReflParam()
                     {
-                        Name = parameter.Name,
+                        Name = parameter.Name!,
                         FullType = GetFullType(parameter.ParameterType, controller.Namespaces)
                     };
                     
@@ -122,20 +120,20 @@ public class Generation
         return Fix(builder.ToString());
     }
 
-    private string Fix(string toString)
+    private static string Fix(string toString)
     {
         return toString
             .Replace("String", "string")
             .Replace("Int32", "int");
     }
 
-    private string GetCleanName(string input)
+    private static string GetCleanName(string input)
     {
         return input.Replace("`1", "")
             .Replace("`2", "");
     }
 
-    private string MapMethod(string input)
+    private static string MapMethod(string input)
     {
         return input switch
         {
