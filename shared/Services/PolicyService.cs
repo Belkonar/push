@@ -3,7 +3,6 @@
 using System.Net.Http.Json;
 using shared.Models;
 using shared.Interfaces;
-using shared.UpdateModels;
 
 namespace shared.services;
 
@@ -27,7 +26,7 @@ public class PolicyService : IPolicyController
         return await httpResponse.Content.ReadFromJsonAsync<List<Policy>>() ?? new List<Policy>();
     }
 
-    public async Task<Policy> Update(string key, UpdatePolicy policy)
+    public async Task<Policy> Update(string key, Policy policy)
     {
         var route = $"{Prefix}/{key}";
 

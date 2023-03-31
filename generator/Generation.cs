@@ -124,11 +124,9 @@ public class Generation
 
     private string Fix(string toString)
     {
-        toString = toString
+        return toString
             .Replace("String", "string")
             .Replace("Int32", "int");
-
-        return toString;
     }
 
     private string GetCleanName(string input)
@@ -139,18 +137,13 @@ public class Generation
 
     private string MapMethod(string input)
     {
-        switch(input)
+        return input switch
         {
-            case "GET":
-                return "Get";
-            case "POST":
-                return "Post";
-            case "PUT":
-                return "Put";
-            case "DELETE":
-                return "Delete";
-            default:
-                throw new Exception("METHOD NOT FOUND");
-        }
+            "GET" => "Get",
+            "POST" => "Post",
+            "PUT" => "Put",
+            "DELETE" => "Delete",
+            _ => throw new Exception("METHOD NOT FOUND")
+        };
     }
 }
