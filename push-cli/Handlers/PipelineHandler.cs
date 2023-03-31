@@ -1,6 +1,4 @@
 using System.CommandLine;
-using System.CommandLine.Parsing;
-using shared;
 using shared.Interfaces;
 using shared.Models.Pipeline;
 
@@ -81,7 +79,6 @@ public class PipelineHandler
             description: "The directory to use",
             getDefaultValue: () => new DirectoryInfo(Directory.GetCurrentDirectory()));
 
-        // This sure was annoying
         var versionOption = new Option<string>(
             "--version",
             description: "Version of the pipeline to upload",
@@ -104,7 +101,6 @@ public class PipelineHandler
 
         pipelineUploadCommand.SetHandler(async (dir, version) =>
         {
-            // await Sync(dir);
             await Upload(dir, version);
         }, directoryArgument, versionOption);
     }

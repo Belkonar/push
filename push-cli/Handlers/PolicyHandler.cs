@@ -5,13 +5,6 @@ namespace push_cli.Handlers;
 
 public class PolicyHandler
 {
-    private readonly HttpClient _httpClient;
-
-    public PolicyHandler(IHttpClientFactory clientFactory)
-    {
-        _httpClient = clientFactory.CreateClient("api");
-    }
-    
     private async Task Sync(DirectoryInfo dir)
     {
         var files = dir
@@ -45,8 +38,7 @@ public class PolicyHandler
         var directoryArgument = new Argument<DirectoryInfo>(
             "directory",
             description: "The directory to use",
-            getDefaultValue: () => new DirectoryInfo(Directory.GetCurrentDirectory())
-        );
+            getDefaultValue: () => new DirectoryInfo(Directory.GetCurrentDirectory()));
         
         var policyCommand = new Command("policy");
 
