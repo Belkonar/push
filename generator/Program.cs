@@ -2,4 +2,4 @@
 
 using generator;
 
-(new Generation()).Run();
+Generation.Run();

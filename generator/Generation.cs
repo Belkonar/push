@@ -8,13 +8,11 @@ using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace generator;
 
-public class Generation
+public static class Generation
 {
-    public void Run()
+    public static void Run()
     {
-        var helper = new TypeHelper();
-
-        var assemblies = helper.GetTypes("api.Controllers");
+        var assemblies = TypeHelper.GetTypes("api.Controllers");
         var interfaceTemplate = Handlebars.Compile(File.ReadAllText("interface.handlebars"));
         var serviceTemplate = Handlebars.Compile(File.ReadAllText("service.handlebars"));
 
@@ -97,7 +95,7 @@ public class Generation
         }
     }
 
-    public string GetFullType(Type t, HashSet<string> spaces)
+    private static string GetFullType(Type t, HashSet<string> spaces)
     {
         var builder = new StringBuilder();
         spaces.Add(t.Namespace!);

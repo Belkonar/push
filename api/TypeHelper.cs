@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api;
 
-public class TypeHelper
+public static class TypeHelper
 {
-    public List<Type> GetTypes(string space)
+    public static List<Type> GetTypes(string space)
     {
         return AppDomain.CurrentDomain.GetAssemblies()
             .SelectMany(t => t.GetTypes())
