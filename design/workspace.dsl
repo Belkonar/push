@@ -1,4 +1,5 @@
 workspace "Push" "A fun CI/CD tool" {
+    !docs docs
 
     model {
         user = person Actor
@@ -15,6 +16,8 @@ workspace "Push" "A fun CI/CD tool" {
             }
         
             apiContainer = container "api" {
+                tags "HTTP"
+
                 perspectives {
                     InfoSec "We really need to make sure this never is exposed to open internet"
                 }
@@ -32,6 +35,7 @@ workspace "Push" "A fun CI/CD tool" {
             }
             
             nomadHost = container "nomad host" {
+                tags "HTTP"
                 tags "Requires Disk"
 
                 technology "nomad agent"
@@ -58,6 +62,8 @@ workspace "Push" "A fun CI/CD tool" {
         
         policyEngine = softwareSystem "Policy Engine" "Document Based Authorization" {
             policyContainer = container "policy-engine" {
+                tags "HTTP"
+
                 component "policy management"
 
                 perspectives {
@@ -239,6 +245,15 @@ workspace "Push" "A fun CI/CD tool" {
                 shape person
                 background #08427b
                 color #ffffff
+            }
+
+            relationship "Relationship" {
+                routing Curved
+            }
+
+            element "HTTP" {
+                border dashed
+                
             }
         }
         themes https://static.structurizr.com/themes/amazon-web-services-2023.01.31/theme.json
