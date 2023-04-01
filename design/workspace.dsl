@@ -231,6 +231,12 @@ workspace "Push" "A fun CI/CD tool" {
             autoLayout
             default
         }
+
+        deployment policyEngine Live "policyEngineDeployment" {
+            include *
+            exclude relationship.tag==logical
+            autoLayout
+        }
         
         styles {
             element "Element" {
