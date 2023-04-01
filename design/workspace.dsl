@@ -207,9 +207,8 @@ workspace "Push" "A fun CI/CD tool" {
             "structurizr.sort" "created"
         }
 
-        systemLandscape {
+        systemLandscape "landscape" {
             include *
-            autoLayout
         }
 
         container pushSystem "push-container" {
