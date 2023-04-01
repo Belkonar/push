@@ -6,6 +6,8 @@ workspace "Push" "A fun CI/CD tool" {
         
         pushSystem = softwareSystem "Push" "CI/CD Deployment Tool" {
             ui = container UI {
+                tags "spa"
+
                 technology "dotnet blazor"
             }
 
@@ -84,7 +86,7 @@ workspace "Push" "A fun CI/CD tool" {
         pushSystem -> policyEngine
         
         user -> ui "Uses"
-        user -> apiContainer "Uses Directly" "Intranet"
+        user -> apiContainer "Uses" "Intranet"
         ui -> apiContainer "Uses" "Intranet"
         
         apiContainer -> policyContainer "Uses"
@@ -219,6 +221,7 @@ workspace "Push" "A fun CI/CD tool" {
 
         container pushSystem {
             include *
+            //exclude element.tag==spa
             autoLayout
         }
 
@@ -254,7 +257,7 @@ workspace "Push" "A fun CI/CD tool" {
             }
 
             relationship "Relationship" {
-                routing Curved
+                //routing Curved
                 thickness 3
                 color black
             }
