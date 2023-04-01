@@ -83,7 +83,7 @@ workspace "Push" "A fun CI/CD tool" {
         
         pushSystem -> policyEngine
         
-        user -> ui "Uses" 
+        user -> ui "Uses"
         user -> apiContainer "Uses Directly" "Intranet"
         ui -> apiContainer "Uses" "Intranet"
         
@@ -203,18 +203,16 @@ workspace "Push" "A fun CI/CD tool" {
     }
 
     views {
-        deployment * Live {
-            include *
-            exclude relationship.tag==logical
-            autoLayout
+        properties {
+            "structurizr.sort" "created"
         }
-        
-        systemContext pushSystem {
+
+        systemLandscape {
             include *
             autoLayout
         }
 
-        systemContext policyEngine {
+        container policyEngine {
             include *
             autoLayout
         }
@@ -223,19 +221,27 @@ workspace "Push" "A fun CI/CD tool" {
             include *
             autoLayout
         }
-        
-        container policyEngine {
+
+        deployment * Live {
             include *
+            exclude relationship.tag==logical
             autoLayout
+            default
         }
         
         styles {
+            element "Element" {
+                strokeWidth 4
+            }
+
             element "Software System" {
                 background #1168bd
                 color #ffffff
             }
+            
             element "Container" {
                 background #ffffff
+                stroke #000000
             }
             element "Infrastructure Node" {
                 background #ffffff
@@ -249,13 +255,15 @@ workspace "Push" "A fun CI/CD tool" {
 
             relationship "Relationship" {
                 routing Curved
+                thickness 3
+                color black
             }
 
             element "HTTP" {
                 border dashed
-                
             }
         }
+
         themes https://static.structurizr.com/themes/amazon-web-services-2023.01.31/theme.json
     }
     
