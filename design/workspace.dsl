@@ -17,7 +17,7 @@ workspace "Push" "A fun CI/CD tool" {
                 }
             }
         
-            apiContainer = container "api" {
+            apiContainer = container "API" {
                 tags "HTTP"
 
                 perspectives {
@@ -27,7 +27,7 @@ workspace "Push" "A fun CI/CD tool" {
                 technology "dotnet web api"
             }
             
-            schedulerContainer = container "scheduler" {
+            schedulerContainer = container "Scheduler" {
                 component "pending service"
                 component "other services"
 
@@ -36,18 +36,18 @@ workspace "Push" "A fun CI/CD tool" {
                 technology "dotnet worker"
             }
             
-            nomadHost = container "nomad host" {
+            nomadHost = container "Nomad Host" {
                 tags "HTTP"
                 tags "Requires Disk"
 
                 technology "nomad agent"
             }
             
-            nomadClient = container "nomad client" {
+            nomadClient = container "Nomad Client" {
                 technology "nomad agent + dotnet cli"
             }
             
-            remoteDocker = container "remote docker" {
+            remoteDocker = container "Remote Docker Host" {
                 perspectives {
                     InfoSec "SSH key management still needs to be figured out."
                 }
@@ -58,12 +58,8 @@ workspace "Push" "A fun CI/CD tool" {
             database = container "App Database" {
                 technology "MongoDB"
             }
-        }
 
-        vcs = softwareSystem VCS "Github Based Version Control"
-        
-        policyEngine = softwareSystem "Policy Engine" "Document Based Authorization" {
-            policyContainer = container "policy-engine" {
+            policyContainer = container "Policy Engine API" {
                 tags "HTTP"
 
                 component "policy management"
@@ -82,9 +78,9 @@ workspace "Push" "A fun CI/CD tool" {
                 technology "MongoDB"
             }
         }
-        
-        pushSystem -> policyEngine
-        
+
+        vcs = softwareSystem VCS "Github Based Version Control"
+                
         user -> ui "Uses"
         user -> apiContainer "Uses" "Intranet"
         ui -> apiContainer "Uses" "Intranet"
@@ -169,12 +165,14 @@ workspace "Push" "A fun CI/CD tool" {
                 tags "Amazon Web Services - Virtual Private Cloud"
 
                 atlasCluster = deploymentNode "Atlas Cluster" {
+                    tags "Atlas"
+
                     databaseInstance = containerInstance database {
-                        tags "Amazon Web Services - DocumentDB"
+                        tags "MongoDB"
                     }
                     
                     policyDatabaseInstance = containerInstance policyDatabase {
-                        tags "Amazon Web Services - DocumentDB"
+                        tags "MongoDB"
                     }
                 }
 
@@ -214,28 +212,15 @@ workspace "Push" "A fun CI/CD tool" {
             autoLayout
         }
 
-        container policyEngine {
+        container pushSystem "push-container" {
             include *
-            autoLayout
+            exclude element.tag==spa
         }
 
-        container pushSystem {
-            include *
-            //exclude element.tag==spa
-            autoLayout
-        }
-
-        deployment * Live {
+        deployment * Live "main-deployment" {
             include *
             exclude relationship.tag==logical
-            autoLayout
             default
-        }
-
-        deployment policyEngine Live "policyEngineDeployment" {
-            include *
-            exclude relationship.tag==logical
-            autoLayout
         }
         
         styles {
@@ -263,13 +248,24 @@ workspace "Push" "A fun CI/CD tool" {
             }
 
             relationship "Relationship" {
-                //routing Curved
                 thickness 3
                 color black
             }
 
             element "HTTP" {
                 border dashed
+            }
+
+            element "MongoDB" {
+                stroke #00684a
+                color #00684a
+                icon "mongo.png"
+            }
+
+            element "Atlas" {
+                stroke #001e2b
+                color #001e2b
+                icon atlas.png
             }
         }
 

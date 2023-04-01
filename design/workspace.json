@@ -1,0 +1,859 @@
+{
+  "id" : 1,
+  "name" : "Push",
+  "description" : "A fun CI/CD tool",
+  "lastModifiedDate" : "2023-04-01T12:26:27Z",
+  "lastModifiedAgent" : "structurizr-javascript",
+  "properties" : {
+    "structurizr.dsl" : "d29ya3NwYWNlICJQdXNoIiAiQSBmdW4gQ0kvQ0QgdG9vbCIgewogICAgIWRvY3MgZG9jcwoKICAgIG1vZGVsIHsKICAgICAgICB1c2VyID0gcGVyc29uIEFjdG9yCiAgICAgICAgCiAgICAgICAgcHVzaFN5c3RlbSA9IHNvZnR3YXJlU3lzdGVtICJQdXNoIiAiQ0kvQ0QgRGVwbG95bWVudCBUb29sIiB7CiAgICAgICAgICAgIHVpID0gY29udGFpbmVyIFVJIHsKICAgICAgICAgICAgICAgIHRhZ3MgInNwYSIKCiAgICAgICAgICAgICAgICB0ZWNobm9sb2d5ICJkb3RuZXQgYmxhem9yIgogICAgICAgICAgICB9CgogICAgICAgICAgICBhcnRpZmFjdFN0b3JhZ2UgPSBjb250YWluZXIgIkFydGlmYWN0IFN0b3JhZ2UiIHsKICAgICAgICAgICAgICAgIHBlcnNwZWN0aXZlcyB7CiAgICAgICAgICAgICAgICAgICAgSW5mb1NlYyAiVGhlIFMzIGJ1Y2tldCBoZXJlIHdpbGwgaGF2ZSBhIGxpZmVjeWNsZSBwb2xpY3kgdG8gcHVyZ2UgdGhlIGNvbnRlbnRzIGFzIHdlbGwgYXMga2VlcCB0aGUgYXJ0aWZhY3RzIGVuY3J5cHRlZCIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfQogICAgICAgIAogICAgICAgICAgICBhcGlDb250YWluZXIgPSBjb250YWluZXIgIkFQSSIgewogICAgICAgICAgICAgICAgdGFncyAiSFRUUCIKCiAgICAgICAgICAgICAgICBwZXJzcGVjdGl2ZXMgewogICAgICAgICAgICAgICAgICAgIEluZm9TZWMgIldlIHJlYWxseSBuZWVkIHRvIG1ha2Ugc3VyZSB0aGlzIG5ldmVyIGlzIGV4cG9zZWQgdG8gb3BlbiBpbnRlcm5ldCIKICAgICAgICAgICAgICAgIH0KCiAgICAgICAgICAgICAgICB0ZWNobm9sb2d5ICJkb3RuZXQgd2ViIGFwaSIKICAgICAgICAgICAgfQogICAgICAgICAgICAKICAgICAgICAgICAgc2NoZWR1bGVyQ29udGFpbmVyID0gY29udGFpbmVyICJTY2hlZHVsZXIiIHsKICAgICAgICAgICAgICAgIGNvbXBvbmVudCAicGVuZGluZyBzZXJ2aWNlIgogICAgICAgICAgICAgICAgY29tcG9uZW50ICJvdGhlciBzZXJ2aWNlcyIKCiAgICAgICAgICAgICAgICB0YWdzICJSZXF1aXJlcyBEaXNrIgoKICAgICAgICAgICAgICAgIHRlY2hub2xvZ3kgImRvdG5ldCB3b3JrZXIiCiAgICAgICAgICAgIH0KICAgICAgICAgICAgCiAgICAgICAgICAgIG5vbWFkSG9zdCA9IGNvbnRhaW5lciAiTm9tYWQgSG9zdCIgewogICAgICAgICAgICAgICAgdGFncyAiSFRUUCIKICAgICAgICAgICAgICAgIHRhZ3MgIlJlcXVpcmVzIERpc2siCgogICAgICAgICAgICAgICAgdGVjaG5vbG9neSAibm9tYWQgYWdlbnQiCiAgICAgICAgICAgIH0KICAgICAgICAgICAgCiAgICAgICAgICAgIG5vbWFkQ2xpZW50ID0gY29udGFpbmVyICJOb21hZCBDbGllbnQiIHsKICAgICAgICAgICAgICAgIHRlY2hub2xvZ3kgIm5vbWFkIGFnZW50ICsgZG90bmV0IGNsaSIKICAgICAgICAgICAgfQogICAgICAgICAgICAKICAgICAgICAgICAgcmVtb3RlRG9ja2VyID0gY29udGFpbmVyICJSZW1vdGUgRG9ja2VyIEhvc3QiIHsKICAgICAgICAgICAgICAgIHBlcnNwZWN0aXZlcyB7CiAgICAgICAgICAgICAgICAgICAgSW5mb1NlYyAiU1NIIGtleSBtYW5hZ2VtZW50IHN0aWxsIG5lZWRzIHRvIGJlIGZpZ3VyZWQgb3V0LiIKICAgICAgICAgICAgICAgIH0KCiAgICAgICAgICAgICAgICB0ZWNobm9sb2d5ICJkb2NrZXIiCiAgICAgICAgICAgIH0KICAgICAgICAgICAgCiAgICAgICAgICAgIGRhdGFiYXNlID0gY29udGFpbmVyICJBcHAgRGF0YWJhc2UiIHsKICAgICAgICAgICAgICAgIHRlY2hub2xvZ3kgIk1vbmdvREIiCiAgICAgICAgICAgIH0KCiAgICAgICAgICAgIHBvbGljeUNvbnRhaW5lciA9IGNvbnRhaW5lciAiUG9saWN5IEVuZ2luZSBBUEkiIHsKICAgICAgICAgICAgICAgIHRhZ3MgIkhUVFAiCgogICAgICAgICAgICAgICAgY29tcG9uZW50ICJwb2xpY3kgbWFuYWdlbWVudCIKCiAgICAgICAgICAgICAgICBwZXJzcGVjdGl2ZXMgewogICAgICAgICAgICAgICAgICAgIEluZm9TZWMgIlRoaXMgc2VydmljZSB3aWxsIGJlIGhhcmQgbG9ja2VkIHRvIHRoZSBBUEkgdmlhIFNHLiIKICAgICAgICAgICAgICAgIH0KCiAgICAgICAgICAgICAgICB0ZWNobm9sb2d5ICJuZXN0anMiCiAgICAgICAgICAgIH0KCiAgICAgICAgICAgIHBvbGljeURhdGFiYXNlID0gY29udGFpbmVyICJQb2xpY3kgRGF0YWJhc2UiIHsKICAgICAgICAgICAgICAgIHBlcnNwZWN0aXZlcyB7CiAgICAgICAgICAgICAgICAgICAgSW5mb1NlYyAiVGhpcyB3aWxsIGhhdmUgYSBkZWRpY2F0ZWQgc2V0IG9mIGNyZWRlbnRpYWxzIGZvciB0aGlzIGRhdGFiYXNlLiIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIHRlY2hub2xvZ3kgIk1vbmdvREIiCiAgICAgICAgICAgIH0KICAgICAgICB9CgogICAgICAgIHZjcyA9IHNvZnR3YXJlU3lzdGVtIFZDUyAiR2l0aHViIEJhc2VkIFZlcnNpb24gQ29udHJvbCIKICAgICAgICAgICAgICAgIAogICAgICAgIHVzZXIgLT4gdWkgIlVzZXMiCiAgICAgICAgdXNlciAtPiBhcGlDb250YWluZXIgIlVzZXMiICJJbnRyYW5ldCIKICAgICAgICB1aSAtPiBhcGlDb250YWluZXIgIlVzZXMiICJJbnRyYW5ldCIKICAgICAgICAKICAgICAgICBhcGlDb250YWluZXIgLT4gcG9saWN5Q29udGFpbmVyICJVc2VzIgoKICAgICAgICBhcGlDb250YWluZXIgLT4gZGF0YWJhc2UgIlVzZXMiIHsKICAgICAgICAgICAgdGFncyAibG9naWNhbCIKICAgICAgICB9CgogICAgICAgIHBvbGljeUNvbnRhaW5lciAtPiBwb2xpY3lEYXRhYmFzZSAiVXNlcyIgewogICAgICAgICAgICB0YWdzICJsb2dpY2FsIgogICAgICAgIH0KCiAgICAgICAgc2NoZWR1bGVyQ29udGFpbmVyIC0+IGFwaUNvbnRhaW5lciAiRmluZHMgSm9icyB3L1N0YXR1c2VzIFRoYXQgTmVlZCBXb3JrIgoKICAgICAgICBzY2hlZHVsZXJDb250YWluZXIgLT4gdmNzICJQdWxscyBDb2RlIEZyb20iCiAgICAgICAgYXBpQ29udGFpbmVyIC0+IHZjcyAiUXVlcmllcyBSZWZlcmVuY2VzIgoKICAgICAgICBzY2hlZHVsZXJDb250YWluZXIgLT4gbm9tYWRIb3N0ICJTY2hlZHVsZXMgSm9icyIKICAgICAgICBub21hZEhvc3QgLT4gbm9tYWRDbGllbnQgIlBsYWNlcyIKICAgICAgICBub21hZENsaWVudCAtPiByZW1vdGVEb2NrZXIgIlVzZXMiCiAgICAgICAgbm9tYWRDbGllbnQgLT4gYXBpQ29udGFpbmVyICJVc2VzIgoKICAgICAgICBzY2hlZHVsZXJDb250YWluZXIgLT4gYXJ0aWZhY3RTdG9yYWdlICJXcml0ZXMiCiAgICAgICAgbm9tYWRDbGllbnQgLT4gYXJ0aWZhY3RTdG9yYWdlICJVc2VzIgogICAgICAgIAogICAgICAgIHB1c2ggPSBkZXBsb3ltZW50RW52aXJvbm1lbnQgTGl2ZSB7CiAgICAgICAgICAgIGRlcGxveW1lbnROb2RlIHZwYyB7CiAgICAgICAgICAgICAgICB0YWdzID0gIkFtYXpvbiBXZWIgU2VydmljZXMgLSBWaXJ0dWFsIFByaXZhdGUgQ2xvdWQiCiAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgIGRlcGxveW1lbnROb2RlIEZhcmdhdGUgewogICAgICAgICAgICAgICAgICAgIHRhZ3MgIkFtYXpvbiBXZWIgU2VydmljZXMgLSBGYXJnYXRlIgogICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgIHBvbGljeUluc3RhbmNlID0gY29udGFpbmVySW5zdGFuY2UgcG9saWN5Q29udGFpbmVyIHsKICAgICAgICAgICAgICAgICAgICAgICAgdGFncyAiQW1hem9uIFdlYiBTZXJ2aWNlcyAtIEVsYXN0aWMgQ29udGFpbmVyIFNlcnZpY2UgU2VydmljZSIKICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgY29udGFpbmVySW5zdGFuY2Ugc2NoZWR1bGVyQ29udGFpbmVyIHsKICAgICAgICAgICAgICAgICAgICAgICAgdGFncyAiQW1hem9uIFdlYiBTZXJ2aWNlcyAtIEVsYXN0aWMgQ29udGFpbmVyIFNlcnZpY2UgU2VydmljZSIKICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgYXBpSW5zdGFuY2UgPSBjb250YWluZXJJbnN0YW5jZSBhcGlDb250YWluZXIgewogICAgICAgICAgICAgICAgICAgICAgICB0YWdzICJBbWF6b24gV2ViIFNlcnZpY2VzIC0gRWxhc3RpYyBDb250YWluZXIgU2VydmljZSBTZXJ2aWNlIgogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICBjb250YWluZXJJbnN0YW5jZSBub21hZEhvc3QgewogICAgICAgICAgICAgICAgICAgICAgICB0YWdzICJBbWF6b24gV2ViIFNlcnZpY2VzIC0gRWxhc3RpYyBDb250YWluZXIgU2VydmljZSBTZXJ2aWNlIgogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgZGVwbG95bWVudE5vZGUgRUMyIHsKICAgICAgICAgICAgICAgICAgICB0YWdzICJBbWF6b24gV2ViIFNlcnZpY2VzIC0gRUMyIgoKICAgICAgICAgICAgICAgICAgICBkZXBsb3ltZW50Tm9kZSAiTm9tYWQgQ2xpZW50IEFTRyIgewogICAgICAgICAgICAgICAgICAgICAgICB0YWdzICJBbWF6b24gV2ViIFNlcnZpY2VzIC0gRUMyIEF1dG8gU2NhbGluZyIKCiAgICAgICAgICAgICAgICAgICAgICAgIGNvbnRhaW5lckluc3RhbmNlIG5vbWFkQ2xpZW50IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgIHRhZ3MgIkFtYXpvbiBXZWIgU2VydmljZXMgLSBFQzIgSW5zdGFuY2UiCiAgICAgICAgICAgICAgICAgICAgICAgIH0KCiAgICAgICAgICAgICAgICAgICAgICAgIGluc3RhbmNlcyAiMy4uTiIKICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgZGVwbG95bWVudE5vZGUgIlJlbW90ZSBEb2NrZXIgQVNHIiB7CiAgICAgICAgICAgICAgICAgICAgICAgIHRhZ3MgIkFtYXpvbiBXZWIgU2VydmljZXMgLSBFQzIgQXV0byBTY2FsaW5nIgoKICAgICAgICAgICAgICAgICAgICAgICAgY29udGFpbmVySW5zdGFuY2UgcmVtb3RlRG9ja2VyIHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgIHRhZ3MgIkFtYXpvbiBXZWIgU2VydmljZXMgLSBFQzIgSW5zdGFuY2UiCiAgICAgICAgICAgICAgICAgICAgICAgIH0KCiAgICAgICAgICAgICAgICAgICAgICAgIGluc3RhbmNlcyAiMy4uTiIKICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICB9CgogICAgICAgICAgICAgICAgYXRsYXMgPSBpbmZyYXN0cnVjdHVyZU5vZGUgIkF0bGFzIFByaXZhdGVsaW5rIiB7CiAgICAgICAgICAgICAgICAgICAgdGFncyA9ICJBbWF6b24gV2ViIFNlcnZpY2VzIC0gUHJpdmF0ZUxpbmsiICAgCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0KCiAgICAgICAgICAgIGRlcGxveW1lbnROb2RlICJBdGxhcyBWUEMiIHsKICAgICAgICAgICAgICAgIHRhZ3MgIkFtYXpvbiBXZWIgU2VydmljZXMgLSBWaXJ0dWFsIFByaXZhdGUgQ2xvdWQiCgogICAgICAgICAgICAgICAgYXRsYXNDbHVzdGVyID0gZGVwbG95bWVudE5vZGUgIkF0bGFzIENsdXN0ZXIiIHsKICAgICAgICAgICAgICAgICAgICB0YWdzICJBdGxhcyIKCiAgICAgICAgICAgICAgICAgICAgZGF0YWJhc2VJbnN0YW5jZSA9IGNvbnRhaW5lckluc3RhbmNlIGRhdGFiYXNlIHsKICAgICAgICAgICAgICAgICAgICAgICAgdGFncyAiTW9uZ29EQiIKICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgcG9saWN5RGF0YWJhc2VJbnN0YW5jZSA9IGNvbnRhaW5lckluc3RhbmNlIHBvbGljeURhdGFiYXNlIHsKICAgICAgICAgICAgICAgICAgICAgICAgdGFncyAiTW9uZ29EQiIKICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICB9CgogICAgICAgICAgICAgICAgYXRsYXNFbmRwb2ludCA9IGluZnJhc3RydWN0dXJlTm9kZSAiQXRsYXMgVlBDIEVuZHBvaW50IiB7CiAgICAgICAgICAgICAgICAgICAgdGFncyA9ICJBbWF6b24gV2ViIFNlcnZpY2VzIC0gVlBDIEVuZHBvaW50cyIgICAKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfQogICAgICAgICAgICAKICAgICAgICAgICAgZGVwbG95bWVudE5vZGUgUzMgewogICAgICAgICAgICAgICAgdGFncyAiQW1hem9uIFdlYiBTZXJ2aWNlcyAtIFNpbXBsZSBTdG9yYWdlIFNlcnZpY2UiCgogICAgICAgICAgICAgICAgY29udGFpbmVySW5zdGFuY2UgdWkgewogICAgICAgICAgICAgICAgICAgIHRhZ3MgIkFtYXpvbiBXZWIgU2VydmljZXMgLSBTaW1wbGUgU3RvcmFnZSBTZXJ2aWNlIEJ1Y2tldCIKICAgICAgICAgICAgICAgIH0KCiAgICAgICAgICAgICAgICBjb250YWluZXJJbnN0YW5jZSBhcnRpZmFjdFN0b3JhZ2UgewogICAgICAgICAgICAgICAgICAgIHRhZ3MgIkFtYXpvbiBXZWIgU2VydmljZXMgLSBTaW1wbGUgU3RvcmFnZSBTZXJ2aWNlIEJ1Y2tldCIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfQoKICAgICAgICAgICAgcG9saWN5SW5zdGFuY2UgLT4gYXRsYXMgIkZvciBQb2xpY3kgRGF0YWJhc2UiCiAgICAgICAgICAgIGFwaUluc3RhbmNlIC0+IGF0bGFzICJGb3IgQXBwIERhdGFiYXNlIgoKICAgICAgICAgICAgYXRsYXMgLT4gYXRsYXNFbmRwb2ludAoKICAgICAgICAgICAgYXRsYXNFbmRwb2ludCAtPiBhdGxhc0NsdXN0ZXIKICAgICAgICB9CiAgICB9CgogICAgdmlld3MgewogICAgICAgIHByb3BlcnRpZXMgewogICAgICAgICAgICAic3RydWN0dXJpenIuc29ydCIgImNyZWF0ZWQiCiAgICAgICAgfQoKICAgICAgICBzeXN0ZW1MYW5kc2NhcGUgewogICAgICAgICAgICBpbmNsdWRlICoKICAgICAgICAgICAgYXV0b0xheW91dAogICAgICAgIH0KCiAgICAgICAgY29udGFpbmVyIHB1c2hTeXN0ZW0gInB1c2gtY29udGFpbmVyIiB7CiAgICAgICAgICAgIGluY2x1ZGUgKgogICAgICAgICAgICBleGNsdWRlIGVsZW1lbnQudGFnPT1zcGEKICAgICAgICB9CgogICAgICAgIGRlcGxveW1lbnQgKiBMaXZlICJtYWluLWRlcGxveW1lbnQiIHsKICAgICAgICAgICAgaW5jbHVkZSAqCiAgICAgICAgICAgIGV4Y2x1ZGUgcmVsYXRpb25zaGlwLnRhZz09bG9naWNhbAogICAgICAgICAgICAvL2F1dG9MYXlvdXQKICAgICAgICAgICAgZGVmYXVsdAogICAgICAgIH0KICAgICAgICAKICAgICAgICBzdHlsZXMgewogICAgICAgICAgICBlbGVtZW50ICJFbGVtZW50IiB7CiAgICAgICAgICAgICAgICBzdHJva2VXaWR0aCA0CiAgICAgICAgICAgIH0KCiAgICAgICAgICAgIGVsZW1lbnQgIlNvZnR3YXJlIFN5c3RlbSIgewogICAgICAgICAgICAgICAgYmFja2dyb3VuZCAjMTE2OGJkCiAgICAgICAgICAgICAgICBjb2xvciAjZmZmZmZmCiAgICAgICAgICAgIH0KICAgICAgICAgICAgCiAgICAgICAgICAgIGVsZW1lbnQgIkNvbnRhaW5lciIgewogICAgICAgICAgICAgICAgYmFja2dyb3VuZCAjZmZmZmZmCiAgICAgICAgICAgICAgICBzdHJva2UgIzAwMDAwMAogICAgICAgICAgICB9CiAgICAgICAgICAgIGVsZW1lbnQgIkluZnJhc3RydWN0dXJlIE5vZGUiIHsKICAgICAgICAgICAgICAgIGJhY2tncm91bmQgI2ZmZmZmZgogICAgICAgICAgICB9CiAgICAgICAgICAgIAogICAgICAgICAgICBlbGVtZW50ICJQZXJzb24iIHsKICAgICAgICAgICAgICAgIHNoYXBlIHBlcnNvbgogICAgICAgICAgICAgICAgYmFja2dyb3VuZCAjMDg0MjdiCiAgICAgICAgICAgICAgICBjb2xvciAjZmZmZmZmCiAgICAgICAgICAgIH0KCiAgICAgICAgICAgIHJlbGF0aW9uc2hpcCAiUmVsYXRpb25zaGlwIiB7CiAgICAgICAgICAgICAgICB0aGlja25lc3MgMwogICAgICAgICAgICAgICAgY29sb3IgYmxhY2sKICAgICAgICAgICAgfQoKICAgICAgICAgICAgZWxlbWVudCAiSFRUUCIgewogICAgICAgICAgICAgICAgYm9yZGVyIGRhc2hlZAogICAgICAgICAgICB9CgogICAgICAgICAgICBlbGVtZW50ICJNb25nb0RCIiB7CiAgICAgICAgICAgICAgICBzdHJva2UgIzAwNjg0YQogICAgICAgICAgICAgICAgY29sb3IgIzAwNjg0YQogICAgICAgICAgICAgICAgaWNvbiAibW9uZ28ucG5nIgogICAgICAgICAgICB9CgogICAgICAgICAgICBlbGVtZW50ICJBdGxhcyIgewogICAgICAgICAgICAgICAgc3Ryb2tlICMwMDFlMmIKICAgICAgICAgICAgICAgIGNvbG9yICMwMDFlMmIKICAgICAgICAgICAgICAgIGljb24gYXRsYXMucG5nCiAgICAgICAgICAgIH0KICAgICAgICB9CgogICAgICAgIHRoZW1lcyBodHRwczovL3N0YXRpYy5zdHJ1Y3R1cml6ci5jb20vdGhlbWVzL2FtYXpvbi13ZWItc2VydmljZXMtMjAyMy4wMS4zMS90aGVtZS5qc29uCiAgICB9CiAgICAKfQo="
+  },
+  "configuration" : { },
+  "model" : {
+    "people" : [ {
+      "id" : "1",
+      "tags" : "Element,Person",
+      "properties" : {
+        "structurizr.dsl.identifier" : "user"
+      },
+      "name" : "Actor",
+      "relationships" : [ {
+        "id" : "17",
+        "tags" : "Relationship",
+        "sourceId" : "1",
+        "destinationId" : "3",
+        "description" : "Uses"
+      }, {
+        "id" : "18",
+        "sourceId" : "1",
+        "destinationId" : "2",
+        "description" : "Uses",
+        "linkedRelationshipId" : "17"
+      }, {
+        "id" : "19",
+        "tags" : "Relationship",
+        "sourceId" : "1",
+        "destinationId" : "5",
+        "description" : "Uses",
+        "technology" : "Intranet"
+      } ],
+      "location" : "Unspecified"
+    } ],
+    "softwareSystems" : [ {
+      "id" : "2",
+      "tags" : "Element,Software System",
+      "properties" : {
+        "structurizr.dsl.identifier" : "pushsystem"
+      },
+      "name" : "Push",
+      "description" : "CI/CD Deployment Tool",
+      "relationships" : [ {
+        "id" : "26",
+        "sourceId" : "2",
+        "destinationId" : "16",
+        "description" : "Pulls Code From",
+        "linkedRelationshipId" : "25"
+      } ],
+      "location" : "Unspecified",
+      "containers" : [ {
+        "id" : "6",
+        "tags" : "Element,Container,Requires Disk",
+        "properties" : {
+          "structurizr.dsl.identifier" : "schedulercontainer"
+        },
+        "name" : "Scheduler",
+        "relationships" : [ {
+          "id" : "32",
+          "tags" : "Relationship",
+          "sourceId" : "6",
+          "destinationId" : "4",
+          "description" : "Writes"
+        }, {
+          "id" : "25",
+          "tags" : "Relationship",
+          "sourceId" : "6",
+          "destinationId" : "16",
+          "description" : "Pulls Code From"
+        }, {
+          "id" : "24",
+          "tags" : "Relationship",
+          "sourceId" : "6",
+          "destinationId" : "5",
+          "description" : "Finds Jobs w/Statuses That Need Work"
+        }, {
+          "id" : "28",
+          "tags" : "Relationship",
+          "sourceId" : "6",
+          "destinationId" : "9",
+          "description" : "Schedules Jobs"
+        } ],
+        "technology" : "dotnet worker",
+        "components" : [ {
+          "id" : "8",
+          "tags" : "Element,Component",
+          "name" : "other services",
+          "documentation" : { }
+        }, {
+          "id" : "7",
+          "tags" : "Element,Component",
+          "name" : "pending service",
+          "documentation" : { }
+        } ],
+        "documentation" : { }
+      }, {
+        "id" : "4",
+        "tags" : "Element,Container",
+        "properties" : {
+          "structurizr.dsl.identifier" : "artifactstorage"
+        },
+        "perspectives" : [ {
+          "name" : "InfoSec",
+          "description" : "The S3 bucket here will have a lifecycle policy to purge the contents as well as keep the artifacts encrypted"
+        } ],
+        "name" : "Artifact Storage",
+        "documentation" : { }
+      }, {
+        "id" : "11",
+        "tags" : "Element,Container",
+        "properties" : {
+          "structurizr.dsl.identifier" : "remotedocker"
+        },
+        "perspectives" : [ {
+          "name" : "InfoSec",
+          "description" : "SSH key management still needs to be figured out."
+        } ],
+        "name" : "Remote Docker Host",
+        "technology" : "docker",
+        "documentation" : { }
+      }, {
+        "id" : "15",
+        "tags" : "Element,Container",
+        "properties" : {
+          "structurizr.dsl.identifier" : "policydatabase"
+        },
+        "perspectives" : [ {
+          "name" : "InfoSec",
+          "description" : "This will have a dedicated set of credentials for this database."
+        } ],
+        "name" : "Policy Database",
+        "technology" : "MongoDB",
+        "documentation" : { }
+      }, {
+        "id" : "10",
+        "tags" : "Element,Container",
+        "properties" : {
+          "structurizr.dsl.identifier" : "nomadclient"
+        },
+        "name" : "Nomad Client",
+        "relationships" : [ {
+          "id" : "30",
+          "tags" : "Relationship",
+          "sourceId" : "10",
+          "destinationId" : "11",
+          "description" : "Uses"
+        }, {
+          "id" : "31",
+          "tags" : "Relationship",
+          "sourceId" : "10",
+          "destinationId" : "5",
+          "description" : "Uses"
+        }, {
+          "id" : "33",
+          "tags" : "Relationship",
+          "sourceId" : "10",
+          "destinationId" : "4",
+          "description" : "Uses"
+        } ],
+        "technology" : "nomad agent + dotnet cli",
+        "documentation" : { }
+      }, {
+        "id" : "9",
+        "tags" : "Element,Container,HTTP,Requires Disk",
+        "properties" : {
+          "structurizr.dsl.identifier" : "nomadhost"
+        },
+        "name" : "Nomad Host",
+        "relationships" : [ {
+          "id" : "29",
+          "tags" : "Relationship",
+          "sourceId" : "9",
+          "destinationId" : "10",
+          "description" : "Places"
+        } ],
+        "technology" : "nomad agent",
+        "documentation" : { }
+      }, {
+        "id" : "13",
+        "tags" : "Element,Container,HTTP",
+        "properties" : {
+          "structurizr.dsl.identifier" : "policycontainer"
+        },
+        "perspectives" : [ {
+          "name" : "InfoSec",
+          "description" : "This service will be hard locked to the API via SG."
+        } ],
+        "name" : "Policy Engine API",
+        "relationships" : [ {
+          "id" : "23",
+          "tags" : "Relationship,logical",
+          "sourceId" : "13",
+          "destinationId" : "15",
+          "description" : "Uses"
+        } ],
+        "technology" : "nestjs",
+        "components" : [ {
+          "id" : "14",
+          "tags" : "Element,Component",
+          "name" : "policy management",
+          "documentation" : { }
+        } ],
+        "documentation" : { }
+      }, {
+        "id" : "3",
+        "tags" : "Element,Container,spa",
+        "properties" : {
+          "structurizr.dsl.identifier" : "ui"
+        },
+        "name" : "UI",
+        "relationships" : [ {
+          "id" : "20",
+          "tags" : "Relationship",
+          "sourceId" : "3",
+          "destinationId" : "5",
+          "description" : "Uses",
+          "technology" : "Intranet"
+        } ],
+        "technology" : "dotnet blazor",
+        "documentation" : { }
+      }, {
+        "id" : "12",
+        "tags" : "Element,Container",
+        "properties" : {
+          "structurizr.dsl.identifier" : "database"
+        },
+        "name" : "App Database",
+        "technology" : "MongoDB",
+        "documentation" : { }
+      }, {
+        "id" : "5",
+        "tags" : "Element,Container,HTTP",
+        "properties" : {
+          "structurizr.dsl.identifier" : "apicontainer"
+        },
+        "perspectives" : [ {
+          "name" : "InfoSec",
+          "description" : "We really need to make sure this never is exposed to open internet"
+        } ],
+        "name" : "API",
+        "relationships" : [ {
+          "id" : "27",
+          "tags" : "Relationship",
+          "sourceId" : "5",
+          "destinationId" : "16",
+          "description" : "Queries References"
+        }, {
+          "id" : "22",
+          "tags" : "Relationship,logical",
+          "sourceId" : "5",
+          "destinationId" : "12",
+          "description" : "Uses"
+        }, {
+          "id" : "21",
+          "tags" : "Relationship",
+          "sourceId" : "5",
+          "destinationId" : "13",
+          "description" : "Uses"
+        } ],
+        "technology" : "dotnet web api",
+        "documentation" : { }
+      } ],
+      "documentation" : { }
+    }, {
+      "id" : "16",
+      "tags" : "Element,Software System",
+      "properties" : {
+        "structurizr.dsl.identifier" : "vcs"
+      },
+      "name" : "VCS",
+      "description" : "Github Based Version Control",
+      "location" : "Unspecified",
+      "documentation" : { }
+    } ],
+    "deploymentNodes" : [ {
+      "id" : "34",
+      "tags" : "Element,Deployment Node,=,Amazon Web Services - Virtual Private Cloud",
+      "name" : "vpc",
+      "environment" : "Live",
+      "instances" : "1",
+      "children" : [ {
+        "id" : "43",
+        "tags" : "Element,Deployment Node,Amazon Web Services - EC2",
+        "name" : "EC2",
+        "environment" : "Live",
+        "instances" : "1",
+        "children" : [ {
+          "id" : "48",
+          "tags" : "Element,Deployment Node,Amazon Web Services - EC2 Auto Scaling",
+          "name" : "Remote Docker ASG",
+          "environment" : "Live",
+          "instances" : "3..N",
+          "containerInstances" : [ {
+            "id" : "49",
+            "tags" : "Container Instance,Amazon Web Services - EC2 Instance",
+            "environment" : "Live",
+            "deploymentGroups" : [ "Default" ],
+            "instanceId" : 1,
+            "containerId" : "11"
+          } ]
+        }, {
+          "id" : "44",
+          "tags" : "Element,Deployment Node,Amazon Web Services - EC2 Auto Scaling",
+          "name" : "Nomad Client ASG",
+          "environment" : "Live",
+          "instances" : "3..N",
+          "containerInstances" : [ {
+            "id" : "45",
+            "tags" : "Container Instance,Amazon Web Services - EC2 Instance",
+            "relationships" : [ {
+              "id" : "46",
+              "sourceId" : "45",
+              "destinationId" : "38",
+              "description" : "Uses",
+              "linkedRelationshipId" : "31"
+            }, {
+              "id" : "63",
+              "sourceId" : "45",
+              "destinationId" : "62",
+              "description" : "Uses",
+              "linkedRelationshipId" : "33"
+            }, {
+              "id" : "50",
+              "sourceId" : "45",
+              "destinationId" : "49",
+              "description" : "Uses",
+              "linkedRelationshipId" : "30"
+            } ],
+            "environment" : "Live",
+            "deploymentGroups" : [ "Default" ],
+            "instanceId" : 1,
+            "containerId" : "10"
+          } ]
+        } ]
+      }, {
+        "id" : "35",
+        "tags" : "Element,Deployment Node,Amazon Web Services - Fargate",
+        "name" : "Fargate",
+        "environment" : "Live",
+        "instances" : "1",
+        "containerInstances" : [ {
+          "id" : "38",
+          "tags" : "Container Instance,Amazon Web Services - Elastic Container Service Service",
+          "properties" : {
+            "structurizr.dsl.identifier" : "apiinstance"
+          },
+          "relationships" : [ {
+            "id" : "66",
+            "tags" : "Relationship",
+            "sourceId" : "38",
+            "destinationId" : "51",
+            "description" : "For App Database"
+          }, {
+            "id" : "55",
+            "sourceId" : "38",
+            "destinationId" : "54",
+            "description" : "Uses",
+            "linkedRelationshipId" : "22"
+          }, {
+            "id" : "39",
+            "sourceId" : "38",
+            "destinationId" : "36",
+            "description" : "Uses",
+            "linkedRelationshipId" : "21"
+          } ],
+          "environment" : "Live",
+          "deploymentGroups" : [ "Default" ],
+          "instanceId" : 1,
+          "containerId" : "5"
+        }, {
+          "id" : "37",
+          "tags" : "Container Instance,Amazon Web Services - Elastic Container Service Service",
+          "relationships" : [ {
+            "id" : "42",
+            "sourceId" : "37",
+            "destinationId" : "41",
+            "description" : "Schedules Jobs",
+            "linkedRelationshipId" : "28"
+          }, {
+            "id" : "64",
+            "sourceId" : "37",
+            "destinationId" : "62",
+            "description" : "Writes",
+            "linkedRelationshipId" : "32"
+          }, {
+            "id" : "40",
+            "sourceId" : "37",
+            "destinationId" : "38",
+            "description" : "Finds Jobs w/Statuses That Need Work",
+            "linkedRelationshipId" : "24"
+          } ],
+          "environment" : "Live",
+          "deploymentGroups" : [ "Default" ],
+          "instanceId" : 1,
+          "containerId" : "6"
+        }, {
+          "id" : "41",
+          "tags" : "Container Instance,Amazon Web Services - Elastic Container Service Service",
+          "relationships" : [ {
+            "id" : "47",
+            "sourceId" : "41",
+            "destinationId" : "45",
+            "description" : "Places",
+            "linkedRelationshipId" : "29"
+          } ],
+          "environment" : "Live",
+          "deploymentGroups" : [ "Default" ],
+          "instanceId" : 1,
+          "containerId" : "9"
+        }, {
+          "id" : "36",
+          "tags" : "Container Instance,Amazon Web Services - Elastic Container Service Service",
+          "properties" : {
+            "structurizr.dsl.identifier" : "policyinstance"
+          },
+          "relationships" : [ {
+            "id" : "57",
+            "sourceId" : "36",
+            "destinationId" : "56",
+            "description" : "Uses",
+            "linkedRelationshipId" : "23"
+          }, {
+            "id" : "65",
+            "tags" : "Relationship",
+            "sourceId" : "36",
+            "destinationId" : "51",
+            "description" : "For Policy Database"
+          } ],
+          "environment" : "Live",
+          "deploymentGroups" : [ "Default" ],
+          "instanceId" : 1,
+          "containerId" : "13"
+        } ]
+      } ],
+      "infrastructureNodes" : [ {
+        "id" : "51",
+        "tags" : "Element,Infrastructure Node,=,Amazon Web Services - PrivateLink",
+        "properties" : {
+          "structurizr.dsl.identifier" : "atlas"
+        },
+        "name" : "Atlas Privatelink",
+        "relationships" : [ {
+          "id" : "67",
+          "tags" : "Relationship",
+          "sourceId" : "51",
+          "destinationId" : "58"
+        } ],
+        "environment" : "Live"
+      } ]
+    }, {
+      "id" : "52",
+      "tags" : "Element,Deployment Node,Amazon Web Services - Virtual Private Cloud",
+      "name" : "Atlas VPC",
+      "environment" : "Live",
+      "instances" : "1",
+      "children" : [ {
+        "id" : "53",
+        "tags" : "Element,Deployment Node,Atlas",
+        "properties" : {
+          "structurizr.dsl.identifier" : "atlascluster"
+        },
+        "name" : "Atlas Cluster",
+        "environment" : "Live",
+        "instances" : "1",
+        "containerInstances" : [ {
+          "id" : "54",
+          "tags" : "Container Instance,MongoDB",
+          "properties" : {
+            "structurizr.dsl.identifier" : "databaseinstance"
+          },
+          "environment" : "Live",
+          "deploymentGroups" : [ "Default" ],
+          "instanceId" : 1,
+          "containerId" : "12"
+        }, {
+          "id" : "56",
+          "tags" : "Container Instance,MongoDB",
+          "properties" : {
+            "structurizr.dsl.identifier" : "policydatabaseinstance"
+          },
+          "environment" : "Live",
+          "deploymentGroups" : [ "Default" ],
+          "instanceId" : 1,
+          "containerId" : "15"
+        } ]
+      } ],
+      "infrastructureNodes" : [ {
+        "id" : "58",
+        "tags" : "Element,Infrastructure Node,=,Amazon Web Services - VPC Endpoints",
+        "properties" : {
+          "structurizr.dsl.identifier" : "atlasendpoint"
+        },
+        "name" : "Atlas VPC Endpoint",
+        "relationships" : [ {
+          "id" : "68",
+          "tags" : "Relationship",
+          "sourceId" : "58",
+          "destinationId" : "53"
+        } ],
+        "environment" : "Live"
+      } ]
+    }, {
+      "id" : "59",
+      "tags" : "Element,Deployment Node,Amazon Web Services - Simple Storage Service",
+      "name" : "S3",
+      "environment" : "Live",
+      "instances" : "1",
+      "containerInstances" : [ {
+        "id" : "60",
+        "tags" : "Container Instance,Amazon Web Services - Simple Storage Service Bucket",
+        "relationships" : [ {
+          "id" : "61",
+          "sourceId" : "60",
+          "destinationId" : "38",
+          "description" : "Uses",
+          "technology" : "Intranet",
+          "linkedRelationshipId" : "20"
+        } ],
+        "environment" : "Live",
+        "deploymentGroups" : [ "Default" ],
+        "instanceId" : 1,
+        "containerId" : "3"
+      }, {
+        "id" : "62",
+        "tags" : "Container Instance,Amazon Web Services - Simple Storage Service Bucket",
+        "environment" : "Live",
+        "deploymentGroups" : [ "Default" ],
+        "instanceId" : 1,
+        "containerId" : "4"
+      } ]
+    } ]
+  },
+  "documentation" : {
+    "sections" : [ {
+      "content" : "## Infrastructure Notes\n\n### Fargate\n\nAny HTTP services (tagged HTTP) will also have LBs on them. I'm not adding them to the\ndiagram as it's superfluous and there is a visual indicator.\n\n## Blazor\n\nBlazor was the result of a need to handle configurable authentication in the UI.\n\n## MongoDB\n\nMongoDB ended up as a solution to the problem of needing to update `jsonb` documents\nwithout a race condition.\n",
+      "format" : "Markdown",
+      "filename" : "01-tech.md",
+      "order" : 1,
+      "title" : ""
+    } ]
+  },
+  "views" : {
+    "systemLandscapeViews" : [ {
+      "key" : "SystemLandscape-001",
+      "order" : 1,
+      "paperSize" : "A5_Portrait",
+      "dimensions" : {
+        "width" : 866,
+        "height" : 2016
+      },
+      "automaticLayout" : {
+        "implementation" : "Graphviz",
+        "rankDirection" : "TopBottom",
+        "rankSeparation" : 300,
+        "nodeSeparation" : 300,
+        "edgeSeparation" : 0,
+        "vertices" : false
+      },
+      "enterpriseBoundaryVisible" : true,
+      "elements" : [ {
+        "id" : "1",
+        "x" : 233,
+        "y" : 208
+      }, {
+        "id" : "2",
+        "x" : 208,
+        "y" : 908
+      }, {
+        "id" : "16",
+        "x" : 208,
+        "y" : 1508
+      } ],
+      "relationships" : [ {
+        "id" : "18"
+      }, {
+        "id" : "26"
+      } ]
+    } ],
+    "containerViews" : [ {
+      "key" : "push-container",
+      "order" : 2,
+      "softwareSystemId" : "2",
+      "dimensions" : {
+        "width" : 3630,
+        "height" : 3456
+      },
+      "externalSoftwareSystemBoundariesVisible" : true,
+      "elements" : [ {
+        "id" : "11",
+        "x" : 1601,
+        "y" : 2183
+      }, {
+        "id" : "1",
+        "x" : 199,
+        "y" : 2379
+      }, {
+        "id" : "12",
+        "x" : 849,
+        "y" : 2864
+      }, {
+        "id" : "13",
+        "x" : 1599,
+        "y" : 2844
+      }, {
+        "id" : "15",
+        "x" : 2279,
+        "y" : 2854
+      }, {
+        "id" : "4",
+        "x" : 2389,
+        "y" : 2149
+      }, {
+        "id" : "5",
+        "x" : 824,
+        "y" : 2409
+      }, {
+        "id" : "16",
+        "x" : 2979,
+        "y" : 2534
+      }, {
+        "id" : "6",
+        "x" : 1709,
+        "y" : 219
+      }, {
+        "id" : "9",
+        "x" : 1684,
+        "y" : 883
+      }, {
+        "id" : "10",
+        "x" : 1655,
+        "y" : 1533
+      } ],
+      "relationships" : [ {
+        "id" : "32",
+        "vertices" : [ {
+          "x" : 2259,
+          "y" : 909
+        } ]
+      }, {
+        "id" : "21"
+      }, {
+        "id" : "31"
+      }, {
+        "id" : "30"
+      }, {
+        "id" : "29"
+      }, {
+        "id" : "28"
+      }, {
+        "id" : "27"
+      }, {
+        "id" : "25",
+        "vertices" : [ {
+          "x" : 2388,
+          "y" : 883
+        } ]
+      }, {
+        "id" : "24",
+        "vertices" : [ {
+          "x" : 1554,
+          "y" : 909
+        } ]
+      }, {
+        "id" : "23"
+      }, {
+        "id" : "33"
+      }, {
+        "id" : "22"
+      }, {
+        "id" : "19"
+      } ]
+    } ],
+    "deploymentViews" : [ {
+      "key" : "main-deployment",
+      "order" : 3,
+      "dimensions" : {
+        "width" : 3783,
+        "height" : 4154
+      },
+      "environment" : "Live",
+      "elements" : [ {
+        "id" : "44",
+        "x" : 350,
+        "y" : 350
+      }, {
+        "id" : "45",
+        "x" : 1797,
+        "y" : 1486
+      }, {
+        "id" : "34",
+        "x" : 350,
+        "y" : 350
+      }, {
+        "id" : "56",
+        "x" : 242,
+        "y" : 3471
+      }, {
+        "id" : "35",
+        "x" : 350,
+        "y" : 350
+      }, {
+        "id" : "36",
+        "x" : 587,
+        "y" : 1485
+      }, {
+        "id" : "58",
+        "x" : 220,
+        "y" : 2835
+      }, {
+        "id" : "37",
+        "x" : 1024,
+        "y" : 239
+      }, {
+        "id" : "48",
+        "x" : 350,
+        "y" : 350
+      }, {
+        "id" : "59",
+        "x" : 350,
+        "y" : 350
+      }, {
+        "id" : "38",
+        "x" : 274,
+        "y" : 839
+      }, {
+        "id" : "49",
+        "x" : 1797,
+        "y" : 2086
+      }, {
+        "id" : "60",
+        "x" : 3113,
+        "y" : 806
+      }, {
+        "id" : "51",
+        "x" : 220,
+        "y" : 2085
+      }, {
+        "id" : "62",
+        "x" : 2547,
+        "y" : 806
+      }, {
+        "id" : "41",
+        "x" : 1024,
+        "y" : 839
+      }, {
+        "id" : "52",
+        "x" : 350,
+        "y" : 350
+      }, {
+        "id" : "53",
+        "x" : 350,
+        "y" : 350
+      }, {
+        "id" : "43",
+        "x" : 350,
+        "y" : 350
+      }, {
+        "id" : "54",
+        "x" : 897,
+        "y" : 3471
+      } ],
+      "relationships" : [ {
+        "id" : "61",
+        "vertices" : [ {
+          "x" : 3232,
+          "y" : 741
+        }, {
+          "x" : 1122,
+          "y" : 761
+        } ]
+      }, {
+        "id" : "50"
+      }, {
+        "id" : "40"
+      }, {
+        "id" : "63"
+      }, {
+        "id" : "65"
+      }, {
+        "id" : "42"
+      }, {
+        "id" : "64"
+      }, {
+        "id" : "67"
+      }, {
+        "id" : "66",
+        "vertices" : [ {
+          "x" : 470,
+          "y" : 1868
+        } ]
+      }, {
+        "id" : "46"
+      }, {
+        "id" : "47"
+      }, {
+        "id" : "68"
+      }, {
+        "id" : "39"
+      } ]
+    } ],
+    "configuration" : {
+      "branding" : { },
+      "styles" : {
+        "elements" : [ {
+          "tag" : "Element",
+          "strokeWidth" : 4
+        }, {
+          "tag" : "Software System",
+          "background" : "#1168bd",
+          "color" : "#ffffff"
+        }, {
+          "tag" : "Container",
+          "background" : "#ffffff",
+          "stroke" : "#000000"
+        }, {
+          "tag" : "Infrastructure Node",
+          "background" : "#ffffff"
+        }, {
+          "tag" : "Person",
+          "background" : "#08427b",
+          "color" : "#ffffff",
+          "shape" : "Person"
+        }, {
+          "tag" : "HTTP",
+          "border" : "Dashed"
+        }, {
+          "tag" : "MongoDB",
+          "stroke" : "#00684a",
+          "color" : "#00684a",
+          "icon" : "data:image/png;base64,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"
+        }, {
+          "tag" : "Atlas",
+          "stroke" : "#001e2b",
+          "color" : "#001e2b",
+          "icon" : "data:image/png;base64,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"
+        } ],
+        "relationships" : [ {
+          "tag" : "Relationship",
+          "thickness" : 3,
+          "color" : "#000000"
+        } ]
+      },
+      "themes" : [ "https://static.structurizr.com/themes/amazon-web-services-2023.01.31/theme.json" ],
+      "terminology" : { },
+      "metadataSymbols" : "SquareBrackets",
+      "defaultView" : "main-deployment",
+      "lastSavedView" : "push-container",
+      "properties" : {
+        "structurizr.sort" : "created"
+      }
+    }
+  }
+}
