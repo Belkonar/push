@@ -115,21 +115,47 @@ workspace "Push" "A fun CI/CD tool" {
                 deploymentNode Fargate {
                     tags "Amazon Web Services - Fargate"
                     
-                    policyInstance = containerInstance policyContainer {
+                    deploymentNode "Policy Service" {
                         tags "Amazon Web Services - Elastic Container Service Service"
+
+                        policyInstance = containerInstance policyContainer {
+                            tags "Amazon Web Services - Elastic Container Service Task"
+                        }
+
+                        instances "3"
                     }
                     
-                    containerInstance schedulerContainer {
+                    deploymentNode "Scheduler Service" {
                         tags "Amazon Web Services - Elastic Container Service Service"
+
+                        containerInstance schedulerContainer {
+                            tags "Amazon Web Services - Elastic Container Service Task"
+                        }
+
+                        instances "1"
+                    }
+
+                    deploymentNode "API Service" {
+                        tags "Amazon Web Services - Elastic Container Service Service"
+
+                        apiInstance = containerInstance apiContainer {
+                            tags "Amazon Web Services - Elastic Container Service Task"
+                        }
+
+                        instances "3"
+                    }
+
+                    deploymentNode "Nomad Service" {
+                        tags "Amazon Web Services - Elastic Container Service Service"
+
+                        containerInstance nomadHost {
+                            tags "Amazon Web Services - Elastic Container Service Task"
+                        }
+
+                        instances "3"
                     }
                     
-                    apiInstance = containerInstance apiContainer {
-                        tags "Amazon Web Services - Elastic Container Service Service"
-                    }
                     
-                    containerInstance nomadHost {
-                        tags "Amazon Web Services - Elastic Container Service Service"
-                    }
                 }
                 
                 deploymentNode EC2 {
