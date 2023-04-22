@@ -2,6 +2,10 @@
 
 Push is a governance focused devops tool designed to solve the complicated needs regulation applies to organizations.
 
+## Archive
+
+This project is now archived as it's served it's purpose. Feel free to fork it and use it according to the license.
+
 ## How pipelines work
 
 So pipelines are made up of two primary components: stages and steps. Stages are lanes that contain steps. Steps actually run things.
@@ -73,5 +77,3 @@ For the UI you can run it with this to be the least annoying.
 ```bash
  DOTNET_WATCH_RESTART_ON_RUDE_EDIT=1 dotnet watch
 ```
-
-
